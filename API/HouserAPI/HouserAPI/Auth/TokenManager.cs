@@ -20,11 +20,15 @@ namespace HouserAPI.Auth
     {
         private readonly UserManager<User> _userManager;
         private readonly SymmetricSecurityKey _authSigningKey;
+        private readonly string _issuer;
+        private readonly string _audience;
 
         public TokenManager(UserManager<User> userManager, IConfiguration configuration)
         {
             _userManager = userManager;
             _authSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(configuration["JwtSettings:Secret"]));
+            _issuer = configuration["JwtSettings:ValidIssuer"];
+            _audience = configuration["JwtSettings:ValidAudience"];
         }
 
         public async Task<string> CreateAccessTokenAsync(User user)
@@ -39,6 +43,8 @@ namespace HouserAPI.Auth
             authClaims.AddRange(userRoles.Select(userRole => new Claim(ClaimTypes.Role, userRole)));
 
             var accessSecurityToken = new JwtSecurityToken(
+                issuer: _issuer,
+                audience: _audience,
                 expires: DateTime.UtcNow.AddMonths(1),
                 claims: authClaims,
                 signingCredentials: new SigningCredentials(_authSigningKey, SecurityAlgorithms.HmacSha256)
