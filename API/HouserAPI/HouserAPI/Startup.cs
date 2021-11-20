@@ -1,16 +1,9 @@
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.HttpsPolicy;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Logging;
-using Microsoft.OpenApi.Models;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using HouserAPI.Data;
 using HouserAPI.Data.Seed;
 using HouserAPI.Extensions;
@@ -33,12 +26,9 @@ namespace HouserAPI
         
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddSwaggerGen(c =>
-            {
-                c.SwaggerDoc("v1", new OpenApiInfo { Title = "HouserAPI", Version = "v1" });
-            });
+            services.AddSwagger();
 
-            var builder = new MySqlConnectionStringBuilder(Configuration.GetConnectionString("HouserConnection"))
+            var connectionStringBuilder = new MySqlConnectionStringBuilder(Configuration.GetConnectionString("HouserConnection"))
             {
                 Server = Configuration["Server"],
                 Database = Configuration["Database"],
@@ -46,16 +36,16 @@ namespace HouserAPI
                 Password = Configuration["Password"]
             };
             services.AddDbContext<DatabaseContext>(opt =>
-                opt.UseMySQL(builder.ConnectionString));
+                opt.UseMySQL(connectionStringBuilder.ConnectionString));
 
             services.AddControllers().AddNewtonsoftJson(s =>
             {
                 s.SerializerSettings.ContractResolver = new CamelCasePropertyNamesContractResolver();
             });
 
-            services.AddCors(o => o.AddPolicy("MyPolicy", builder =>
+            services.AddCors(o => o.AddPolicy("MyPolicy", policyBuilder =>
             {
-                builder.AllowAnyOrigin()
+                policyBuilder.AllowAnyOrigin()
                     .AllowAnyMethod()
                     .AllowAnyHeader();
             }));
@@ -63,21 +53,14 @@ namespace HouserAPI
             services.AddIdentity<User, IdentityRole>()
                 .AddEntityFrameworkStores<DatabaseContext>()
                 .AddDefaultTokenProviders();
-
-            services.Configure<IdentityOptions>(options =>
-            {
-                options.Password.RequireDigit = true;
-                options.Password.RequireLowercase = true;
-                options.Password.RequireNonAlphanumeric = false;
-                options.Password.RequireUppercase = false;
-                options.Password.RequiredLength = 8;
-
-                options.User.RequireUniqueEmail = true;
-            });
+            services.ConfigureIdentityOptions();
 
             services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
-            services.AddAuthorizationDependencies(Configuration);
             services.AddJwtAuthentication(Configuration);
+
+            services.AddAuthorizationDependencies(Configuration);
+            services.AddRepositoriesDependencies();
+            services.AddServiceDependencies();
         }
         
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env, DatabaseContext context, UserManager<User> userManager, RoleManager<IdentityRole> roleManager)
@@ -92,12 +75,12 @@ namespace HouserAPI
                 seed.Seed();
             }
 
+            app.UseCors("MyPolicy");
             app.UseHttpsRedirection();
-
             app.UseRouting();
 
-            app.UseAuthorization();
             app.UseAuthentication();
+            app.UseAuthorization();
 
             app.UseEndpoints(endpoints =>
             {
