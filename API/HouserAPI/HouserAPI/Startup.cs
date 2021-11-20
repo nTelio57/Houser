@@ -17,26 +17,20 @@ namespace HouserAPI
 {
     public class Startup
     {
-        public Startup(IConfiguration configuration)
+        public Startup(IConfiguration configuration, IWebHostEnvironment env)
         {
             Configuration = configuration;
+            WebHostEnvironment = env;
         }
 
         public IConfiguration Configuration { get; }
-        
+        public IWebHostEnvironment WebHostEnvironment { get; }
+
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddSwagger();
 
-            var connectionStringBuilder = new MySqlConnectionStringBuilder(Configuration.GetConnectionString("HouserConnection"))
-            {
-                Server = Configuration["Server"],
-                Database = Configuration["Database"],
-                UserID = Configuration["User"],
-                Password = Configuration["Password"]
-            };
-            services.AddDbContext<DatabaseContext>(opt =>
-                opt.UseMySQL(connectionStringBuilder.ConnectionString));
+            services.AddDatabaseContext(Configuration, WebHostEnvironment);
 
             services.AddControllers().AddNewtonsoftJson(s =>
             {
