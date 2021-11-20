@@ -68,8 +68,6 @@ namespace HouserAPI
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
-                app.UseSwagger();
-                app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "HouserAPI v1"));
 
                 var seed = new SeedData(context, userManager, roleManager);
                 seed.Seed();
@@ -86,6 +84,9 @@ namespace HouserAPI
             {
                 endpoints.MapControllers();
             });
+
+            app.UseSwagger();
+            app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "HouserAPI v1"));
         }
     }
 }
