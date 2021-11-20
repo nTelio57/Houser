@@ -1,4 +1,5 @@
-﻿using HouserAPI.Data;
+﻿using System;
+using HouserAPI.Data;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
@@ -22,7 +23,7 @@ namespace HouserAPI.Extensions
 
             var connectionString = env.IsDevelopment()
                 ? connectionStringBuilder.ConnectionString
-                : configuration["HerokuDatabase"];
+                : Environment.GetEnvironmentVariable("HerokuDatabase");
 
             return services.AddDbContext<DatabaseContext>(opt =>
                 opt.UseMySQL(connectionString));
