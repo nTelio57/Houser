@@ -44,7 +44,7 @@ class _LoginViewState extends State<LoginView> {
   Widget topBar()
   {
     return Container(
-      padding: const EdgeInsets.only(top: 40),
+      padding: const EdgeInsets.only(top: 40, left: 32, right: 32),
       child: Row(
         children: [
           Expanded(child: backButton()),
@@ -65,10 +65,12 @@ class _LoginViewState extends State<LoginView> {
             if (kDebugMode) {
               print('Go back clicked');
             }
+
+            Navigator.pop(context);
           },
           style: TextButton.styleFrom(
             primary: Colors.white,
-            padding: const EdgeInsets.only(left: 16, right: 32, top: 16, bottom: 16),
+            padding: const EdgeInsets.only(right: 32, top: 16, bottom: 16),
           ),
           icon: const Icon(
             Icons.west,
@@ -99,12 +101,12 @@ class _LoginViewState extends State<LoginView> {
 
   Widget loginForm()
   {
-    return Column(
-      children: [
-        loginLabel(),
-        Padding(
-          padding: const EdgeInsets.only(left: 16.0, right: 16/*, top: 250*/),
-          child: Container(
+    return Padding(
+      padding: const EdgeInsets.only(left: 32, right: 32, top: 180),
+      child: Column(
+        children: [
+          loginLabel(),
+          Container(
             padding: const EdgeInsets.only(left: 20, right: 20, top: 6, bottom: 6),
             decoration: const BoxDecoration(
               color: Colors.white,
@@ -120,15 +122,15 @@ class _LoginViewState extends State<LoginView> {
               ],
             ),
           ),
-        ),
-      ],
+        ],
+      ),
     );
   }
 
   Widget loginLabel()
   {
     return Container(
-      padding: const EdgeInsets.only(left: 16, top: 180, bottom: 16),
+      padding: const EdgeInsets.only(bottom: 16),
       alignment: Alignment.centerLeft,
       child: const Text(
         'Prisijungti',
