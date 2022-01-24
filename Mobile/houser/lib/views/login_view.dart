@@ -145,10 +145,11 @@ class _LoginViewState extends State<LoginView> {
   Widget emailTextField()
   {
     return Container(
-      padding: const EdgeInsets.symmetric(vertical: 14),
+      padding: const EdgeInsets.only(top: 14, bottom: 7),
       child: const TextField(
         decoration: InputDecoration(
           labelText: 'El. paštas',
+          helperText: '',
           prefixIcon: Icon(Icons.email),
           border: OutlineInputBorder()
         ),
@@ -159,11 +160,12 @@ class _LoginViewState extends State<LoginView> {
   Widget passwordTextField()
   {
     return Container(
-      padding: const EdgeInsets.symmetric(vertical: 14),
+      padding: const EdgeInsets.only(top: 7, bottom: 7),
       child: TextField(
         obscureText: !_passwordVisible,
         decoration: InputDecoration(
           labelText: 'Slaptažodis',
+          helperText: '',
           prefixIcon: const Icon(Icons.lock),
           border: const OutlineInputBorder(),
           suffixIcon: IconButton(
@@ -185,7 +187,7 @@ class _LoginViewState extends State<LoginView> {
   {
     return Container(
       width: double.infinity,
-      padding: const EdgeInsets.only(top: 14),
+      padding: const EdgeInsets.only(top: 7),
       child: TextButton(
         onPressed: ()
         {
@@ -197,11 +199,12 @@ class _LoginViewState extends State<LoginView> {
           'Prisijungti',
           style: TextStyle(
             color: Colors.white,
-            fontSize: 18
+            fontSize: 20
           ),
         ),
         style: TextButton.styleFrom(
           backgroundColor: const Color.fromRGBO(0, 153, 204, 1),
+          padding: const EdgeInsets.symmetric(vertical: 12)
         ),
       ),
     );
