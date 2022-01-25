@@ -59,7 +59,7 @@ class _WelcomeViewState extends State<WelcomeView> {
   Widget buttonsColumn()
   {
     return Padding(
-      padding: const EdgeInsets.only(left: 20, right: 20, bottom: 175),
+      padding: const EdgeInsets.only(left: 32, right: 32, bottom: 175),
       child: Column(
         mainAxisAlignment: MainAxisAlignment.end,
         children: [
