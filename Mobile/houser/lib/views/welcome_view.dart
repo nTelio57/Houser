@@ -1,6 +1,7 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:houser/views/login_view.dart';
+import 'package:houser/views/register_view.dart';
 
 class WelcomeView extends StatefulWidget {
   const WelcomeView({Key? key}) : super(key: key);
@@ -40,7 +41,7 @@ class _WelcomeViewState extends State<WelcomeView> {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          Container(
+          SizedBox(
             child: Image.asset('assets/logo/v2.png'),
             width: 75,
           ),
@@ -67,7 +68,7 @@ class _WelcomeViewState extends State<WelcomeView> {
           whiteTextButton('Prisijungti', onLoginClicked),
           //buttonDivider(),
           const SizedBox(height: 20),
-          whiteTextButton('Registruotis', () {})
+          whiteTextButton('Registruotis', onRegisterClicked)
         ],
       ),
     );
@@ -129,4 +130,11 @@ class _WelcomeViewState extends State<WelcomeView> {
     Navigator.push(context, MaterialPageRoute(builder: (context) => const LoginView()));
   }
 
+  void onRegisterClicked()
+  {
+    if (kDebugMode) {
+      print('Register clicked');
+    }
+    Navigator.push(context, MaterialPageRoute(builder: (context) => const RegisterView()));
+  }
 }
