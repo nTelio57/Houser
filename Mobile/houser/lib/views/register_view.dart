@@ -1,5 +1,6 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:houser/views/personal%20details%20view/personal_details_create_stepper.dart';
 
 class RegisterView extends StatefulWidget {
   const RegisterView({Key? key}) : super(key: key);
@@ -204,6 +205,7 @@ class _RegisterViewState extends State<RegisterView> {
         {
           if (kDebugMode) {
             print('Register clicked');
+            Navigator.push(context, MaterialPageRoute(builder: (context) => const PersonalDetailsCreateStepper()));
           }
         },
         child: const Text(
