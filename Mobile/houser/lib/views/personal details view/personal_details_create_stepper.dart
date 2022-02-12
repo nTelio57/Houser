@@ -1,5 +1,6 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:houser/views/main_view.dart';
 import 'personal_details_main_info.dart';
 import 'personal_details_secondary_info.dart';
 
@@ -73,6 +74,7 @@ class _PersonalDetailsCreateStepperState extends State<PersonalDetailsCreateStep
                 if (kDebugMode) {
                   print('Completed');
                 }
+                Navigator.push(context, MaterialPageRoute(builder: (context) => const MainView()));
                 return;
               }
             _currentStep += 1;
@@ -103,9 +105,9 @@ class _PersonalDetailsCreateStepperState extends State<PersonalDetailsCreateStep
                 ),
                 TextButton(
                   onPressed: details.onStepContinue,
-                  child: const Text(
-                    'TOLIAU',
-                    style: TextStyle(
+                  child: Text(
+                    isLastStep() ? 'BAIGTI' : 'TOLIAU',
+                    style: const TextStyle(
                       color: Colors.white,
                     ),
                   ),

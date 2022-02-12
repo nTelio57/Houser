@@ -1,6 +1,8 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
+import 'main_view.dart';
+
 class LoginView extends StatefulWidget {
   const LoginView({Key? key}) : super(key: key);
 
@@ -194,6 +196,7 @@ class _LoginViewState extends State<LoginView> {
           if (kDebugMode) {
             print('Login clicked');
           }
+          Navigator.push(context, MaterialPageRoute(builder: (context) => const MainView()));
         },
         child: const Text(
           'Prisijungti',
