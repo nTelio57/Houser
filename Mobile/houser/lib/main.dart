@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:houser/resources/app_colors.dart';
 import 'package:houser/views/welcome_view.dart';
 
 void main() {
@@ -11,10 +12,18 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Flutter Demo',
+      title: 'Houser',
       theme: ThemeData(
-        primarySwatch: Colors.blue,
-        fontFamily: 'OpenSans'
+        primarySwatch: AppColors.primaryPalette,
+        primaryColor: AppColors.primaryColor,
+
+        fontFamily: 'OpenSans',
+        textTheme: const TextTheme(
+
+        ),
+
+
+
       ),
       home: const WelcomeView(),
     );

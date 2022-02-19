@@ -39,7 +39,7 @@ class _LoginViewState extends State<LoginView> {
   Widget background()
   {
     return Container(
-      color: const Color.fromRGBO(0, 153, 204, 1),
+      color: Theme.of(context).primaryColor,
     );
   }
 
@@ -206,7 +206,7 @@ class _LoginViewState extends State<LoginView> {
           ),
         ),
         style: TextButton.styleFrom(
-          backgroundColor: const Color.fromRGBO(0, 153, 204, 1),
+          backgroundColor: Theme.of(context).primaryColor,
           padding: const EdgeInsets.symmetric(vertical: 12)
         ),
       ),
