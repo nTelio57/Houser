@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:houser/models/widget_data/multi_button_selection.dart';
 import 'package:houser/widgets/WG_multi_button.dart';
 
-import '../../models/multi_button_selection.dart';
 
 class PersonalDetailsThirdInfo extends StatefulWidget {
   const PersonalDetailsThirdInfo({Key? key}) : super(key: key);
