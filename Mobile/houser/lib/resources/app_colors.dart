@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 
 class AppColors{
+  static const Color backgroundColor = Color(0xFFE7F5FA);
+
   static const int primaryColorHex = 0xFF0099CC;
   static const Color primaryColor = Color(primaryColorHex);
   static const MaterialColor primaryPalette = MaterialColor(primaryColorHex, <int, Color>{

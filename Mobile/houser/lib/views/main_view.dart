@@ -22,7 +22,7 @@ class _MainViewState extends State<MainView> {
 
   @override
   Widget build(BuildContext context) {
-    return body();
+    return const OfferView();
   }
 
   Widget body()
@@ -63,7 +63,7 @@ class _MainViewState extends State<MainView> {
         ),
       ],
       currentIndex: _selectedIndex,
-      selectedItemColor: const Color.fromRGBO(0, 153, 204, 1),
+      //selectedItemColor: Theme.of(context).primaryColor,
       onTap: _onItemTapped,
     );
   }
