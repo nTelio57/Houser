@@ -61,7 +61,7 @@ class _OfferViewState extends State<OfferView> {
     var deviceHeight = MediaQuery.of(context).size.height;
 
     return Container(
-      height: deviceHeight * 0.11,
+      height: deviceHeight * 0.09,
       decoration: const BoxDecoration(
         gradient: LinearGradient(
           begin: Alignment.topCenter,
@@ -96,7 +96,7 @@ class _OfferViewState extends State<OfferView> {
         icon: const Icon(
           Icons.person,
           color: Colors.white,
-          size: 32,
+          size: 24,
         ),
         onPressed: () {
           Navigator.push(context, MaterialPageRoute(builder: (context) => const ProfileView()));
@@ -121,7 +121,7 @@ class _OfferViewState extends State<OfferView> {
         icon: const Icon(
           Icons.chat,
           color: Colors.white,
-          size: 32,
+          size: 24,
         ),
         onPressed: () {},
       ),
