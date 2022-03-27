@@ -61,9 +61,9 @@ namespace HouserAPI.Controllers
             return Ok(images);
         }
 
-        [HttpGet("{id}", Name = "GetById")]
+        [HttpGet("{id}", Name = "GetImageById")]
         [Roles(UserRoles.Basic)]
-        public async Task<IActionResult> GetImage(int id)
+        public async Task<IActionResult> GetImageById(int id)
         {
             var userId = User.FindFirst(CustomClaims.UserId)?.Value;
 
