@@ -1,12 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:houser/models/widget_data/multi_button_selection.dart';
 
-class MultiButton extends StatefulWidget {
+class WGMultiButton extends StatefulWidget {
 
   final List<MultiButtonSelection> selections;
   final List<bool> _isButtonSelected = [];
+  bool multiSelection;
 
-  MultiButton({Key? key, required this.selections}) : super(key: key)
+  WGMultiButton({Key? key, required this.selections, this.multiSelection = false}) : super(key: key)
   {
     for(int i = 0; i < selections.length; i++)
       {
@@ -16,10 +17,10 @@ class MultiButton extends StatefulWidget {
   }
 
   @override
-  _MultiButtonState createState() => _MultiButtonState();
+  _WGMultiButtonState createState() => _WGMultiButtonState();
 }
 
-class _MultiButtonState extends State<MultiButton> {
+class _WGMultiButtonState extends State<WGMultiButton> {
   @override
   Widget build(BuildContext context) {
     return body();
@@ -34,13 +35,20 @@ class _MultiButtonState extends State<MultiButton> {
         color: Colors.black54,
         onPressed: (int index) {
           setState(() {
-            for (int buttonIndex = 0; buttonIndex < widget._isButtonSelected.length; buttonIndex++) {
-              if (buttonIndex == index) {
-                widget._isButtonSelected[buttonIndex] = true;
-              } else {
-                widget._isButtonSelected[buttonIndex] = false;
+            if(widget.multiSelection)
+              {
+                widget._isButtonSelected[index] = !widget._isButtonSelected[index];
               }
-            }
+            else
+              {
+                for (int buttonIndex = 0; buttonIndex < widget._isButtonSelected.length; buttonIndex++) {
+                  if (buttonIndex == index) {
+                    widget._isButtonSelected[buttonIndex] = true;
+                  } else {
+                    widget._isButtonSelected[buttonIndex] = false;
+                  }
+                }
+              }
           });
         },
         children: widget.selections.map((e) => singleButton(e)).toList()

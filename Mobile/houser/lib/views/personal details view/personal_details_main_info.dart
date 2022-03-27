@@ -29,7 +29,7 @@ class _PersonalDetailsMainInfoState extends State<PersonalDetailsMainInfo> {
       children: [
         nameTextField(),
         birthDateField(),
-        MultiButton(selections: sexSelections),
+        WGMultiButton(selections: sexSelections),
         //label('Kalbos'),
         //languagesContainer()
       ],

@@ -27,9 +27,9 @@ class _PersonalDetailsSecondaryInfoState extends State<PersonalDetailsSecondaryI
       children: [
         animalCountRow(),
         WGSlider(min: 0, max: 5, canBeMoreThanMax: true),
-        MultiButton(selections: studySelections),
-        MultiButton(selections: workSelections),
-        MultiButton(selections: smokeSelections),
+        WGMultiButton(selections: studySelections),
+        WGMultiButton(selections: workSelections),
+        WGMultiButton(selections: smokeSelections),
         const SizedBox(height: 50,),
       ],
     );

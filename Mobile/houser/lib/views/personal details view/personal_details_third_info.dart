@@ -27,11 +27,11 @@ class _PersonalDetailsThirdInfoState extends State<PersonalDetailsThirdInfo> {
     return Column(
       children: [
         label('Kokiomis valandomis dažniausiai miegate:'),
-        MultiButton(selections: sleepTimeSelections),
+        WGMultiButton(selections: sleepTimeSelections),
         label('Kiek kartų į mėnesį lankysis svečiai:'),
-        MultiButton(selections: guestCountSelections),
+        WGMultiButton(selections: guestCountSelections),
         label('Kiek kartų į mėnesį planuojate turėti vakarėlių:'),
-        MultiButton(selections: partyCountSelections),
+        WGMultiButton(selections: partyCountSelections),
       ],
     );
   }

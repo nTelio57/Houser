@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+@deprecated
 class WGMainDrawer extends StatefulWidget {
   const WGMainDrawer({Key? key}) : super(key: key);
 
