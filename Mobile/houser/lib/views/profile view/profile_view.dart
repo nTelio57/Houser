@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:houser/views/profile%20view/my_offer_list_view.dart';
+import 'package:houser/views/welcome_view.dart';
 import 'package:houser/widgets/WG_album_slider.dart';
 
 class ProfileView extends StatefulWidget {
@@ -87,7 +88,7 @@ class _ProfileViewState extends State<ProfileView> {
         menuButton('Mano pasiūlymai', Icons.format_list_bulleted, () => OnOfferListClicked()),
         menuButton('Redaguoti profilį', Icons.edit,() => null),
         menuButton('Nustatymai', Icons.settings,() => null),
-        menuButton('Atsijungti', Icons.logout,() => null, isLogout: true),
+        menuButton('Atsijungti', Icons.logout, () => OnLogoutClicked(), isLogout: true),
       ],
     );
   }
@@ -128,5 +129,10 @@ class _ProfileViewState extends State<ProfileView> {
   void OnOfferListClicked()
   {
     Navigator.push(context, MaterialPageRoute(builder: (context) => const MyOfferListView()));
+  }
+
+  void OnLogoutClicked()
+  {
+    Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (context) => const WelcomeView()), (Route<dynamic> route) => false);
   }
 }

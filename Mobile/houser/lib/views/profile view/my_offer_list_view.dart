@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:houser/models/Offer.dart';
 import 'package:houser/views/profile%20view/my_offer_card.dart';
+import 'package:houser/views/profile%20view/new_offer_view.dart';
 
 class MyOfferListView extends StatefulWidget {
   const MyOfferListView({Key? key}) : super(key: key);
@@ -13,9 +14,24 @@ class _MyOfferListViewState extends State<MyOfferListView> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+
       body: body(),
-      appBar: AppBar(),
+      appBar: AppBar(
+        actions: [
+          newOfferButton()
+        ],
+      ),
       backgroundColor: Theme.of(context).backgroundColor,
+    );
+  }
+
+  Widget newOfferButton()
+  {
+    return IconButton(
+      onPressed: (){
+        Navigator.push(context, MaterialPageRoute(builder: (context) => const NewOfferView()));
+      },
+      icon: const Icon(Icons.add)
     );
   }
 
