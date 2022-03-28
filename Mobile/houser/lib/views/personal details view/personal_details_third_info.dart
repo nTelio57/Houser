@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:houser/models/widget_data/multi_button_selection.dart';
 import 'package:houser/widgets/WG_multi_button.dart';
 
-import '../../models/multi_button_selection.dart';
 
 class PersonalDetailsThirdInfo extends StatefulWidget {
   const PersonalDetailsThirdInfo({Key? key}) : super(key: key);
@@ -27,11 +27,11 @@ class _PersonalDetailsThirdInfoState extends State<PersonalDetailsThirdInfo> {
     return Column(
       children: [
         label('Kokiomis valandomis dažniausiai miegate:'),
-        MultiButton(selections: sleepTimeSelections),
+        WGMultiButton(selections: sleepTimeSelections),
         label('Kiek kartų į mėnesį lankysis svečiai:'),
-        MultiButton(selections: guestCountSelections),
+        WGMultiButton(selections: guestCountSelections),
         label('Kiek kartų į mėnesį planuojate turėti vakarėlių:'),
-        MultiButton(selections: partyCountSelections),
+        WGMultiButton(selections: partyCountSelections),
       ],
     );
   }

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:houser/models/widget_data/multi_button_selection.dart';
 import 'package:houser/widgets/WG_slider.dart';
 import 'package:houser/widgets/WG_multi_button.dart';
-import 'package:houser/models/multi_button_selection.dart';
 
 class PersonalDetailsSecondaryInfo extends StatefulWidget {
   const PersonalDetailsSecondaryInfo({Key? key}) : super(key: key);
@@ -27,9 +27,9 @@ class _PersonalDetailsSecondaryInfoState extends State<PersonalDetailsSecondaryI
       children: [
         animalCountRow(),
         WGSlider(min: 0, max: 5, canBeMoreThanMax: true),
-        MultiButton(selections: studySelections),
-        MultiButton(selections: workSelections),
-        MultiButton(selections: smokeSelections),
+        WGMultiButton(selections: studySelections),
+        WGMultiButton(selections: workSelections),
+        WGMultiButton(selections: smokeSelections),
         const SizedBox(height: 50,),
       ],
     );

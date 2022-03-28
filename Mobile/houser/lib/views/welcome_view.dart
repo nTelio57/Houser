@@ -30,7 +30,7 @@ class _WelcomeViewState extends State<WelcomeView> {
   Widget background()
   {
     return Container(
-      color: const Color.fromRGBO(0, 153, 204, 1),
+      color: Theme.of(context).primaryColor,
     );
   }
 
@@ -66,40 +66,10 @@ class _WelcomeViewState extends State<WelcomeView> {
         mainAxisAlignment: MainAxisAlignment.end,
         children: [
           whiteTextButton('Prisijungti', onLoginClicked),
-          //buttonDivider(),
           const SizedBox(height: 20),
           whiteTextButton('Registruotis', onRegisterClicked)
         ],
       ),
-    );
-  }
-
-  Widget buttonDivider()
-  {
-    return Row(
-      children: [
-        Expanded(child:
-          Container(
-            color: Colors.white,
-            height: 2,
-          )
-        ),
-        const Padding(
-          padding: EdgeInsets.symmetric(horizontal: 8.0),
-          child: Text(
-              'Don\'t have an account?',
-            style: TextStyle(
-              color: Colors.white
-            ),
-          ),
-        ),
-        Expanded(child: Container
-          (
-            color: Colors.white,
-            height: 2,
-          )
-        ),
-      ],
     );
   }
 
