@@ -128,7 +128,7 @@ class _ProfileViewState extends State<ProfileView> {
 
   void OnOfferListClicked()
   {
-    Navigator.push(context, MaterialPageRoute(builder: (context) => const MyOfferListView()));
+    Navigator.push(context, MaterialPageRoute(builder: (context) => MyOfferListView()));
   }
 
   void OnLogoutClicked()
