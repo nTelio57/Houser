@@ -12,6 +12,8 @@ namespace HouserAPI.Data.Seed
             var offer1 = new Offer
             {
                 UserId = "570457bc-51a6-47d7-90a1-cc3cd1598563",
+                IsVisible = true,
+                UploadDate = new DateTime(2022, 2, 24),
                 Id = 1,
                 Title = "Pirmasis pasiulymas",
                 City = "Kaunas",
@@ -34,6 +36,8 @@ namespace HouserAPI.Data.Seed
             var offer2 = new Offer
             {
                 UserId = "570457bc-51a6-47d7-90a1-cc3cd1598563",
+                IsVisible = true,
+                UploadDate = new DateTime(2022, 2, 14),
                 Id = 2,
                 Title = "Antrasis pasiulymas",
                 City = "Vilnius",
@@ -56,6 +60,8 @@ namespace HouserAPI.Data.Seed
             var offer3 = new Offer
             {
                 UserId = "6e58169a-cc76-45b9-8d20-ef40fda183a3",
+                IsVisible = true,
+                UploadDate = new DateTime(2022, 2, 8),
                 Id = 3,
                 Title = "Trečiasis pasiulymas",
                 City = "Domeikava",
