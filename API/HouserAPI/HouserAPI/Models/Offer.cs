@@ -5,6 +5,9 @@ namespace HouserAPI.Models
 {
     public class Offer : Entity
     {
+        public bool IsVisible { get; set; }
+        public DateTime UploadDate { get; set; }
+
         public string Title { get; set; }
         public string City { get; set; }
         public string Address { get; set; }

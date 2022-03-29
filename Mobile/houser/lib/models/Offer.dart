@@ -1,5 +1,9 @@
 import 'package:houser/enums/BedType.dart';
+import 'package:json_annotation/json_annotation.dart';
 
+part 'Offer.g.dart';
+
+@JsonSerializable()
 class Offer{
   bool isActive = true;
   bool isVisible = true;
@@ -23,12 +27,16 @@ class Offer{
   int bedCount = 1;
   BedType bedType = BedType.single;
 
-  bool accommodationTV = true;
-  bool accommodationWIFI = true;
-  bool accommodationAC = true;
+  bool accommodationTv = true;
+  bool accommodationWifi = true;
+  bool accommodationAc = true;
 
   Offer({required this.title, required this.uploadDate, required this.address, required this.city, required this.freeRoomCount, required this.totalRoomCount, required this.isActive, required this.isVisible});
 
   Offer.placeholder(this.isVisible);
+
+  factory Offer.fromJson(Map<String, dynamic> json) => _$OfferFromJson(json);
+
+  Map<String, dynamic> toJson() => _$OfferToJson(this);
 
 }
