@@ -1,10 +1,14 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:houser/models/AuthRequest.dart';
+import 'package:houser/services/api_service.dart';
 
 import 'main_view.dart';
 
 class LoginView extends StatefulWidget {
-  const LoginView({Key? key}) : super(key: key);
+  LoginView({Key? key}) : super(key: key);
+
+  final ApiService _apiService = ApiService();
 
   @override
   _LoginViewState createState() => _LoginViewState();
@@ -13,6 +17,8 @@ class LoginView extends StatefulWidget {
 class _LoginViewState extends State<LoginView> {
 
   bool _passwordVisible = false;
+  final TextEditingController _emailTextController = TextEditingController();
+  final TextEditingController _passwordTextController = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
@@ -148,8 +154,9 @@ class _LoginViewState extends State<LoginView> {
   {
     return Container(
       padding: const EdgeInsets.only(top: 14, bottom: 7),
-      child: const TextField(
-        decoration: InputDecoration(
+      child: TextField(
+        controller: _emailTextController,
+        decoration: const InputDecoration(
           labelText: 'El. paštas',
           helperText: '',
           prefixIcon: Icon(Icons.email),
@@ -165,6 +172,7 @@ class _LoginViewState extends State<LoginView> {
       padding: const EdgeInsets.only(top: 7, bottom: 7),
       child: TextField(
         obscureText: !_passwordVisible,
+        controller: _passwordTextController,
         decoration: InputDecoration(
           labelText: 'Slaptažodis',
           helperText: '',
@@ -191,12 +199,21 @@ class _LoginViewState extends State<LoginView> {
       width: double.infinity,
       padding: const EdgeInsets.only(top: 7),
       child: TextButton(
-        onPressed: ()
+        onPressed: () async
         {
           if (kDebugMode) {
             print('Login clicked');
           }
-          Navigator.push(context, MaterialPageRoute(builder: (context) => const MainView()));
+          AuthRequest authRequest = AuthRequest(_emailTextController.text, _passwordTextController.text);
+          var authResult = await widget._apiService.Login(authRequest);
+          if(authResult.success!)
+            {
+              Navigator.push(context, MaterialPageRoute(builder: (context) => const MainView()));
+            }
+          else{
+
+          }
+
         },
         child: const Text(
           'Prisijungti',

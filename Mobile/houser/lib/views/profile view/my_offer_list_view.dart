@@ -61,6 +61,7 @@ class _MyOfferListViewState extends State<MyOfferListView> {
           }
         else if(snapshot.hasError)
           {
+            print("Error loading offers. ${snapshot.error.toString()}");
             return Container(
               color: Colors.red,
             );

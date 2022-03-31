@@ -1,3 +1,4 @@
+import 'package:flutter/animation.dart';
 import 'package:houser/enums/BedType.dart';
 import 'package:json_annotation/json_annotation.dart';
 
@@ -5,6 +6,7 @@ part 'Offer.g.dart';
 
 @JsonSerializable()
 class Offer{
+  @JsonKey(defaultValue: false)
   bool isActive = true;
   bool isVisible = true;
   DateTime uploadDate = DateTime.now();

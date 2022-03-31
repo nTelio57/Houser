@@ -1,5 +1,7 @@
 import 'dart:convert';
 
+import 'package:houser/models/AuthRequest.dart';
+import 'package:houser/models/AuthResult.dart';
 import 'package:houser/models/Offer.dart';
 import 'package:houser/services/api_client.dart';
 
@@ -20,16 +22,21 @@ class ApiService {
 
   Future<Offer> GetOfferById(int id) async{
     ApiResponse response = await _apiClient.Get('/api/Offer/$id');
-    return Offer.fromJson(jsonDecode(response.body));
+    return Offer.fromJson(response.body);
   }
 
   Future<List<Offer>> GetOffersByUser(String id) async{
     ApiResponse response = await _apiClient.Get('/api/Offer/user/$id');
 
-    List<dynamic> jsonData = json.decode(response.body);
+    List<dynamic> jsonData = response.body;
     final parsed = jsonData.cast<Map<String, dynamic>>();
 
     return parsed.map<Offer>((e) => Offer.fromJson(e)).toList();
+  }
+
+  Future<AuthResult> Login(AuthRequest authRequest) async{
+    ApiResponse response = await _apiClient.Post('/api/Auth/login', authRequest.toJson());
+    return AuthResult.fromJson(response.body);
   }
 
 }
