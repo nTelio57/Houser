@@ -1,6 +1,7 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:houser/models/AuthRequest.dart';
+import 'package:houser/models/CurrentLogin.dart';
 import 'package:houser/services/api_service.dart';
 
 import 'main_view.dart';
@@ -195,6 +196,7 @@ class _LoginViewState extends State<LoginView> {
 
   Widget loginButton()
   {
+    CurrentLogin currentLogin = CurrentLogin();
     return Container(
       width: double.infinity,
       padding: const EdgeInsets.only(top: 7),
@@ -208,6 +210,10 @@ class _LoginViewState extends State<LoginView> {
           var authResult = await widget._apiService.Login(authRequest);
           if(authResult.success!)
             {
+              currentLogin.jwtToken = authResult.token!;
+              currentLogin.user = authResult.user!;
+              currentLogin.saveUserDataToSharedPreferences();
+
               Navigator.push(context, MaterialPageRoute(builder: (context) => const MainView()));
             }
           else{

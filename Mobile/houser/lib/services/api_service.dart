@@ -1,8 +1,7 @@
-import 'dart:convert';
-
 import 'package:houser/models/AuthRequest.dart';
 import 'package:houser/models/AuthResult.dart';
 import 'package:houser/models/Offer.dart';
+import 'package:houser/models/User.dart';
 import 'package:houser/services/api_client.dart';
 
 class ApiService {
@@ -19,6 +18,11 @@ class ApiService {
       );
 
   ApiClient _apiClient;
+
+  Future<User> GetUserById(String id) async{
+    ApiResponse response = await _apiClient.Get('/api/User/$id');
+    return User.fromJson(response.body);
+  }
 
   Future<Offer> GetOfferById(int id) async{
     ApiResponse response = await _apiClient.Get('/api/Offer/$id');

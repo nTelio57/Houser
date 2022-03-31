@@ -99,7 +99,7 @@ class _OfferViewState extends State<OfferView> {
           size: 24,
         ),
         onPressed: () {
-          Navigator.push(context, MaterialPageRoute(builder: (context) => const ProfileView()));
+          Navigator.push(context, MaterialPageRoute(builder: (context) => ProfileView()));
         },
       ),
     );

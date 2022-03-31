@@ -15,7 +15,7 @@ class _MainViewState extends State<MainView> {
   int _selectedIndex = 1;
 
   final _navigationPages = [
-    const ProfileView(),
+    ProfileView(),
     const OfferView(),
     const MatchesView(),
   ];
