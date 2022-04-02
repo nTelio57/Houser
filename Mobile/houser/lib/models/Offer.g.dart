@@ -13,7 +13,7 @@ Offer _$OfferFromJson(Map<String, dynamic> json) => Offer(
       city: json['city'] as String,
       freeRoomCount: json['freeRoomCount'] as int,
       totalRoomCount: json['totalRoomCount'] as int,
-      isActive: true,//json['isActive'] as bool,
+      isActive: json['isActive'] as bool? ?? false,
       isVisible: json['isVisible'] as bool,
     )
       ..monthlyPrice = (json['monthlyPrice'] as num).toDouble()

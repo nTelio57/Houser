@@ -6,7 +6,18 @@ import 'package:intl/intl.dart';
 
 
 class PersonalDetailsMainInfo extends StatefulWidget {
-  const PersonalDetailsMainInfo({Key? key}) : super(key: key);
+
+  final GlobalKey<FormState> formKey;
+
+  final TextEditingController nameFieldText = TextEditingController();
+  final TextEditingController birthFieldText = TextEditingController();
+  DateTime? birthDate;
+  List<MultiButtonSelection> sexSelections = [MultiButtonSelection('Vyras', const Icon(Icons.male)), MultiButtonSelection('Moteris', const Icon(Icons.female)), MultiButtonSelection('Kita', const Icon(Icons.transgender))];
+  WGMultiButton? sexSelectionButtons;
+
+  PersonalDetailsMainInfo(this.formKey, {Key? key}) : super(key: key){
+    sexSelectionButtons = WGMultiButton(selections: sexSelections);
+  }
 
   @override
   _PersonalDetailsMainInfoState createState() => _PersonalDetailsMainInfoState();
@@ -14,8 +25,7 @@ class PersonalDetailsMainInfo extends StatefulWidget {
 
 class _PersonalDetailsMainInfoState extends State<PersonalDetailsMainInfo> {
 
-  DateTime? _birthDate;
-  final TextEditingController _birthFieldText = TextEditingController();
+
   List<MultiButtonSelection> sexSelections = [MultiButtonSelection('Vyras', const Icon(Icons.male)), MultiButtonSelection('Moteris', const Icon(Icons.female)), MultiButtonSelection('Kita', const Icon(Icons.transgender))];
 
   @override
@@ -23,25 +33,55 @@ class _PersonalDetailsMainInfoState extends State<PersonalDetailsMainInfo> {
     return body();
   }
 
+  String? nameValidator(String? value)
+  {
+    if(value == null || value.isEmpty)
+    {
+      return 'Įveskite vardą';
+    }
+    return null;
+  }
+
+  String? birthDateValidator(String? value)
+  {
+    if(value == null || value.isEmpty) {
+      return 'Įveskite gimimo datą';
+    }
+    if(widget.birthDate == null) {
+      return 'Įveskite gimimo datą';
+    }
+    if(widget.birthDate!.isAfter(DateTime.now()) || widget.birthDate!.isAtSameMomentAs(DateTime.now())) {
+      return 'Įvesta netinkama data';
+    }
+    return null;
+  }
+
   Widget body()
   {
-    return Column(
-      children: [
-        nameTextField(),
-        birthDateField(),
-        WGMultiButton(selections: sexSelections),
-        //label('Kalbos'),
-        //languagesContainer()
-      ],
+    return Form(
+      key: widget.formKey,
+      child: Column(
+        children: [
+          nameTextField(nameValidator, widget.nameFieldText),
+          birthDateField(birthDateValidator),
+          widget.sexSelectionButtons!,
+          //label('Kalbos'),
+          //languagesContainer()
+        ],
+      ),
     );
   }
 
-  Widget nameTextField()
+  Widget nameTextField(Function(String?) validator, TextEditingController controller)
   {
     return Container(
       padding: const EdgeInsets.only(top: 14, bottom: 7),
-      child: const TextField(
-        decoration: InputDecoration(
+      child: TextFormField(
+        validator: (value){
+          return validator(value);
+        },
+        controller: controller,
+        decoration: const InputDecoration(
             labelText: 'Vardas',
             helperText: '',
             prefixIcon: Icon(Icons.account_circle),
@@ -64,73 +104,17 @@ class _PersonalDetailsMainInfoState extends State<PersonalDetailsMainInfo> {
     );
   }
 
-  final List<bool> _isSexButtonSelected = [true, false, false];
-
-  Widget sexButtons()
-  {
-    return Container(
-      padding: const EdgeInsets.only(bottom: 14),
-      child: ToggleButtons(
-        isSelected: _isSexButtonSelected,
-        color: Colors.black54,
-        onPressed: (int index) {
-          setState(() {
-            for (int buttonIndex = 0; buttonIndex < _isSexButtonSelected.length; buttonIndex++) {
-              if (buttonIndex == index) {
-                _isSexButtonSelected[buttonIndex] = true;
-              } else {
-                _isSexButtonSelected[buttonIndex] = false;
-              }
-            }
-          });
-        },
-        children: [
-          SizedBox(
-            width: (MediaQuery.of(context).size.width-64)/3,
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: const [
-                Icon(Icons.male),
-                SizedBox(width: 10),
-                Text('Vyras'),
-              ],
-            )
-          ),
-          SizedBox(
-              width: (MediaQuery.of(context).size.width-64)/3,
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: const [
-                  Icon(Icons.female),
-                  SizedBox(width: 10),
-                  Text('Moteris'),
-                ],
-              )
-          ),
-          SizedBox(
-              width: (MediaQuery.of(context).size.width-64)/3,
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: const [
-                  Icon(Icons.transgender),
-                  SizedBox(width: 10),
-                  Text('Kita'),
-                ],
-              )
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget birthDateField()
+  Widget birthDateField(Function(String?) validator)
   {
     return Container(
       padding: const EdgeInsets.only(bottom: 14),
       child: GestureDetector(
-        child: TextField(
+        child: TextFormField(
           readOnly: true,
-          controller: _birthFieldText,
+          controller: widget.birthFieldText,
+          validator: (value){
+            return validator(value);
+          },
           decoration: const InputDecoration(
             helperText: '',
             label: Text('Gimimo data'),
@@ -141,14 +125,14 @@ class _PersonalDetailsMainInfoState extends State<PersonalDetailsMainInfo> {
           onTap: () {
             showDatePicker(
                 context: context,
-                initialDate: _birthDate == null ? DateTime.now() : _birthDate!,
+                initialDate: widget.birthDate == null ? DateTime.now() : widget.birthDate!,
                 firstDate: DateTime(1900),
                 lastDate: DateTime.now()
             ).then((value) {
               setState(() {
                 if(value == null) return;
-                _birthDate = value;
-                _birthFieldText.text = dateToString(value);
+                widget.birthDate = value;
+                widget.birthFieldText.text = dateToString(value);
               });
             });
           },

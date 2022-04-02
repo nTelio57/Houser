@@ -1,10 +1,15 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-
-import 'main_view.dart';
+import 'package:houser/models/AuthRequest.dart';
+import 'package:houser/models/CurrentLogin.dart';
+import 'package:houser/services/api_service.dart';
+import 'package:houser/views/offer%20view/offer_view.dart';
+import 'package:houser/views/personal%20details%20view/personal_details_create_stepper.dart';
 
 class LoginView extends StatefulWidget {
-  const LoginView({Key? key}) : super(key: key);
+  LoginView({Key? key}) : super(key: key);
+
+  final ApiService _apiService = ApiService();
 
   @override
   _LoginViewState createState() => _LoginViewState();
@@ -12,7 +17,10 @@ class LoginView extends StatefulWidget {
 
 class _LoginViewState extends State<LoginView> {
 
+  final _formKey = GlobalKey<FormState>();
   bool _passwordVisible = false;
+  final TextEditingController _emailTextController = TextEditingController();
+  final TextEditingController _passwordTextController = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
@@ -101,6 +109,22 @@ class _LoginViewState extends State<LoginView> {
     );
   }
 
+  String? emailValidator(String? value){
+    if(value == null || value.isEmpty)
+    {
+      return 'Įveskite el. paštą';
+    }
+    return null;
+  }
+
+  String? passwordValidator(String? value){
+    if(value == null || value.isEmpty)
+    {
+      return 'Įveskite slaptažodį';
+    }
+    return null;
+  }
+
   Widget loginForm()
   {
     return Padding(
@@ -114,14 +138,17 @@ class _LoginViewState extends State<LoginView> {
               color: Colors.white,
               borderRadius: BorderRadius.all(Radius.circular(4))
             ),
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                emailTextField(),
-                passwordTextField(),
-                loginButton(),
-                forgotPasswordButton(),
-              ],
+            child: Form(
+              key: _formKey,
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  emailTextField(emailValidator),
+                  passwordTextField(passwordValidator),
+                  loginButton(),
+                  forgotPasswordButton(),
+                ],
+              ),
             ),
           ),
         ],
@@ -144,12 +171,17 @@ class _LoginViewState extends State<LoginView> {
     );
   }
 
-  Widget emailTextField()
+  Widget emailTextField(Function(String?) validator)
   {
     return Container(
       padding: const EdgeInsets.only(top: 14, bottom: 7),
-      child: const TextField(
-        decoration: InputDecoration(
+      child: TextFormField(
+        controller: _emailTextController,
+        validator: (value){
+          return validator(value);
+        },
+        keyboardType: TextInputType.emailAddress,
+        decoration: const InputDecoration(
           labelText: 'El. paštas',
           helperText: '',
           prefixIcon: Icon(Icons.email),
@@ -159,12 +191,16 @@ class _LoginViewState extends State<LoginView> {
     );
   }
 
-  Widget passwordTextField()
+  Widget passwordTextField(Function(String?) validator)
   {
     return Container(
       padding: const EdgeInsets.only(top: 7, bottom: 7),
-      child: TextField(
+      child: TextFormField(
         obscureText: !_passwordVisible,
+        controller: _passwordTextController,
+        validator: (value){
+          return validator(value);
+        },
         decoration: InputDecoration(
           labelText: 'Slaptažodis',
           helperText: '',
@@ -187,16 +223,36 @@ class _LoginViewState extends State<LoginView> {
 
   Widget loginButton()
   {
+    CurrentLogin currentLogin = CurrentLogin();
     return Container(
       width: double.infinity,
       padding: const EdgeInsets.only(top: 7),
       child: TextButton(
-        onPressed: ()
+        onPressed: () async
         {
           if (kDebugMode) {
             print('Login clicked');
           }
-          Navigator.push(context, MaterialPageRoute(builder: (context) => const MainView()));
+          if(_formKey.currentState!.validate())
+            {
+              AuthRequest authRequest = AuthRequest(_emailTextController.text, _passwordTextController.text);
+              var authResult = await widget._apiService.Login(authRequest);
+              if(authResult.success!)
+              {
+                currentLogin.jwtToken = authResult.token!;
+                currentLogin.user = authResult.user!;
+                currentLogin.saveUserDataToSharedPreferences();
+
+                if(CurrentLogin().user!.name == null) {
+                  Navigator.push(context, MaterialPageRoute(builder: (context) => PersonalDetailsCreateStepper()));
+                } else {
+                  Navigator.push(context, MaterialPageRoute(builder: (context) => const OfferView()));
+                }
+              }
+              else{
+
+              }
+            }
         },
         child: const Text(
           'Prisijungti',

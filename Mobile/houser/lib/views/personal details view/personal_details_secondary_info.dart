@@ -4,17 +4,27 @@ import 'package:houser/widgets/WG_slider.dart';
 import 'package:houser/widgets/WG_multi_button.dart';
 
 class PersonalDetailsSecondaryInfo extends StatefulWidget {
-  const PersonalDetailsSecondaryInfo({Key? key}) : super(key: key);
+
+  final List<MultiButtonSelection> _studySelections = [ MultiButtonSelection('Nestudijuoju', const Icon(Icons.home)), MultiButtonSelection('Studijuoju', const Icon(Icons.school))];
+  final List<MultiButtonSelection> _workSelections = [MultiButtonSelection('Nedirbu', const Icon(Icons.work_off)), MultiButtonSelection('Dirbu', const Icon(Icons.work))];
+  final List<MultiButtonSelection> _smokeSelections = [MultiButtonSelection('Nerūkau', const Icon(Icons.smoke_free)), MultiButtonSelection('Rūkau', const Icon(Icons.smoking_rooms))];
+
+  WGSlider animalCountSlider = WGSlider(min: 0, max: 5, canBeMoreThanMax: true);
+  WGMultiButton? studyButtons;
+  WGMultiButton? workButtons;
+  WGMultiButton? smokeButtons;
+
+  PersonalDetailsSecondaryInfo({Key? key}) : super(key: key){
+    studyButtons = WGMultiButton(selections: _studySelections);
+    workButtons = WGMultiButton(selections: _workSelections);
+    smokeButtons = WGMultiButton(selections: _smokeSelections);
+  }
 
   @override
   _PersonalDetailsSecondaryInfoState createState() => _PersonalDetailsSecondaryInfoState();
 }
 
 class _PersonalDetailsSecondaryInfoState extends State<PersonalDetailsSecondaryInfo> {
-
-  List<MultiButtonSelection> studySelections = [MultiButtonSelection('Studijuoju', const Icon(Icons.school)),  MultiButtonSelection('Nestudijuoju', const Icon(Icons.home))];
-  List<MultiButtonSelection> workSelections = [MultiButtonSelection('Nedirbu', const Icon(Icons.work_off)), MultiButtonSelection('Dirbu', const Icon(Icons.work))];
-  List<MultiButtonSelection> smokeSelections = [MultiButtonSelection('Nerūkau', const Icon(Icons.smoke_free)), MultiButtonSelection('Rūkau', const Icon(Icons.smoking_rooms))];
 
   @override
   Widget build(BuildContext context) {
@@ -26,10 +36,10 @@ class _PersonalDetailsSecondaryInfoState extends State<PersonalDetailsSecondaryI
     return Column(
       children: [
         animalCountRow(),
-        WGSlider(min: 0, max: 5, canBeMoreThanMax: true),
-        WGMultiButton(selections: studySelections),
-        WGMultiButton(selections: workSelections),
-        WGMultiButton(selections: smokeSelections),
+        widget.animalCountSlider,
+        widget.studyButtons!,
+        widget.workButtons!,
+        widget.smokeButtons!,
         const SizedBox(height: 50,),
       ],
     );

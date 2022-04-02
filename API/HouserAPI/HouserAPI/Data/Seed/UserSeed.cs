@@ -22,8 +22,8 @@ namespace HouserAPI.Data.Seed
                 Email = "admin@gmail.com",
                 Name = "AdminName",
                 Surname = "AdminSurname",
+                BirthDate = new DateTime(1999, 11, 08),
                 UserName = "Admin",
-                Age = 21,
                 City = "Kaunas",
                 Salt = "zoOCL2CFBCqEtTK5Ua197SwyVv2rckZoJEe+Ko8bUCU="
             };
@@ -34,8 +34,8 @@ namespace HouserAPI.Data.Seed
                 Email = "basic@gmail.com",
                 Name = "BasicName",
                 Surname = "BasicSurname",
+                BirthDate = new DateTime(1987, 02, 25),
                 UserName = "Basic",
-                Age = 20,
                 City = "Vilnius",
                 Salt = "kFcWCtYosDUdeiK0Gf+WcY0LcxdvcH3UtQQrvwf9fh8="
             };
@@ -46,8 +46,8 @@ namespace HouserAPI.Data.Seed
                 Email = "basic2@gmail.com",
                 Name = "Basic2Name",
                 Surname = "Basic2Surname",
+                BirthDate = new DateTime(2000, 07, 16),
                 UserName = "basic2",
-                Age = 22,
                 City = "Klaipeda",
                 Salt = "VoW7Vl2PL4g9erbq1ncE6cpQbVmHMR3dDhLGx9EYhbM="
             };

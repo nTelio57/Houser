@@ -1,12 +1,53 @@
 import 'dart:io';
 
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:houser/models/CurrentLogin.dart';
 import 'package:houser/resources/app_colors.dart';
+import 'package:houser/views/offer%20view/offer_view.dart';
+import 'package:houser/views/personal%20details%20view/personal_details_create_stepper.dart';
 import 'package:houser/views/welcome_view.dart';
 
-void main() {
+Widget _defaultHome = const WelcomeView();
+
+void main() async {
   HttpOverrides.global = MyHttpOverrides();
+  WidgetsFlutterBinding.ensureInitialized();
+  await initialize();
+
+  await ensureLoggedIn();
+
   runApp(const MyApp());
+}
+
+Future ensureLoggedIn() async
+{
+  bool _isLoggedInResult = await isLoggedIn();
+  if (kDebugMode) {
+    print('Is logged in result: $_isLoggedInResult');
+  }
+
+  if(_isLoggedInResult){
+    if(CurrentLogin().user!.name == null) {
+      _defaultHome = PersonalDetailsCreateStepper();
+    } else {
+      _defaultHome = const OfferView();
+    }
+  }
+}
+
+Future initialize() async
+{
+  await CurrentLogin().loadSharedPreferences();
+}
+
+Future<bool> isLoggedIn() async{
+  var prefs = CurrentLogin().prefs!;
+  var token = prefs.getString("token");
+
+  if(token == null || token.isEmpty) return false;
+
+  return await CurrentLogin().loadUserDataFromSharedPreferences();
 }
 
 class MyApp extends StatelessWidget {
@@ -29,7 +70,7 @@ class MyApp extends StatelessWidget {
 
 
       ),
-      home: const WelcomeView(),
+      home: _defaultHome,
     );
   }
 }

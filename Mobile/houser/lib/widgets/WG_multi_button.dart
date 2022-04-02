@@ -4,16 +4,16 @@ import 'package:houser/models/widget_data/multi_button_selection.dart';
 class WGMultiButton extends StatefulWidget {
 
   final List<MultiButtonSelection> selections;
-  final List<bool> _isButtonSelected = [];
+  final List<bool> isButtonSelected = [];
   bool multiSelection;
 
   WGMultiButton({Key? key, required this.selections, this.multiSelection = false}) : super(key: key)
   {
     for(int i = 0; i < selections.length; i++)
       {
-        _isButtonSelected.add(false);
+        isButtonSelected.add(false);
       }
-    _isButtonSelected[0] = true;
+    isButtonSelected[0] = true;
   }
 
   @override
@@ -31,21 +31,21 @@ class _WGMultiButtonState extends State<WGMultiButton> {
     return Container(
       padding: const EdgeInsets.only(bottom: 14),
       child: ToggleButtons(
-        isSelected: widget._isButtonSelected,
+        isSelected: widget.isButtonSelected,
         color: Colors.black54,
         onPressed: (int index) {
           setState(() {
             if(widget.multiSelection)
               {
-                widget._isButtonSelected[index] = !widget._isButtonSelected[index];
+                widget.isButtonSelected[index] = !widget.isButtonSelected[index];
               }
             else
               {
-                for (int buttonIndex = 0; buttonIndex < widget._isButtonSelected.length; buttonIndex++) {
+                for (int buttonIndex = 0; buttonIndex < widget.isButtonSelected.length; buttonIndex++) {
                   if (buttonIndex == index) {
-                    widget._isButtonSelected[buttonIndex] = true;
+                    widget.isButtonSelected[buttonIndex] = true;
                   } else {
-                    widget._isButtonSelected[buttonIndex] = false;
+                    widget.isButtonSelected[buttonIndex] = false;
                   }
                 }
               }

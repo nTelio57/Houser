@@ -3,12 +3,9 @@ using HouserAPI.Enums;
 
 namespace HouserAPI.DTOs.User
 {
-    public class UserReadDto
+    public class UserUpdateDto
     {
-        public string Id { get; set; }
-        public string Email { get; set; }
         public string Name { get; set; }
-        public string Surname { get; set; }
         public string City { get; set; }
         public DateTime BirthDate { get; set; }
         public int Sex { get; set; }

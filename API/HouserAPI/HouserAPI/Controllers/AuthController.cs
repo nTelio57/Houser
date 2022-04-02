@@ -40,6 +40,7 @@ namespace HouserAPI.Controllers
             {
                 return BadRequest(new AuthResult
                 {
+                    Success = false,
                     Errors = new[] { "User with this email address already exists." }
                 });
             }
@@ -47,6 +48,7 @@ namespace HouserAPI.Controllers
             if (!result.Succeeded)
                 return BadRequest(new AuthResult
                 {
+                    Success = false,
                     Errors = result.Errors.Select(x => x.Description)
                 });
 
@@ -62,6 +64,7 @@ namespace HouserAPI.Controllers
             if (!createdUser.Succeeded)
                 return BadRequest(new AuthResult
                 {
+                    Success = false,
                     Errors = new[] { "Could not create a user." }
                 });
 
@@ -87,6 +90,7 @@ namespace HouserAPI.Controllers
             {
                 return BadRequest(new AuthResult
                 {
+                    Success = false,
                     Errors = new[] { "Wrong credentials." }
                 });
             }
@@ -94,8 +98,9 @@ namespace HouserAPI.Controllers
             var isPasswordValid = await _userManager.CheckPasswordAsync(user, authRequest.Password + user.Salt);
             if (!isPasswordValid)
             {
-                return BadRequest(new AuthResult
+                return BadRequest(new AuthResult 
                 {
+                    Success = false,
                     Errors = new[] { "Wrong credentials." }
                 });
             }

@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:houser/models/CurrentLogin.dart';
 import 'package:houser/views/profile%20view/my_offer_list_view.dart';
 import 'package:houser/views/welcome_view.dart';
 import 'package:houser/widgets/WG_album_slider.dart';
 
 class ProfileView extends StatefulWidget {
-  const ProfileView({Key? key}) : super(key: key);
+  ProfileView({Key? key}) : super(key: key);
+  final CurrentLogin _currentLogin = CurrentLogin();
 
   @override
   _ProfileViewState createState() => _ProfileViewState();
@@ -57,13 +59,14 @@ class _ProfileViewState extends State<ProfileView> {
   Widget accountDetails()
   {
     return Container(
+      padding: const EdgeInsets.only(left: 10, right: 10),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          SizedBox(height: 24),
+          const SizedBox(height: 24),
           name(),
-          SizedBox(height: 12),
-          WGAlbumSlider()
+          const SizedBox(height: 12),
+          const WGAlbumSlider()
         ],
       ),
     );
@@ -71,12 +74,23 @@ class _ProfileViewState extends State<ProfileView> {
 
   Widget name()
   {
-    return Text(
-      'Vardenis Pavardenis',
-      style: TextStyle(
-        fontSize: 32,
-        fontWeight: FontWeight.w600,
-        color: Theme.of(context).primaryColor,
+    String name = widget._currentLogin.user!.name!;
+    int age = widget._currentLogin.user!.age;
+
+    return SizedBox(
+      height: 37,
+      child: FittedBox(
+        fit: BoxFit.fitWidth,
+        child: Text(
+          '$name, $age',
+          maxLines: 1,
+          overflow: TextOverflow. ellipsis,
+          style: TextStyle(
+            fontSize: 32,
+            fontWeight: FontWeight.w600,
+            color: Theme.of(context).primaryColor,
+          ),
+        ),
       ),
     );
   }
@@ -85,17 +99,17 @@ class _ProfileViewState extends State<ProfileView> {
   {
     return Column(
       children: [
-        menuButton('Mano pasiūlymai', Icons.format_list_bulleted, () => OnOfferListClicked()),
+        menuButton('Mano pasiūlymai', Icons.format_list_bulleted, () => onOfferListClicked()),
         menuButton('Redaguoti profilį', Icons.edit,() => null),
         menuButton('Nustatymai', Icons.settings,() => null),
-        menuButton('Atsijungti', Icons.logout, () => OnLogoutClicked(), isLogout: true),
+        menuButton('Atsijungti', Icons.logout, () => onLogoutClicked(), isLogout: true),
       ],
     );
   }
 
   Widget menuButton(String title, IconData icon, Function() onPressed, {bool isLogout = false})
   {
-    return Container(
+    return SizedBox(
       width: double.infinity,
       child: TextButton(
         onPressed: onPressed,
@@ -126,13 +140,14 @@ class _ProfileViewState extends State<ProfileView> {
     );
   }
 
-  void OnOfferListClicked()
+  void onOfferListClicked()
   {
     Navigator.push(context, MaterialPageRoute(builder: (context) => MyOfferListView()));
   }
 
-  void OnLogoutClicked()
+  Future onLogoutClicked() async
   {
+    await widget._currentLogin.clear();
     Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (context) => const WelcomeView()), (Route<dynamic> route) => false);
   }
 }
