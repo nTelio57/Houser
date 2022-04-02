@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using HouserAPI.Models;
+﻿using HouserAPI.Models;
 using Microsoft.AspNetCore.Identity;
 
 namespace HouserAPI.Data.Seed
@@ -25,6 +21,7 @@ namespace HouserAPI.Data.Seed
 
             RoleSeed.Seed(_roleManager);
             UserSeed.Seed(_userManager);
+            OfferSeed.Seed(_context);
 
             _context.SaveChanges();
         }

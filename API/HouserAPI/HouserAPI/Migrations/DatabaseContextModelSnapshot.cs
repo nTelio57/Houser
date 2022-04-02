@@ -36,6 +36,88 @@ namespace HouserAPI.Migrations
                     b.ToTable("Images");
                 });
 
+            modelBuilder.Entity("HouserAPI.Models.Offer", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    b.Property<bool>("AccommodationAc")
+                        .HasColumnType("tinyint(1)");
+
+                    b.Property<bool>("AccommodationBalcony")
+                        .HasColumnType("tinyint(1)");
+
+                    b.Property<bool>("AccommodationDisability")
+                        .HasColumnType("tinyint(1)");
+
+                    b.Property<bool>("AccommodationParking")
+                        .HasColumnType("tinyint(1)");
+
+                    b.Property<bool>("AccommodationTv")
+                        .HasColumnType("tinyint(1)");
+
+                    b.Property<bool>("AccommodationWifi")
+                        .HasColumnType("tinyint(1)");
+
+                    b.Property<string>("Address")
+                        .HasColumnType("text");
+
+                    b.Property<float>("Area")
+                        .HasColumnType("float");
+
+                    b.Property<DateTime>("AvailableFrom")
+                        .HasColumnType("datetime");
+
+                    b.Property<DateTime>("AvailableTo")
+                        .HasColumnType("datetime");
+
+                    b.Property<int>("BedCount")
+                        .HasColumnType("int");
+
+                    b.Property<int>("BedType")
+                        .HasColumnType("int");
+
+                    b.Property<string>("City")
+                        .HasColumnType("text");
+
+                    b.Property<int>("FreeRoomCount")
+                        .HasColumnType("int");
+
+                    b.Property<bool>("IsVisible")
+                        .HasColumnType("tinyint(1)");
+
+                    b.Property<float>("MonthlyPrice")
+                        .HasColumnType("float");
+
+                    b.Property<bool>("RuleAnimals")
+                        .HasColumnType("tinyint(1)");
+
+                    b.Property<bool>("RuleSmoking")
+                        .HasColumnType("tinyint(1)");
+
+                    b.Property<string>("Title")
+                        .HasColumnType("text");
+
+                    b.Property<int>("TotalRoomCount")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime>("UploadDate")
+                        .HasColumnType("datetime");
+
+                    b.Property<string>("UserId")
+                        .HasColumnType("varchar(767)");
+
+                    b.Property<bool>("UtilityBillsRequired")
+                        .HasColumnType("tinyint(1)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("Offers");
+                });
+
             modelBuilder.Entity("HouserAPI.Models.User", b =>
                 {
                     b.Property<string>("Id")
@@ -44,8 +126,11 @@ namespace HouserAPI.Migrations
                     b.Property<int>("AccessFailedCount")
                         .HasColumnType("int");
 
-                    b.Property<int>("Age")
+                    b.Property<int>("AnimalCount")
                         .HasColumnType("int");
+
+                    b.Property<DateTime>("BirthDate")
+                        .HasColumnType("datetime");
 
                     b.Property<string>("City")
                         .HasColumnType("text");
@@ -59,6 +144,18 @@ namespace HouserAPI.Migrations
                         .HasColumnType("varchar(256)");
 
                     b.Property<bool>("EmailConfirmed")
+                        .HasColumnType("tinyint(1)");
+
+                    b.Property<int>("GuestCount")
+                        .HasColumnType("int");
+
+                    b.Property<bool>("IsSmoking")
+                        .HasColumnType("tinyint(1)");
+
+                    b.Property<bool>("IsStudying")
+                        .HasColumnType("tinyint(1)");
+
+                    b.Property<bool>("IsWorking")
                         .HasColumnType("tinyint(1)");
 
                     b.Property<bool>("LockoutEnabled")
@@ -78,6 +175,9 @@ namespace HouserAPI.Migrations
                         .HasMaxLength(256)
                         .HasColumnType("varchar(256)");
 
+                    b.Property<int>("PartyCount")
+                        .HasColumnType("int");
+
                     b.Property<string>("PasswordHash")
                         .HasColumnType("text");
 
@@ -92,6 +192,12 @@ namespace HouserAPI.Migrations
 
                     b.Property<string>("SecurityStamp")
                         .HasColumnType("text");
+
+                    b.Property<int>("Sex")
+                        .HasColumnType("int");
+
+                    b.Property<int>("SleepType")
+                        .HasColumnType("int");
 
                     b.Property<string>("Surname")
                         .HasColumnType("text");
@@ -247,6 +353,15 @@ namespace HouserAPI.Migrations
                 {
                     b.HasOne("HouserAPI.Models.User", "User")
                         .WithMany("Images")
+                        .HasForeignKey("UserId");
+
+                    b.Navigation("User");
+                });
+
+            modelBuilder.Entity("HouserAPI.Models.Offer", b =>
+                {
+                    b.HasOne("HouserAPI.Models.User", "User")
+                        .WithMany()
                         .HasForeignKey("UserId");
 
                     b.Navigation("User");
