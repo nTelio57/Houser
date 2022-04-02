@@ -13,6 +13,7 @@ namespace HouserAPI.Models
         public string Address { get; set; }
         public float MonthlyPrice { get; set; }
         public bool UtilityBillsRequired { get; set; }
+        public float Area { get; set; } 
         public DateTime AvailableFrom { get; set; }
         public DateTime AvailableTo { get; set; }
         public int FreeRoomCount { get; set; }
@@ -26,6 +27,9 @@ namespace HouserAPI.Models
         public bool AccommodationTv { get; set; }
         public bool AccommodationWifi { get; set; }
         public bool AccommodationAc { get; set; }
+        public bool AccommodationParking { get; set; }
+        public bool AccommodationBalcony { get; set; }
+        public bool AccommodationDisability { get; set; }
 
         //Relations
         public string UserId { get; set; }

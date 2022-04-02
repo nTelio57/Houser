@@ -37,7 +37,8 @@ class _MyOfferListViewState extends State<MyOfferListView> {
   {
     return IconButton(
       onPressed: (){
-        Navigator.push(context, MaterialPageRoute(builder: (context) => const NewOfferView()));
+        Navigator.push(context, MaterialPageRoute(
+            builder: (context) => NewOfferView())).then((value) => setState((){}));
       },
       icon: const Icon(Icons.add)
     );
