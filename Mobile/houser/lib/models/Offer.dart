@@ -6,7 +6,7 @@ part 'Offer.g.dart';
 
 @JsonSerializable()
 class Offer{
-  @JsonKey(defaultValue: false)
+  @JsonKey(defaultValue: true)
   bool isActive = true;
   bool isVisible = true;
   DateTime uploadDate = DateTime.now();
