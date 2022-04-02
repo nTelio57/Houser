@@ -50,11 +50,11 @@ namespace HouserAPI
             services.ConfigureIdentityOptions();
 
             services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
-            services.AddJwtAuthentication(Configuration);
-
-            services.AddAuthorizationDependencies(Configuration);
+            
             services.AddRepositoriesDependencies();
             services.AddServiceDependencies();
+            services.AddAuthorizationDependencies(Configuration);
+            services.AddJwtAuthentication(Configuration);
         }
         
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env, DatabaseContext context, UserManager<User> userManager, RoleManager<IdentityRole> roleManager)
