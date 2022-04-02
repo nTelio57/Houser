@@ -73,7 +73,7 @@ class _ProfileViewState extends State<ProfileView> {
 
           if(snapshot.hasData)
           {
-            return WGAlbumSlider(images);
+            return WGAlbumSlider(images, onImageUpload);
           }
           else if(snapshot.hasError)
           {
@@ -83,15 +83,22 @@ class _ProfileViewState extends State<ProfileView> {
           }
           else
           {
-            return WGAlbumSlider(images);
+            return WGAlbumSlider(images, onImageUpload);
           }
         }
     );
   }
 
+  void onImageUpload()
+  {
+    setState(() {
+    });
+  }
+
   Future loadImages() async
   {
     images = await widget._apiService.GetAllImagesByUserId(widget._currentLogin.user!.id);
+    images = images.reversed.toList();
     return true;
   }
 

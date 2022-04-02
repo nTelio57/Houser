@@ -70,4 +70,10 @@ class ApiService {
     return parsed.map<Image>((e) => Image.fromJson(e)).toList();
   }
 
+  Future<ApiResponse> PostImage(String path) async
+  {
+    ApiResponse response = await _apiClient.PostImage('/api/Image', path);
+    return response;
+  }
+
 }

@@ -1,13 +1,21 @@
+import 'dart:io';
+
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
+import 'package:houser/extensions/int_extensions.dart';
 import 'package:houser/models/CurrentLogin.dart';
 import 'package:houser/models/Image.dart' as apiImage;
+import 'package:houser/services/api_client.dart';
+import 'package:houser/services/api_service.dart';
 
 class WGAlbumSlider extends StatefulWidget {
 
   List<apiImage.Image> images;
+  final ApiService _apiService = ApiService();
+  Function() onUpload;
 
-  WGAlbumSlider(this.images, {Key? key}) : super(key: key);
+  WGAlbumSlider(this.images, this.onUpload, {Key? key}) : super(key: key);
 
   @override
   _WGAlbumSliderState createState() => _WGAlbumSliderState();
@@ -19,8 +27,8 @@ class _WGAlbumSliderState extends State<WGAlbumSlider> {
 
   @override
   Widget build(BuildContext context) {
-    errorCard = templateCard('Nepavyko užkrauti', Icons.error_outline);
-    newPhotoCard = templateCard('Pridėti nuotrauką', Icons.add);
+    errorCard = templateCard('Nepavyko užkrauti', Icons.error_outline, (){});
+    newPhotoCard = templateCard('Pridėti nuotrauką', Icons.add, ()async{await uploadImage();});
 
     return body();
   }
@@ -43,12 +51,12 @@ class _WGAlbumSliderState extends State<WGAlbumSlider> {
     return ListView.builder(
       scrollDirection: Axis.horizontal,
       itemCount: images.length+1,
-        itemBuilder: (context, index)
-        {
-          if(index == 0) return newPhotoCard!;
+      itemBuilder: (context, index)
+      {
+        if(index == 0) return newPhotoCard!;
 
-          return photoCard(images[index-1].id);
-        }
+        return photoCard(images[index-1].id);
+      }
     );
   }
 
@@ -84,48 +92,74 @@ class _WGAlbumSliderState extends State<WGAlbumSlider> {
       httpHeaders: {
         'Authorization': 'bearer ' + CurrentLogin().jwtToken,
       },
+      fit: BoxFit.fitHeight,
+      alignment: FractionalOffset.center,
     );
   }
 
-  Widget templateCard(String text, IconData icon)
+  Future uploadImage() async
+  {
+    FilePickerResult? result = await FilePicker.platform.pickFiles(
+      type: FileType.image
+    );
+
+    if (result != null) {
+      File file = File(result.files.single.path!);
+      print('Selected '+ file.path);
+      ApiResponse postResult = await widget._apiService.PostImage(file.path);
+      if(postResult.statusCode.isSuccessStatusCode)
+        {
+          setState(() {
+            widget.onUpload();
+          });
+        }
+    } else {
+      // User canceled the picker
+    }
+  }
+
+  Widget templateCard(String text, IconData icon, Function() onTap)
   {
     var deviceHeight = MediaQuery.of(context).size.height;
     double imageHeight = deviceHeight * 0.25;
 
     return SizedBox(
       height: imageHeight,
-      child: Card(
-        elevation: 8,
-        shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(8)
-        ),
-        child: AspectRatio(
-          aspectRatio: 2/3,
-          child: Container(
-            decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(8),
-                border: Border.all(
-                    color: Theme.of(context).primaryColor,
-                    width: 4
-                )
-            ),
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Icon(
-                  icon,
-                  color: Theme.of(context).primaryColor,
-                  size: 40,
-                ),
-                Text(
-                  text,
-                  textAlign: TextAlign.center,
-                  style: TextStyle(
+      child: GestureDetector(
+        onTap: onTap,
+        child: Card(
+          elevation: 8,
+          shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(8)
+          ),
+          child: AspectRatio(
+            aspectRatio: 2/3,
+            child: Container(
+              decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(8),
+                  border: Border.all(
                       color: Theme.of(context).primaryColor,
-                      fontWeight: FontWeight.w600
+                      width: 4
+                  )
+              ),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Icon(
+                    icon,
+                    color: Theme.of(context).primaryColor,
+                    size: 40,
                   ),
-                )
-              ],
+                  Text(
+                    text,
+                    textAlign: TextAlign.center,
+                    style: TextStyle(
+                        color: Theme.of(context).primaryColor,
+                        fontWeight: FontWeight.w600
+                    ),
+                  )
+                ],
+              ),
             ),
           ),
         ),
