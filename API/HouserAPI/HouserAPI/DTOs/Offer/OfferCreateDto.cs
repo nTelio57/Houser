@@ -17,6 +17,7 @@ namespace HouserAPI.DTOs.Offer
         [Required]
         public float MonthlyPrice { get; set; }
         public bool UtilityBillsRequired { get; set; }
+        public float Area { get; set; }
         [Required]
         public DateTime AvailableFrom { get; set; }
         [Required]
@@ -32,5 +33,8 @@ namespace HouserAPI.DTOs.Offer
         public bool AccommodationTv { get; set; }
         public bool AccommodationWifi { get; set; }
         public bool AccommodationAc { get; set; }
+        public bool AccommodationParking { get; set; }
+        public bool AccommodationBalcony { get; set; }
+        public bool AccommodationDisability { get; set; }
     }
 }

@@ -54,4 +54,10 @@ class ApiService {
     return response.statusCode.isSuccessStatusCode;
   }
 
+  Future<ApiResponse> PostOffer(Offer offer) async
+  {
+    ApiResponse response = await _apiClient.Post('/api/Offer', offer.toJson());
+    return response;
+  }
+
 }
