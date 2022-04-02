@@ -1,6 +1,7 @@
 import 'package:houser/extensions/int_extensions.dart';
 import 'package:houser/models/AuthRequest.dart';
 import 'package:houser/models/AuthResult.dart';
+import 'package:houser/models/Image.dart';
 import 'package:houser/models/Offer.dart';
 import 'package:houser/models/User.dart';
 import 'package:houser/services/api_client.dart';
@@ -57,6 +58,21 @@ class ApiService {
   Future<ApiResponse> PostOffer(Offer offer) async
   {
     ApiResponse response = await _apiClient.Post('/api/Offer', offer.toJson());
+    return response;
+  }
+
+  Future<List<Image>> GetAllImagesByUserId(String id) async
+  {
+    ApiResponse response = await _apiClient.Get('/api/Image/user/$id');
+    List<dynamic> jsonData = response.body;
+    final parsed = jsonData.cast<Map<String, dynamic>>();
+
+    return parsed.map<Image>((e) => Image.fromJson(e)).toList();
+  }
+
+  Future<ApiResponse> PostImage(String path) async
+  {
+    ApiResponse response = await _apiClient.PostImage('/api/Image', path);
     return response;
   }
 

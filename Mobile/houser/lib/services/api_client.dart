@@ -79,5 +79,26 @@ class ApiClient{
     }
   }
 
+  Future<ApiResponse> PostImage(String path, String imagePath) async
+  {
+    var request = http.MultipartRequest('POST', Uri.https(apiUrl, path));
+    request.headers['Authorization'] = 'bearer ' + CurrentLogin().jwtToken;
+    request.files.add(await http.MultipartFile.fromPath(
+        'image',
+        imagePath
+    ));
+    var response = await request.send();
+
+    if(response.statusCode.isSuccessStatusCode)
+    {
+      return ApiResponse(true, response.statusCode, response.reasonPhrase);
+    }
+    else
+    {
+      print('Failed to POST image. Status code: ${response.statusCode}. Reason: ${response.reasonPhrase}.');
+      return ApiResponse(false, response.statusCode, response.reasonPhrase);
+    }
+  }
+
 }
 
