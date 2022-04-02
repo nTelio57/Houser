@@ -1,3 +1,4 @@
+import 'package:houser/extensions/int_extensions.dart';
 import 'package:houser/models/AuthRequest.dart';
 import 'package:houser/models/AuthResult.dart';
 import 'package:houser/models/Offer.dart';
@@ -14,7 +15,6 @@ class ApiService {
   ApiService._internal() :
       _apiClient = ApiClient(
         '10.0.2.2:5001',
-        jwtToken: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy93cy8yMDA1LzA1L2lkZW50aXR5L2NsYWltcy9lbWFpbGFkZHJlc3MiOiJhZG1pbkBnbWFpbC5jb20iLCJqdGkiOiIyNjEyY2IwZC02NDYxLTRjOGYtODk0OC04MDZhNWNkMTBiYjUiLCJ1c2VySWQiOiI1NzA0NTdiYy01MWE2LTQ3ZDctOTBhMS1jYzNjZDE1OTg1NjMiLCJodHRwOi8vc2NoZW1hcy5taWNyb3NvZnQuY29tL3dzLzIwMDgvMDYvaWRlbnRpdHkvY2xhaW1zL3JvbGUiOlsiQWRtaW4iLCJCYXNpYyJdLCJleHAiOjE2NTEwOTY0NDYsImlzcyI6IkhvdXNlckFQSSIsImF1ZCI6IlRydXN0ZWRDbGllbnQifQ.fR3Q5O_wbFHCqYU8sVwlvEX5lFg_7kSS83v2k4m6Q8o"
       );
 
   ApiClient _apiClient;
@@ -41,6 +41,17 @@ class ApiService {
   Future<AuthResult> Login(AuthRequest authRequest) async{
     ApiResponse response = await _apiClient.Post('/api/Auth/login', authRequest.toJson());
     return AuthResult.fromJson(response.body);
+  }
+
+  Future<AuthResult> Register(AuthRequest authRequest) async{
+    ApiResponse response = await _apiClient.Post('/api/Auth/register', authRequest.toJson());
+    return AuthResult.fromJson(response.body);
+  }
+
+  Future<bool> UpdateUserDetails(String id, User newDetails) async
+  {
+    ApiResponse response = await _apiClient.Put('/api/User/$id', newDetails.toJson());
+    return response.statusCode.isSuccessStatusCode;
   }
 
 }

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:houser/models/CurrentLogin.dart';
 import 'package:houser/models/Offer.dart';
 import 'package:houser/services/api_service.dart';
 import 'package:houser/views/profile%20view/my_offer_card.dart';
@@ -8,6 +9,7 @@ class MyOfferListView extends StatefulWidget {
   MyOfferListView({Key? key}) : super(key: key);
 
   final ApiService _apiService = ApiService();
+  final CurrentLogin _currentLogin = CurrentLogin();
 
   @override
   _MyOfferListViewState createState() => _MyOfferListViewState();
@@ -61,7 +63,6 @@ class _MyOfferListViewState extends State<MyOfferListView> {
           }
         else if(snapshot.hasError)
           {
-            print("Error loading offers. ${snapshot.error.toString()}");
             return Container(
               color: Colors.red,
             );
@@ -84,28 +85,26 @@ class _MyOfferListViewState extends State<MyOfferListView> {
 
   Future loadOffers() async
   {
-    offers = await widget._apiService.GetOffersByUser("570457bc-51a6-47d7-90a1-cc3cd1598563");
+    offers = await widget._apiService.GetOffersByUser(widget._currentLogin.user!.id);
     return true;
   }
 
   Widget offerList()
   {
-    return Container(
-      child: RefreshIndicator(
-        onRefresh: () async {
-          await loadOffers();
-          setState(() {
+    return RefreshIndicator(
+      onRefresh: () async {
+        await loadOffers();
+        setState(() {
 
-          });
-        },
-        child: ListView.builder(
-          itemCount: offers.length,
-          itemBuilder: (context, index)
-              {
-                return MyOfferCard(offer: offers[index]);
-              }
-        ),
-      )
+        });
+      },
+      child: ListView.builder(
+        itemCount: offers.length,
+        itemBuilder: (context, index)
+            {
+              return MyOfferCard(offer: offers[index]);
+            }
+      ),
     );
   }
 

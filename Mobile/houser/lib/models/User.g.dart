@@ -11,8 +11,18 @@ User _$UserFromJson(Map<String, dynamic> json) => User(
       json['email'] as String,
       name: json['name'] as String?,
       surname: json['surname'] as String?,
-      age: json['age'] as int?,
       city: json['city'] as String?,
+      birthDate: json['birthDate'] == null
+          ? null
+          : DateTime.parse(json['birthDate'] as String),
+      sex: json['sex'] as int?,
+      animalCount: json['animalCount'] as int?,
+      isStudying: json['isStudying'] as bool?,
+      isWorking: json['isWorking'] as bool?,
+      isSmoking: json['isSmoking'] as bool?,
+      sleepType: $enumDecodeNullable(_$SleepTypeEnumMap, json['sleepType']),
+      guestCount: json['guestCount'] as int?,
+      partyCount: json['partyCount'] as int?,
     );
 
 Map<String, dynamic> _$UserToJson(User instance) => <String, dynamic>{
@@ -20,6 +30,20 @@ Map<String, dynamic> _$UserToJson(User instance) => <String, dynamic>{
       'email': instance.email,
       'name': instance.name,
       'surname': instance.surname,
-      'age': instance.age,
       'city': instance.city,
+      'birthDate': instance.birthDate?.toIso8601String(),
+      'sex': instance.sex,
+      'animalCount': instance.animalCount,
+      'isStudying': instance.isStudying,
+      'isWorking': instance.isWorking,
+      'isSmoking': instance.isSmoking,
+      'sleepType': _$SleepTypeEnumMap[instance.sleepType],
+      'guestCount': instance.guestCount,
+      'partyCount': instance.partyCount,
     };
+
+const _$SleepTypeEnumMap = {
+  SleepType.morning: 0,
+  SleepType.none: 1,
+  SleepType.evening: 2,
+};

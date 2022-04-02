@@ -105,6 +105,6 @@ class _WelcomeViewState extends State<WelcomeView> {
     if (kDebugMode) {
       print('Register clicked');
     }
-    Navigator.push(context, MaterialPageRoute(builder: (context) => const RegisterView()));
+    Navigator.push(context, MaterialPageRoute(builder: (context) => RegisterView()));
   }
 }

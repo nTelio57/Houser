@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:houser/models/CurrentLogin.dart';
 import 'package:houser/resources/app_colors.dart';
 import 'package:houser/views/offer%20view/offer_view.dart';
+import 'package:houser/views/personal%20details%20view/personal_details_create_stepper.dart';
 import 'package:houser/views/welcome_view.dart';
 
 Widget _defaultHome = const WelcomeView();
@@ -25,8 +26,13 @@ Future ensureLoggedIn() async
   if (kDebugMode) {
     print('Is logged in result: $_isLoggedInResult');
   }
+
   if(_isLoggedInResult){
-    _defaultHome = const OfferView();
+    if(CurrentLogin().user!.name == null) {
+      _defaultHome = PersonalDetailsCreateStepper();
+    } else {
+      _defaultHome = const OfferView();
+    }
   }
 }
 
@@ -41,8 +47,7 @@ Future<bool> isLoggedIn() async{
 
   if(token == null || token.isEmpty) return false;
 
-  await CurrentLogin().loadUserDataFromSharedPreferences();
-  return true;
+  return await CurrentLogin().loadUserDataFromSharedPreferences();
 }
 
 class MyApp extends StatelessWidget {

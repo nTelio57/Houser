@@ -36,6 +36,7 @@ class CurrentLogin{
     if (token == null || token.isEmpty) return false;
 
     try{
+      jwtToken = token;
       var id = prefs!.getString("id")!;
       userId = id;
 
@@ -57,10 +58,11 @@ class CurrentLogin{
     prefs!.clear();
   }
 
-  void clear()
+  Future clear() async
   {
     clearSharedPreferences();
     _singleton = CurrentLogin._internal();
+    await _singleton.loadSharedPreferences();
   }
 
 }

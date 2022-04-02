@@ -34,5 +34,21 @@ namespace HouserAPI.Controllers
 
             return Ok(_mapper.Map<UserReadDto>(user));
         }
+
+        [HttpPut("{id}")]
+        public async Task<IActionResult> UpdateUser(string id, UserUpdateDto userUpdateDto)
+        {
+            var userId = User.FindFirst(CustomClaims.UserId)?.Value;
+            if (userId != id)
+                return Forbid();
+
+            var user = await _userManager.FindByIdAsync(id);
+            if (user == null)
+                return NotFound();
+
+            _mapper.Map(userUpdateDto, user);
+            await _userManager.UpdateAsync(user);
+            return NoContent();
+        }
     }
 }

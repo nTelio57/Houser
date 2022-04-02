@@ -75,14 +75,14 @@ class _ProfileViewState extends State<ProfileView> {
   Widget name()
   {
     String name = widget._currentLogin.user!.name!;
-    String surname = widget._currentLogin.user!.surname!;
+    int age = widget._currentLogin.user!.age;
 
     return SizedBox(
       height: 37,
       child: FittedBox(
         fit: BoxFit.fitWidth,
         child: Text(
-          '$name $surname',
+          '$name, $age',
           maxLines: 1,
           overflow: TextOverflow. ellipsis,
           style: TextStyle(
@@ -145,9 +145,9 @@ class _ProfileViewState extends State<ProfileView> {
     Navigator.push(context, MaterialPageRoute(builder: (context) => MyOfferListView()));
   }
 
-  void onLogoutClicked()
+  Future onLogoutClicked() async
   {
-    widget._currentLogin.clear();
+    await widget._currentLogin.clear();
     Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (context) => const WelcomeView()), (Route<dynamic> route) => false);
   }
 }
