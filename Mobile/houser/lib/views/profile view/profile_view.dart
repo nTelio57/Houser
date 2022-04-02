@@ -1,10 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:houser/models/CurrentLogin.dart';
+import 'package:houser/services/api_service.dart';
 import 'package:houser/views/profile%20view/my_offer_list_view.dart';
 import 'package:houser/views/welcome_view.dart';
 import 'package:houser/widgets/WG_album_slider.dart';
+import 'package:houser/models/Image.dart' as apiImage;
 
 class ProfileView extends StatefulWidget {
+
+  final ApiService _apiService = ApiService();
+
   ProfileView({Key? key}) : super(key: key);
   final CurrentLogin _currentLogin = CurrentLogin();
 
@@ -13,6 +18,9 @@ class ProfileView extends StatefulWidget {
 }
 
 class _ProfileViewState extends State<ProfileView> {
+
+  List<apiImage.Image> images = [];
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -56,6 +64,37 @@ class _ProfileViewState extends State<ProfileView> {
     );
   }
 
+  Widget photoSlider()
+  {
+    return FutureBuilder(
+      future: loadImages(),
+        builder: (BuildContext context, AsyncSnapshot<dynamic> snapshot)
+        {
+
+          if(snapshot.hasData)
+          {
+            return WGAlbumSlider(images);
+          }
+          else if(snapshot.hasError)
+          {
+            return Container(
+              color: Colors.red,
+            );
+          }
+          else
+          {
+            return WGAlbumSlider(images);
+          }
+        }
+    );
+  }
+
+  Future loadImages() async
+  {
+    images = await widget._apiService.GetAllImagesByUserId(widget._currentLogin.user!.id);
+    return true;
+  }
+
   Widget accountDetails()
   {
     return Container(
@@ -66,7 +105,7 @@ class _ProfileViewState extends State<ProfileView> {
           const SizedBox(height: 24),
           name(),
           const SizedBox(height: 12),
-          const WGAlbumSlider()
+          photoSlider(),
         ],
       ),
     );
