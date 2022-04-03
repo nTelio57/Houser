@@ -8,7 +8,6 @@ class CurrentLogin{
   SharedPreferences? prefs;
   final ApiService _apiService = ApiService();
 
-  String userId = '';
   String jwtToken = '';
   User? user;
 
@@ -38,7 +37,6 @@ class CurrentLogin{
     try{
       jwtToken = token;
       var id = prefs!.getString("id")!;
-      userId = id;
 
       var userResponse = await _apiService.GetUserById(id);
       user = userResponse;
@@ -46,7 +44,7 @@ class CurrentLogin{
       saveUserDataToSharedPreferences();
     }catch(e){
       if (kDebugMode) {
-        print('Failed to load user data from shared preferences for user $userId. $e');
+        print('Failed to load user data from shared preferences for user ${user!.id} $e');
       }
       return false;
     }

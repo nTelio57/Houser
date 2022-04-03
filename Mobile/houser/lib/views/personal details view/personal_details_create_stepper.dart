@@ -177,7 +177,7 @@ class _PersonalDetailsCreateStepperState extends State<PersonalDetailsCreateStep
     userUpdate.guestCount = guestCount;
     userUpdate.partyCount = partyCount;
 
-    bool result = await widget._apiService.UpdateUserDetails(CurrentLogin().userId, userUpdate);
+    bool result = await widget._apiService.UpdateUserDetails(CurrentLogin().user!.id, userUpdate);
     if(result)
       {
         await CurrentLogin().loadUserDataFromSharedPreferences();

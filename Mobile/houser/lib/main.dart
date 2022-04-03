@@ -27,12 +27,12 @@ Future ensureLoggedIn() async
     print('Is logged in result: $_isLoggedInResult');
   }
 
-  if(_isLoggedInResult){
-    if(CurrentLogin().user!.name == null) {
-      _defaultHome = PersonalDetailsCreateStepper();
-    } else {
+  if(CurrentLogin().user!.name == null) {
+      CurrentLogin().clear();
+      return;
+  }
+  if(_isLoggedInResult) {
       _defaultHome = const OfferView();
-    }
   }
 }
 
