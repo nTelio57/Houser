@@ -59,14 +59,15 @@ namespace HouserAPI
         
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env, DatabaseContext context, UserManager<User> userManager, RoleManager<IdentityRole> roleManager)
         {
+            var seed = new SeedData(context, userManager, roleManager);
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
 
-                var seed = new SeedData(context, userManager, roleManager);
-                seed.Seed();
+                seed.SeedDevelopment();
             }
 
+            seed.Seed();
             app.UseCors("MyPolicy");
             app.UseHttpsRedirection();
             app.UseRouting();

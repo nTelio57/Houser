@@ -20,6 +20,15 @@ namespace HouserAPI.Data.Seed
             _context.Database.EnsureCreated();
 
             RoleSeed.Seed(_roleManager);
+
+            _context.SaveChanges();
+        }
+
+        public void SeedDevelopment()
+        {
+            _context.Database.EnsureCreated();
+
+            RoleSeed.Seed(_roleManager);
             UserSeed.Seed(_userManager);
             OfferSeed.Seed(_context);
 
