@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:houser/extensions/int_extensions.dart';
 import 'package:houser/models/AuthRequest.dart';
 import 'package:houser/models/AuthResult.dart';
@@ -15,10 +16,11 @@ class ApiService {
 
   ApiService._internal() :
       _apiClient = ApiClient(
-        '10.0.2.2:5001',
+        kDebugMode ? '10.0.2.2:5001' : 'houser-app-ktu.herokuapp.com',
       );
 
   ApiClient _apiClient;
+  String get apiUrl => _apiClient.apiUrl;
 
   Future<User> GetUserById(String id) async{
     ApiResponse response = await _apiClient.Get('/api/User/$id');

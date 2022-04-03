@@ -86,7 +86,7 @@ class _WGAlbumSliderState extends State<WGAlbumSlider> {
   Widget networkImage(int id)
   {
     return CachedNetworkImage(
-      imageUrl: 'https://10.0.2.2:5001/api/Image/$id',
+      imageUrl: 'https://${widget._apiService.apiUrl}/api/Image/$id',
       placeholder: (context, url) => loadingCard(),
       errorWidget: (context, url, error) => errorCard!,
       httpHeaders: {
