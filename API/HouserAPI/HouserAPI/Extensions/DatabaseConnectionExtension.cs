@@ -24,7 +24,6 @@ namespace HouserAPI.Extensions
             var connectionString = env.IsDevelopment()
                 ? connectionStringBuilder.ConnectionString
                 : Environment.GetEnvironmentVariable("HEROKU_DATABASE");
-            //connectionString = configuration["HerokuDatabase"];
 
             return services.AddDbContext<DatabaseContext>(opt =>
                 opt.UseMySQL(connectionString));

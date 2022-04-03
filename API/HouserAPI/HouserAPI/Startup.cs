@@ -9,8 +9,6 @@ using HouserAPI.Data.Seed;
 using HouserAPI.Extensions;
 using HouserAPI.Models;
 using Microsoft.AspNetCore.Identity;
-using Microsoft.EntityFrameworkCore;
-using MySql.Data.MySqlClient;
 using Newtonsoft.Json.Serialization;
 
 namespace HouserAPI
