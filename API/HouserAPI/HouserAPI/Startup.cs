@@ -9,34 +9,26 @@ using HouserAPI.Data.Seed;
 using HouserAPI.Extensions;
 using HouserAPI.Models;
 using Microsoft.AspNetCore.Identity;
-using Microsoft.EntityFrameworkCore;
-using MySql.Data.MySqlClient;
 using Newtonsoft.Json.Serialization;
 
 namespace HouserAPI
 {
     public class Startup
     {
-        public Startup(IConfiguration configuration)
+        public Startup(IConfiguration configuration, IWebHostEnvironment env)
         {
             Configuration = configuration;
+            WebHostEnvironment = env;
         }
 
         public IConfiguration Configuration { get; }
-        
+        public IWebHostEnvironment WebHostEnvironment { get; }
+
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddSwagger();
 
-            var connectionStringBuilder = new MySqlConnectionStringBuilder(Configuration.GetConnectionString("HouserConnection"))
-            {
-                Server = Configuration["Server"],
-                Database = Configuration["Database"],
-                UserID = Configuration["User"],
-                Password = Configuration["Password"]
-            };
-            services.AddDbContext<DatabaseContext>(opt =>
-                opt.UseMySQL(connectionStringBuilder.ConnectionString));
+            services.AddDatabaseContext(Configuration, WebHostEnvironment);
 
             services.AddControllers().AddNewtonsoftJson(s =>
             {
@@ -56,25 +48,24 @@ namespace HouserAPI
             services.ConfigureIdentityOptions();
 
             services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
-            services.AddJwtAuthentication(Configuration);
-
-            services.AddAuthorizationDependencies(Configuration);
+            
             services.AddRepositoriesDependencies();
             services.AddServiceDependencies();
+            services.AddAuthorizationDependencies(Configuration);
+            services.AddJwtAuthentication(Configuration);
         }
         
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env, DatabaseContext context, UserManager<User> userManager, RoleManager<IdentityRole> roleManager)
         {
+            var seed = new SeedData(context, userManager, roleManager);
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
-                app.UseSwagger();
-                app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "HouserAPI v1"));
 
-                var seed = new SeedData(context, userManager, roleManager);
-                seed.Seed();
+                seed.SeedDevelopment();
             }
 
+            seed.Seed();
             app.UseCors("MyPolicy");
             app.UseHttpsRedirection();
             app.UseRouting();
@@ -85,6 +76,13 @@ namespace HouserAPI
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllers();
+            });
+
+            app.UseSwagger();
+            app.UseSwaggerUI(c =>
+            {
+                c.SwaggerEndpoint("/swagger/v1/swagger.json", "HouserAPI v1");
+                c.RoutePrefix = String.Empty;
             });
         }
     }
