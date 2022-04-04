@@ -12,6 +12,7 @@ class Offer{
   DateTime uploadDate = DateTime.now();
   @JsonKey(name: 'userId')
   String ownerId = '';
+  int id = 0;
 
   String title = 'Ieškomas vienas kambariokas dviem mėnesiams';
   String city = 'Kaunas';

@@ -10,7 +10,7 @@ import 'package:houser/widgets/WG_multi_button.dart';
 import 'package:houser/widgets/WG_toggle_icon_button.dart';
 import 'package:intl/intl.dart';
 
-class NewOfferView extends StatefulWidget {
+class OfferFormView extends StatefulWidget {
 
   final ApiService _apiService = ApiService();
 
@@ -46,19 +46,36 @@ class NewOfferView extends StatefulWidget {
   WGToggleIconButton accommodationBalcony = WGToggleIconButton(icon: Icons.balcony_outlined);
   WGToggleIconButton accommodationDisability = WGToggleIconButton(icon: Icons.accessible_outlined);
 
-  NewOfferView({Key? key}) : super(key: key)
+  bool isEditingMode = false;
+  Offer? offerToEdit;
+
+  OfferFormView(
+  {
+    Key? key,
+    this.isEditingMode = false,
+    this.offerToEdit
+  }
+  ) : super(key: key)
   {
     bedTypeButton = WGMultiButton(selections: bedTypeSelections);
   }
 
   @override
-  _NewOfferViewState createState() => _NewOfferViewState();
+  _OfferFormViewState createState() => _OfferFormViewState();
 }
 
-class _NewOfferViewState extends State<NewOfferView> {
+class _OfferFormViewState extends State<OfferFormView> {
 
   @override
   Widget build(BuildContext context) {
+    if(widget.isEditingMode)
+      {
+        if(widget.offerToEdit == null)
+          throw Exception('If editing mode = true, offerToEdit can\'t be null');
+        setupForEditing(widget.offerToEdit!);
+      }
+
+
     return Scaffold(
       appBar: AppBar(),
       body: body(),
@@ -100,11 +117,41 @@ class _NewOfferViewState extends State<NewOfferView> {
                 accommodation(),
               ],
             ),
-            button('Paskelbti')
+            button(
+              widget.isEditingMode ? 'Baigti redaguoti' : 'Paskelbti'
+            )
           ],
         ),
       ),
     );
+  }
+
+  void setupForEditing(Offer offer)
+  {
+    widget._dateTo = offer.availableTo;
+    widget._dateToText.text = dateToString(offer.availableTo);
+    widget._dateFrom = offer.availableFrom;
+    widget._dateFromText.text = dateToString(offer.availableFrom);
+
+    widget._titleText.text = offer.title;
+    widget._cityText.text  = offer.city;
+    widget._addressText.text  = offer.address;
+    widget._priceText.text  = offer.monthlyPrice.toString();
+    widget._areaText.text  = offer.area.toString();
+    widget._freeRoomText.text  = offer.freeRoomCount.toString();
+    widget._totalRoomText.text  = offer.totalRoomCount.toString();
+    widget._bedCountText.text  = offer.bedCount.toString();
+
+    widget.smokingRuleButton.isEnabled = offer.ruleSmoking;
+    widget.animalRuleButton.isEnabled = offer.ruleAnimals;
+    widget.bedTypeButton!.isButtonSelected = BedType.values.map((e) => e.index == offer.bedType.index).toList();
+
+    widget.accommodationTv.isEnabled = offer.accommodationTv;
+    widget.accommodationAc.isEnabled = offer.accommodationAc;
+    widget.accommodationWifi.isEnabled = offer.accommodationWifi;
+    widget.accommodationParking.isEnabled = offer.accommodationParking;
+    widget.accommodationBalcony.isEnabled = offer.accommodationBalcony;
+    widget.accommodationDisability.isEnabled = offer.accommodationDisability;
   }
 
   Widget label(String label)
@@ -276,7 +323,11 @@ class _NewOfferViewState extends State<NewOfferView> {
         width: double.infinity,
         child: TextButton(
           onPressed: () async {
-            await uploadOffer();
+            if(widget.isEditingMode) {
+              await updateOffer();
+            } else {
+              await uploadOffer();
+            }
           },
           style: TextButton.styleFrom(
             backgroundColor: Theme.of(context).primaryColor
@@ -293,56 +344,62 @@ class _NewOfferViewState extends State<NewOfferView> {
     );
   }
 
-  Future uploadOffer() async{
-    String title = widget._titleText.text;
-    String address = widget._addressText.text;
-    double price = double.parse(widget._priceText.text);
-    double area = double.parse(widget._areaText.text);
-    DateTime dateFrom = DateFormat('dd/MM/yyyy').parse(widget._dateFromText.text);
-    DateTime dateTo = DateFormat('dd/MM/yyyy').parse(widget._dateToText.text);
+  Future updateOffer() async
+  {
+    var newOffer = getOfferByForm(replacer: widget.offerToEdit);
 
-    bool ruleSmoking = widget.smokingRuleButton.isEnabled;
-    bool ruleAnimal = widget.animalRuleButton.isEnabled;
+    var result = await widget._apiService.UpdateOfer(widget.offerToEdit!.id, newOffer);
+    if(result)
+    {
+      Navigator.pop(context);
+    }
+  }
 
-    int freeRoomCount = int.parse(widget._freeRoomText.text);
-    int totalRoomCount = int.parse(widget._totalRoomText.text);
-    int bedCount = int.parse(widget._bedCountText.text);
-    BedType bedType = BedType.values[widget.bedTypeButton!.isButtonSelected.indexOf(true)];
-
-    bool accommodationTv = widget.accommodationTv.isEnabled;
-    bool accommodationAc = widget.accommodationAc.isEnabled;
-    bool accommodationWifi = widget.accommodationWifi.isEnabled;
-    bool accommodationParking = widget.accommodationParking.isEnabled;
-    bool accommodationBalcony = widget.accommodationBalcony.isEnabled;
-    bool accommodationDisability = widget.accommodationDisability.isEnabled;
-
-    Offer newOffer = Offer(title: title);
-    newOffer.ownerId = CurrentLogin().user!.id;
-    newOffer.city = widget._cityText.text;
-    newOffer.address = address;
-    newOffer.monthlyPrice = price;
-    newOffer.area = area;
-    newOffer.availableFrom = dateFrom;
-    newOffer.availableTo = dateTo;
-    newOffer.ruleSmoking = ruleSmoking;
-    newOffer.ruleAnimals = ruleAnimal;
-    newOffer.freeRoomCount = freeRoomCount;
-    newOffer.totalRoomCount = totalRoomCount;
-    newOffer.bedCount = bedCount;
-    newOffer.bedType = bedType;
-
-    newOffer.accommodationTv = accommodationTv;
-    newOffer.accommodationAc = accommodationAc;
-    newOffer.accommodationWifi = accommodationWifi;
-    newOffer.accommodationParking = accommodationParking;
-    newOffer.accommodationBalcony = accommodationBalcony;
-    newOffer.accommodationDisability = accommodationDisability;
+  Future uploadOffer() async
+  {
+    var newOffer = getOfferByForm();
 
     ApiResponse result = await widget._apiService.PostOffer(newOffer);
     if(result.statusCode.isSuccessStatusCode)
       {
         Navigator.pop(context);
       }
+  }
+
+  Offer getOfferByForm({Offer? replacer})
+  {
+    Offer newOffer;
+    if(replacer != null)
+      {
+        newOffer = replacer;
+      }
+    else
+      {
+        newOffer = Offer(title: widget._titleText.text);
+      }
+
+    newOffer.ownerId = CurrentLogin().user!.id;
+    newOffer.city = widget._cityText.text;
+    newOffer.address = widget._addressText.text;
+    newOffer.monthlyPrice = double.parse(widget._priceText.text);
+    newOffer.area = double.parse(widget._areaText.text);
+    newOffer.availableFrom =DateFormat('dd/MM/yyyy').parse(widget._dateFromText.text);
+    newOffer.availableTo = DateFormat('dd/MM/yyyy').parse(widget._dateToText.text);
+    newOffer.ruleSmoking = widget.smokingRuleButton.isEnabled;
+    newOffer.ruleAnimals = widget.animalRuleButton.isEnabled;
+    newOffer.freeRoomCount = int.parse(widget._freeRoomText.text);
+    newOffer.totalRoomCount = int.parse(widget._totalRoomText.text);
+    newOffer.bedCount = int.parse(widget._bedCountText.text);
+    newOffer.bedType = BedType.values[widget.bedTypeButton!.isButtonSelected.indexOf(true)];
+
+    newOffer.accommodationTv = widget.accommodationTv.isEnabled;
+    newOffer.accommodationAc = widget.accommodationAc.isEnabled;
+    newOffer.accommodationWifi = widget.accommodationWifi.isEnabled;
+    newOffer.accommodationParking = widget.accommodationParking.isEnabled;
+    newOffer.accommodationBalcony = widget.accommodationBalcony.isEnabled;
+    newOffer.accommodationDisability = widget.accommodationDisability.isEnabled;
+
+    return newOffer;
   }
 
   String dateToString(DateTime dateTime)
