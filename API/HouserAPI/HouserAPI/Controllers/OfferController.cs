@@ -56,12 +56,35 @@ namespace HouserAPI.Controllers
             return Ok(offers);
         }
 
+        [HttpPut("{id}")]
+        public async Task<IActionResult> UpdateOffer(int id, OfferUpdateDto offerUpdateDto)
+        {
+            var userId = User.FindFirst(CustomClaims.UserId)?.Value;
+
+            var offer = await _offerService.GetById(id);
+            if (offer == null)
+                return NotFound();
+
+            if (userId != offer.UserId)
+                return Forbid();
+
+            await _offerService.Update(id, offerUpdateDto);
+
+            return NoContent();
+
+        }
+
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteOffer(int id)
         {
+            var userId = User.FindFirst(CustomClaims.UserId)?.Value;
+
             var offer = await _offerService.GetById(id);
             if (offer is null)
                 return NotFound();
+
+            if (userId != offer.UserId)
+                return Forbid();
 
             if (await _offerService.Delete(id))
                 return NoContent();

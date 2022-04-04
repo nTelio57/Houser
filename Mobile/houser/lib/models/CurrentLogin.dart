@@ -44,7 +44,7 @@ class CurrentLogin{
       saveUserDataToSharedPreferences();
     }catch(e){
       if (kDebugMode) {
-        print('Failed to load user data from shared preferences for user ${user!.id} $e');
+        print('Failed to load user data from shared preferences. $e');
       }
       return false;
     }

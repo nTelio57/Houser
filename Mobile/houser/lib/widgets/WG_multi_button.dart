@@ -4,7 +4,7 @@ import 'package:houser/models/widget_data/multi_button_selection.dart';
 class WGMultiButton extends StatefulWidget {
 
   final List<MultiButtonSelection> selections;
-  final List<bool> isButtonSelected = [];
+  List<bool> isButtonSelected = [];
   bool multiSelection;
 
   WGMultiButton({Key? key, required this.selections, this.multiSelection = false}) : super(key: key)

@@ -13,6 +13,7 @@ Offer _$OfferFromJson(Map<String, dynamic> json) => Offer(
       ..isVisible = json['isVisible'] as bool
       ..uploadDate = DateTime.parse(json['uploadDate'] as String)
       ..ownerId = json['userId'] as String
+      ..id = json['id'] as int
       ..city = json['city'] as String
       ..address = json['address'] as String
       ..monthlyPrice = (json['monthlyPrice'] as num).toDouble()
@@ -39,6 +40,7 @@ Map<String, dynamic> _$OfferToJson(Offer instance) => <String, dynamic>{
       'isVisible': instance.isVisible,
       'uploadDate': instance.uploadDate.toIso8601String(),
       'userId': instance.ownerId,
+      'id': instance.id,
       'title': instance.title,
       'city': instance.city,
       'address': instance.address,

@@ -47,6 +47,14 @@ namespace HouserAPI.Services
             return _mapper.Map<IEnumerable<OfferReadDto>>(offers);
         }
 
+        public async Task<bool> Update(int id, OfferUpdateDto offerUpdateDto)
+        {
+            var offer = await _repository.GetById(id);
+            _mapper.Map(offerUpdateDto, offer);
+            await _repository.Update(offer);
+            return await _repository.SaveChanges();
+        }
+
         public async Task<bool> Delete(int id)
         {
             var offer = await _repository.GetById(id);

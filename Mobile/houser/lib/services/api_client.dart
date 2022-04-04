@@ -61,6 +61,23 @@ class ApiClient{
       }
   }
 
+  Future<ApiResponse> Delete(String path, {String contentType = 'application/json; charset=UTF-8'}) async
+  {
+    final response = await http.delete(Uri.https(apiUrl, path),
+        headers: getHeaders(contentType)
+    );
+
+    if(response.statusCode.isSuccessStatusCode)
+    {
+      return ApiResponse(response.statusCode.isSuccessStatusCode, response.statusCode, response.reasonPhrase);
+    }
+    else
+    {
+      print('Failed to DELETE. Status code: ${response.statusCode}. Reason: ${response.reasonPhrase}.');
+      return ApiResponse(response.statusCode.isSuccessStatusCode, response.statusCode, response.reasonPhrase);
+    }
+  }
+
   Future<ApiResponse> Put(String path, Object body, {String contentType = 'application/json; charset=UTF-8'}) async
   {
     final response = await http.put(Uri.https(apiUrl, path),

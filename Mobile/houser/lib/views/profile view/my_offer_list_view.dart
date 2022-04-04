@@ -3,7 +3,7 @@ import 'package:houser/models/CurrentLogin.dart';
 import 'package:houser/models/Offer.dart';
 import 'package:houser/services/api_service.dart';
 import 'package:houser/views/profile%20view/my_offer_card.dart';
-import 'package:houser/views/profile%20view/new_offer_view.dart';
+import 'package:houser/views/profile%20view/offer_form_view.dart';
 
 class MyOfferListView extends StatefulWidget {
   MyOfferListView({Key? key}) : super(key: key);
@@ -38,7 +38,7 @@ class _MyOfferListViewState extends State<MyOfferListView> {
     return IconButton(
       onPressed: (){
         Navigator.push(context, MaterialPageRoute(
-            builder: (context) => NewOfferView())).then((value) => setState((){}));
+            builder: (context) => OfferFormView())).then((value) => setState((){}));
       },
       icon: const Icon(Icons.add)
     );
@@ -103,10 +103,37 @@ class _MyOfferListViewState extends State<MyOfferListView> {
         itemCount: offers.length,
         itemBuilder: (context, index)
             {
-              return MyOfferCard(offer: offers[index]);
+              return MyOfferCard((){onEditClicked(offers[index]);}, (){onVisibilityClicked(offers[index]);}, (){onDeleteClicked(offers[index]);}, offer: offers[index]);
             }
       ),
     );
+  }
+
+
+
+  void onEditClicked(Offer offer)
+  {
+    Navigator.push(context, MaterialPageRoute(
+        builder: (context) => OfferFormView(isEditingMode: true, offerToEdit: offer))).then((value) => setState((){}));
+  }
+
+  void onVisibilityClicked(Offer offer)
+  {
+    offer.isVisible = !offer.isVisible;
+    widget._apiService.UpdateOfer(offer.id, offer).then((value) {
+      setState(() {
+
+      });
+    });
+  }
+
+  void onDeleteClicked(Offer offer)
+  {
+    widget._apiService.DeleteOffer(offer.id).then((value) {
+      setState(() {
+
+      });
+    });
   }
 
 }

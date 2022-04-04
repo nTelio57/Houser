@@ -1,11 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:houser/models/Offer.dart';
+import 'package:houser/views/profile%20view/offer_form_view.dart';
 
 // ignore: must_be_immutable
 class MyOfferCard extends StatefulWidget {
   Offer offer;
+  Function() onEditClick;
+  Function() onVisibilityClick;
+  Function() onDeleteClick;
 
-  MyOfferCard({Key? key, required this.offer}) : super(key: key);
+  MyOfferCard(this.onEditClick, this.onVisibilityClick, this.onDeleteClick, {Key? key, required this.offer}) : super(key: key);
 
   @override
   _MyOfferCardState createState() => _MyOfferCardState();
@@ -114,9 +118,9 @@ class _MyOfferCardState extends State<MyOfferCard> {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
         children: [
-          expansionButton(Icons.edit, (){}),
-          expansionButton(offer.isVisible ? Icons.visibility_off : Icons.visibility, (){}),
-          expansionButton(Icons.delete, (){}),
+          expansionButton(Icons.edit, widget.onEditClick),
+          expansionButton(offer.isVisible ? Icons.visibility_off : Icons.visibility, widget.onVisibilityClick),
+          expansionButton(Icons.delete, widget.onDeleteClick, iconColor: Colors.red.shade300),
         ],
       ),
     );
@@ -132,4 +136,5 @@ class _MyOfferCardState extends State<MyOfferCard> {
       onPressed: onPressed,
     );
   }
+
 }

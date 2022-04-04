@@ -78,4 +78,16 @@ class ApiService {
     return response;
   }
 
+  Future<bool> UpdateOfer(int id, Offer offer) async
+  {
+    ApiResponse response = await _apiClient.Put('/api/Offer/$id', offer);
+    return response.statusCode.isSuccessStatusCode;
+  }
+
+  Future<bool> DeleteOffer(int id) async
+  {
+    ApiResponse response = await _apiClient.Delete('/api/Offer/$id');
+    return response.statusCode.isSuccessStatusCode;
+  }
+
 }
