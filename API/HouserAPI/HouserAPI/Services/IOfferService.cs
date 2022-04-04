@@ -10,6 +10,8 @@ namespace HouserAPI.Services
         Task<IEnumerable<OfferReadDto>> GetAll();
         Task<OfferReadDto> GetById(int id);
         Task<IEnumerable<OfferReadDto>> GetAllByUser(string id);
+
+        Task<bool> Update(int id, OfferUpdateDto offerUpdateDto);
         Task<bool> Delete(int id);
     }
 }

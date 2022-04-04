@@ -10,6 +10,8 @@ namespace HouserAPI.Profiles
         {
             CreateMap<Offer, OfferReadDto>();
             CreateMap<OfferCreateDto, Offer>();
+            CreateMap<OfferUpdateDto, Offer>();
+            CreateMap<Offer, OfferUpdateDto>();
         }
     }
 }
