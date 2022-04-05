@@ -1,10 +1,15 @@
+import 'dart:async';
+import 'dart:io';
+
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:houser/extensions/string_extensions.dart';
 import 'package:houser/models/AuthRequest.dart';
 import 'package:houser/models/AuthResult.dart';
 import 'package:houser/models/CurrentLogin.dart';
 import 'package:houser/services/api_service.dart';
 import 'package:houser/views/personal%20details%20view/personal_details_create_stepper.dart';
+import 'package:houser/widgets/WG_snackbars.dart';
 
 class RegisterView extends StatefulWidget {
   RegisterView({Key? key}) : super(key: key);
@@ -19,6 +24,7 @@ class _RegisterViewState extends State<RegisterView> {
 
   bool _passwordVisible = false;
   bool _passwordConfirmVisible = false;
+  bool _isLoginButtonEnabled = true;
 
   final _formKey = GlobalKey<FormState>();
   final TextEditingController _emailTextController = TextEditingController();
@@ -118,6 +124,10 @@ class _RegisterViewState extends State<RegisterView> {
     {
       return 'Įveskite el. paštą';
     }
+    if(!value.isValidEmail)
+    {
+      return 'Įveskite tinkamą el. paštą';
+    }
     return null;
   };
 
@@ -126,6 +136,14 @@ class _RegisterViewState extends State<RegisterView> {
     {
       return 'Įveskite slaptažodį';
     }
+    if(value.length < 8)
+      {
+        return 'Slaptažodį turi sudaryti bent 8 simboliai';
+      }
+    if(!value.hasUpperCase)
+      {
+        return 'Trūksta didžiosios raidės.';
+      }
     return null;
   }
 
@@ -251,27 +269,41 @@ class _RegisterViewState extends State<RegisterView> {
       width: double.infinity,
       padding: const EdgeInsets.only(top: 7, bottom: 14),
       child: TextButton(
-        onPressed: () async
+        onPressed: !_isLoginButtonEnabled ? null : () async
         {
           if (kDebugMode) {
             print('Register clicked');
           }
+          setState(() {
+            _isLoginButtonEnabled = false;
+          });
           if(_formKey.currentState!.validate())
             {
               AuthRequest authRequest = AuthRequest(_emailTextController.text, _passwordTextController.text);
-              AuthResult authResult = await widget._apiService.Register(authRequest);
-              if(authResult.success!)
-              {
-                currentLogin.jwtToken = authResult.token!;
-                currentLogin.user = authResult.user!;
-                currentLogin.saveUserDataToSharedPreferences();
+              try{
+                AuthResult authResult = await widget._apiService.Register(authRequest).timeout(const Duration(seconds: 3));
+                if(authResult.success!)
+                {
+                  currentLogin.jwtToken = authResult.token!;
+                  currentLogin.user = authResult.user!;
+                  currentLogin.saveUserDataToSharedPreferences();
 
-                Navigator.push(context, MaterialPageRoute(builder: (context) => PersonalDetailsCreateStepper()));
-              }
-              else{
-                //handle failed registration
+                  Navigator.push(context, MaterialPageRoute(builder: (context) => PersonalDetailsCreateStepper()));
+                }
+                else{
+                  ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(authResult.errors!.first)));
+                }
+              }on SocketException {
+                ScaffoldMessenger.of(context).showSnackBar(noConnectionSnackbar);
+              } on TimeoutException {
+                ScaffoldMessenger.of(context).showSnackBar(serverErrorSnackbar);
+              } on Exception {
+                ScaffoldMessenger.of(context).showSnackBar(failedLogin);
               }
             }
+          setState(() {
+            _isLoginButtonEnabled = true;
+          });
         },
         child: const Text(
           'Registruotis',

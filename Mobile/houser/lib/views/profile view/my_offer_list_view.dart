@@ -109,8 +109,6 @@ class _MyOfferListViewState extends State<MyOfferListView> {
     );
   }
 
-
-
   void onEditClicked(Offer offer)
   {
     Navigator.push(context, MaterialPageRoute(

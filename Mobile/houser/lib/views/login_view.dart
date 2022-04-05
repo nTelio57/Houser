@@ -1,10 +1,15 @@
+import 'dart:async';
+import 'dart:io';
+
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:houser/extensions/string_extensions.dart';
 import 'package:houser/models/AuthRequest.dart';
 import 'package:houser/models/CurrentLogin.dart';
 import 'package:houser/services/api_service.dart';
 import 'package:houser/views/offer%20view/offer_view.dart';
 import 'package:houser/views/personal%20details%20view/personal_details_create_stepper.dart';
+import 'package:houser/widgets/WG_snackbars.dart';
 
 class LoginView extends StatefulWidget {
   LoginView({Key? key}) : super(key: key);
@@ -109,13 +114,18 @@ class _LoginViewState extends State<LoginView> {
     );
   }
 
-  String? emailValidator(String? value){
+  // ignore: prefer_function_declarations_over_variables
+  String? Function(String?) emailValidator = (String? value){
     if(value == null || value.isEmpty)
     {
       return 'Įveskite el. paštą';
     }
+    if(!value.isValidEmail)
+    {
+      return 'Įveskite tinkamą el. paštą';
+    }
     return null;
-  }
+  };
 
   String? passwordValidator(String? value){
     if(value == null || value.isEmpty)
@@ -221,6 +231,8 @@ class _LoginViewState extends State<LoginView> {
     );
   }
 
+  bool _isLoginButtonEnabled = true;
+
   Widget loginButton()
   {
     CurrentLogin currentLogin = CurrentLogin();
@@ -228,31 +240,48 @@ class _LoginViewState extends State<LoginView> {
       width: double.infinity,
       padding: const EdgeInsets.only(top: 7),
       child: TextButton(
-        onPressed: () async
+
+        onPressed: !_isLoginButtonEnabled ? null : () async
         {
+
+          setState(() {
+            _isLoginButtonEnabled = false;
+          });
+
           if (kDebugMode) {
             print('Login clicked');
           }
           if(_formKey.currentState!.validate())
             {
               AuthRequest authRequest = AuthRequest(_emailTextController.text, _passwordTextController.text);
-              var authResult = await widget._apiService.Login(authRequest);
-              if(authResult.success!)
-              {
-                currentLogin.jwtToken = authResult.token!;
-                currentLogin.user = authResult.user!;
-                currentLogin.saveUserDataToSharedPreferences();
+              try{
+                var authResult = await widget._apiService.Login(authRequest).timeout(const Duration(seconds: 3));
+                if(authResult.success!)
+                {
+                  currentLogin.jwtToken = authResult.token!;
+                  currentLogin.user = authResult.user!;
+                  currentLogin.saveUserDataToSharedPreferences();
 
-                if(CurrentLogin().user!.name == null) {
-                  Navigator.push(context, MaterialPageRoute(builder: (context) => PersonalDetailsCreateStepper()));
-                } else {
-                  Navigator.push(context, MaterialPageRoute(builder: (context) => const OfferView()));
+                  if(CurrentLogin().user!.name == null) {
+                    Navigator.push(context, MaterialPageRoute(builder: (context) => PersonalDetailsCreateStepper()));
+                  } else {
+                    Navigator.push(context, MaterialPageRoute(builder: (context) => const OfferView()));
+                  }
                 }
-              }
-              else{
-
+                else{
+                  ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(authResult.errors!.first)));
+                }
+              } on SocketException {
+                ScaffoldMessenger.of(context).showSnackBar(noConnectionSnackbar);
+              } on TimeoutException {
+                ScaffoldMessenger.of(context).showSnackBar(serverErrorSnackbar);
+              } on Exception {
+                ScaffoldMessenger.of(context).showSnackBar(failedLogin);
               }
             }
+          setState(() {
+            _isLoginButtonEnabled = true;
+          });
         },
         child: const Text(
           'Prisijungti',
