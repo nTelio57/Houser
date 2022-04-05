@@ -1,9 +1,13 @@
+import 'dart:async';
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:houser/models/CurrentLogin.dart';
 import 'package:houser/models/Offer.dart';
 import 'package:houser/services/api_service.dart';
 import 'package:houser/views/profile%20view/my_offer_card.dart';
 import 'package:houser/views/profile%20view/offer_form_view.dart';
+import 'package:houser/widgets/WG_snackbars.dart';
 
 class MyOfferListView extends StatefulWidget {
   MyOfferListView({Key? key}) : super(key: key);
@@ -118,20 +122,65 @@ class _MyOfferListViewState extends State<MyOfferListView> {
   void onVisibilityClicked(Offer offer)
   {
     offer.isVisible = !offer.isVisible;
-    widget._apiService.UpdateOfer(offer.id, offer).then((value) {
+    widget._apiService.UpdateOfer(offer.id, offer).timeout(const Duration(seconds: 2)).then((value) {
       setState(() {
 
       });
-    });
+    })
+    .catchError(handleSocketException, test: (e) => e is SocketException)
+    .catchError(handleTimeoutException, test: (e) => e is TimeoutException)
+    .catchError(handleVisibilityException, test: (e) => e is Exception);
+
+  }
+
+  void handleSocketException(Object o){
+    ScaffoldMessenger.of(context).showSnackBar(noConnectionSnackbar);
+  }
+
+  void handleTimeoutException(Object o){
+    ScaffoldMessenger.of(context).showSnackBar(noConnectionSnackbar);
+  }
+
+  void handleVisibilityException(Object o){
+    ScaffoldMessenger.of(context).showSnackBar(noConnectionSnackbar);
   }
 
   void onDeleteClicked(Offer offer)
   {
-    widget._apiService.DeleteOffer(offer.id).then((value) {
+    showDialog(
+      context: context,
+      builder: (context) => deleteDialog(offer)
+    );
+
+    /*widget._apiService.DeleteOffer(offer.id).then((value) {
       setState(() {
 
       });
-    });
+    });*/
+  }
+
+  AlertDialog deleteDialog(Offer offer)
+  {
+    return AlertDialog(
+      content: const Text('Ar tikrai norite ištrinti pasiūlymą?'),
+      actions: [
+        TextButton(
+          onPressed: () => Navigator.pop(context),
+          child: const Text('ATŠAUKTI')
+        ),
+        TextButton(
+            onPressed: () {
+              widget._apiService.DeleteOffer(offer.id).then((value) {
+                setState(() {
+
+                });
+              });
+              Navigator.pop(context);
+            },
+            child: const Text('IŠTRINTI')
+        ),
+      ],
+    );
   }
 
 }

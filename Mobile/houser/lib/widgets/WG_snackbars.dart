@@ -19,3 +19,7 @@ const failedFileUpload = SnackBar(
 const validationFailed = SnackBar(
     content: Text('Patikrinkite įvestus duomenis.')
 );
+
+const visibilityChangeFailed = SnackBar(
+    content: Text('Nepavyko pakeisti matomumo.')
+);
