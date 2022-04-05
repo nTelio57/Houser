@@ -11,3 +11,7 @@ const serverErrorSnackbar = SnackBar(
 const failedLogin = SnackBar(
     content: Text('Nepavyko prisijungti.')
 );
+
+const failedFileUpload = SnackBar(
+    content: Text('Nepavyko įkelti failo.')
+);
