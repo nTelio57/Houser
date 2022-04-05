@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:io';
 
 import 'package:cached_network_image/cached_network_image.dart';
@@ -8,6 +9,7 @@ import 'package:houser/models/CurrentLogin.dart';
 import 'package:houser/models/Image.dart' as apiImage;
 import 'package:houser/services/api_client.dart';
 import 'package:houser/services/api_service.dart';
+import 'package:houser/widgets/WG_snackbars.dart';
 
 class WGAlbumSlider extends StatefulWidget {
 
@@ -54,7 +56,6 @@ class _WGAlbumSliderState extends State<WGAlbumSlider> {
       itemBuilder: (context, index)
       {
         if(index == 0) return newPhotoCard!;
-
         return photoCard(images[index-1].id);
       }
     );
@@ -106,15 +107,26 @@ class _WGAlbumSliderState extends State<WGAlbumSlider> {
     if (result != null) {
       File file = File(result.files.single.path!);
       print('Selected '+ file.path);
-      ApiResponse postResult = await widget._apiService.PostImage(file.path);
-      if(postResult.statusCode.isSuccessStatusCode)
+      try{
+        ApiResponse postResult = await widget._apiService.PostImage(file.path).timeout(const Duration(seconds: 4));
+        if(postResult.statusCode.isSuccessStatusCode)
         {
           setState(() {
             widget.onUpload();
           });
+        }else{
+          ScaffoldMessenger.of(context).showSnackBar(failedFileUpload);
         }
+      }on SocketException {
+        ScaffoldMessenger.of(context).showSnackBar(noConnectionSnackbar);
+      } on TimeoutException {
+        ScaffoldMessenger.of(context).showSnackBar(serverErrorSnackbar);
+      } on Exception {
+        ScaffoldMessenger.of(context).showSnackBar(failedFileUpload);
+      }
+
     } else {
-      // User canceled the picker
+      // Atšaukė nuotraukos pasirinkimą
     }
   }
 

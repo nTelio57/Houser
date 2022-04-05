@@ -7,6 +7,7 @@ import 'package:houser/models/widget_data/multi_button_selection.dart';
 import 'package:houser/services/api_client.dart';
 import 'package:houser/services/api_service.dart';
 import 'package:houser/widgets/WG_multi_button.dart';
+import 'package:houser/widgets/WG_snackbars.dart';
 import 'package:houser/widgets/WG_toggle_icon_button.dart';
 import 'package:intl/intl.dart';
 
@@ -66,15 +67,21 @@ class OfferFormView extends StatefulWidget {
 
 class _OfferFormViewState extends State<OfferFormView> {
 
+  final _formKey = GlobalKey<FormState>();
+  bool editInitialized = false;
+
   @override
   Widget build(BuildContext context) {
     if(widget.isEditingMode)
       {
-        if(widget.offerToEdit == null)
+        if(widget.offerToEdit == null) {
           throw Exception('If editing mode = true, offerToEdit can\'t be null');
-        setupForEditing(widget.offerToEdit!);
+        }
+        if(!editInitialized){
+          setupForEditing(widget.offerToEdit!);
+          editInitialized = true;
+        }
       }
-
 
     return Scaffold(
       appBar: AppBar(),
@@ -87,40 +94,43 @@ class _OfferFormViewState extends State<OfferFormView> {
     return SingleChildScrollView(
       child: Container(
         padding: const EdgeInsets.only(left: 20, right: 20, top: 16, bottom: 16),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            label('Pagrindiniai duomenys'),
-            panel(
-              children: [
-                textField('Pavadinimas', widget._titleText, icon: Icons.title),
-                textField('Miestas', widget._cityText, icon: Icons.location_city),
-                textField('Adresas', widget._addressText, icon: Icons.home),
-                textField('Kaina', widget._priceText, icon: Icons.euro, keyboardType: TextInputType.number),
-                textField('Plotas', widget._areaText, icon: Icons.square_foot, keyboardType: TextInputType.number),
-                durationDates(),
-              ],
-            ),
-            label('Buto taisyklės'),
-            panel(
-              children: [
-                apartmentRules(),
-              ],
-            ),
-            label('Kambariai'),
-            panel(
-              children: [
-                roomCount(),
-                textField('Lovų skaičius', widget._bedCountText, icon: Icons.bed, keyboardType: TextInputType.number),
-                bedTypes(),
-                accommodation(),
-              ],
-            ),
-            button(
-              widget.isEditingMode ? 'Baigti redaguoti' : 'Paskelbti'
-            )
-          ],
+        child: Form(
+          key: _formKey,
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              label('Pagrindiniai duomenys'),
+              panel(
+                children: [
+                  textField('Pavadinimas', widget._titleText, titleValidator, icon: Icons.title, maxLength: 50),
+                  textField('Miestas', widget._cityText, basicFieldValidator, icon: Icons.location_city),
+                  textField('Adresas', widget._addressText, basicFieldValidator, icon: Icons.home),
+                  textField('Kaina', widget._priceText, basicFieldValidator, icon: Icons.euro, keyboardType: TextInputType.number),
+                  textField('Plotas', widget._areaText, noValidation, icon: Icons.square_foot, keyboardType: TextInputType.number, helperText: 'Neprivaloma'),
+                  durationDates(),
+                ],
+              ),
+              label('Buto taisyklės'),
+              panel(
+                children: [
+                  apartmentRules(),
+                ],
+              ),
+              label('Kambariai'),
+              panel(
+                children: [
+                  roomCount(),
+                  textField('Lovų skaičius', widget._bedCountText, noValidation, icon: Icons.bed, keyboardType: TextInputType.number, helperText: 'Neprivaloma'),
+                  bedTypes(),
+                  accommodation(),
+                ],
+              ),
+              button(
+                widget.isEditingMode ? 'Baigti redaguoti' : 'Paskelbti'
+              )
+            ],
+          ),
         ),
       ),
     );
@@ -219,9 +229,9 @@ class _OfferFormViewState extends State<OfferFormView> {
       padding: const EdgeInsets.only(top: 7, bottom: 7),
       child: Row(
         children: [
-          dateField(widget._dateFrom, widget._dateFromText, 'Nuo', Icons.today),
+          dateField(widget._dateFrom, widget._dateFromText, dateFromValidator, 'Nuo', Icons.today),
           const SizedBox(width: 16),
-          dateField(widget._dateTo, widget._dateToText, 'Iki', Icons.event),
+          dateField(widget._dateTo, widget._dateToText, dateToValidator, 'Iki', Icons.event),
         ],
       ),
     );
@@ -233,9 +243,9 @@ class _OfferFormViewState extends State<OfferFormView> {
       padding: const EdgeInsets.only(top: 7, bottom: 7),
       child: Row(
         children: [
-          textField('Laisvų', widget._freeRoomText, keyboardType: TextInputType.number, icon: Icons.meeting_room_outlined),
+          textField('Laisvų', widget._freeRoomText, freeRoomCountValidator, keyboardType: TextInputType.number, icon: Icons.meeting_room_outlined),
           const SizedBox(width: 16),
-          textField('Iš viso', widget._totalRoomText, keyboardType: TextInputType.number, icon: Icons.home_outlined),
+          textField('Iš viso', widget._totalRoomText, totalRoomCountValidator, keyboardType: TextInputType.number, icon: Icons.home_outlined),
         ],
       ),
     );
@@ -256,17 +266,21 @@ class _OfferFormViewState extends State<OfferFormView> {
     );
   }
 
-  Widget textField(String label, TextEditingController controller, {IconData? icon, TextInputType keyboardType = TextInputType.text})
+  Widget textField(String label, TextEditingController controller, Function(String?) validator, {IconData? icon, TextInputType keyboardType = TextInputType.text, String helperText = '', int? maxLength})
   {
     return Flexible(
       child: Container(
         padding: const EdgeInsets.only(top: 7, bottom: 7),
-        child: TextField(
+        child: TextFormField(
           keyboardType: keyboardType,
           controller: controller,
+          maxLength: maxLength,
+          validator: (value){
+            return validator(value);
+          },
           decoration: InputDecoration(
               labelText: label,
-              helperText: '',
+              helperText: helperText,
               prefixIcon: icon != null ? Icon(icon) : null,
               border: const OutlineInputBorder()
           ),
@@ -275,7 +289,7 @@ class _OfferFormViewState extends State<OfferFormView> {
     );
   }
 
-  Widget dateField(DateTime? value, TextEditingController controller, String label, IconData icon)
+  Widget dateField(DateTime? value, TextEditingController controller, Function(String?) validator, String label, IconData icon)
   {
     var firstDate = DateTime.now();
     var lastDate = DateTime(firstDate.year + 100);
@@ -284,13 +298,16 @@ class _OfferFormViewState extends State<OfferFormView> {
       child: Container(
         padding: const EdgeInsets.only(bottom: 7),
         child: GestureDetector(
-          child: TextField(
+          child: TextFormField(
             readOnly: true,
             controller: controller,
+            validator: (value){
+              return validator(value);
+            },
             decoration: InputDecoration(
                 helperText: '',
                 label: Text(label),
-                hintText: 'mm/dd/yyyy',
+                hintText: 'MM/dd/yyyy',
                 prefixIcon: Icon(icon),
                 border: const OutlineInputBorder()
             ),
@@ -301,10 +318,11 @@ class _OfferFormViewState extends State<OfferFormView> {
                   firstDate: firstDate,
                   lastDate: lastDate
               ).then((newValue) {
+                if(newValue == null) return;
+                value = newValue;
+                controller.text = dateToString(newValue);
                 setState(() {
-                  if(newValue == null) return;
-                  value = newValue;
-                  controller.text = dateToString(newValue);
+
                 });
               });
             },
@@ -323,6 +341,9 @@ class _OfferFormViewState extends State<OfferFormView> {
         width: double.infinity,
         child: TextButton(
           onPressed: () async {
+            if(!_formKey.currentState!.validate()) {
+              return;
+            }
             if(widget.isEditingMode) {
               await updateOffer();
             } else {
@@ -382,14 +403,14 @@ class _OfferFormViewState extends State<OfferFormView> {
     newOffer.city = widget._cityText.text;
     newOffer.address = widget._addressText.text;
     newOffer.monthlyPrice = double.parse(widget._priceText.text);
-    newOffer.area = double.parse(widget._areaText.text);
-    newOffer.availableFrom =DateFormat('dd/MM/yyyy').parse(widget._dateFromText.text);
-    newOffer.availableTo = DateFormat('dd/MM/yyyy').parse(widget._dateToText.text);
+    newOffer.area = double.tryParse(widget._areaText.text);
+    newOffer.availableFrom =DateFormat('MM/dd/yyyy').parse(widget._dateFromText.text);
+    newOffer.availableTo = DateFormat('MM/dd/yyyy').parse(widget._dateToText.text);
     newOffer.ruleSmoking = widget.smokingRuleButton.isEnabled;
     newOffer.ruleAnimals = widget.animalRuleButton.isEnabled;
     newOffer.freeRoomCount = int.parse(widget._freeRoomText.text);
     newOffer.totalRoomCount = int.parse(widget._totalRoomText.text);
-    newOffer.bedCount = int.parse(widget._bedCountText.text);
+    newOffer.bedCount = int.tryParse(widget._bedCountText.text);
     newOffer.bedType = BedType.values[widget.bedTypeButton!.isButtonSelected.indexOf(true)];
 
     newOffer.accommodationTv = widget.accommodationTv.isEnabled;
@@ -399,12 +420,108 @@ class _OfferFormViewState extends State<OfferFormView> {
     newOffer.accommodationBalcony = widget.accommodationBalcony.isEnabled;
     newOffer.accommodationDisability = widget.accommodationDisability.isEnabled;
 
+    //empty values
+    newOffer.area ??= 0;
+    newOffer.bedCount ??= 0;
+
     return newOffer;
   }
 
   String dateToString(DateTime dateTime)
   {
     return DateFormat('MM/dd/yyyy').format(dateTime);
+  }
+
+  String? titleValidator(String? value){
+    if(value == null || value.isEmpty)
+    {
+      ScaffoldMessenger.of(context).showSnackBar(validationFailed);
+      return 'Įveskite skelbimo pavadinimą';
+    }
+    if(value.length > 50)
+    {
+      ScaffoldMessenger.of(context).showSnackBar(validationFailed);
+      return 'Neviršykite 50 simbolių';
+    }
+    return null;
+  }
+
+  String? basicFieldValidator(String? value){
+    if(value == null || value.isEmpty)
+    {
+      ScaffoldMessenger.of(context).showSnackBar(validationFailed);
+      return 'Įveskite reikšmę';
+    }
+    return null;
+  }
+
+  String? freeRoomCountValidator(String? value){
+    if(value == null || value.isEmpty)
+    {
+      ScaffoldMessenger.of(context).showSnackBar(validationFailed);
+      return 'Įveskite reikšmę';
+    }
+    if(int.parse(value) > int.parse(widget._totalRoomText.text))
+    {
+      ScaffoldMessenger.of(context).showSnackBar(validationFailed);
+      return 'Bloga reikšmė';
+    }
+    return null;
+  }
+
+  String? totalRoomCountValidator(String? value){
+    if(value == null || value.isEmpty)
+    {
+      ScaffoldMessenger.of(context).showSnackBar(validationFailed);
+      return 'Įveskite reikšmę';
+    }
+    return null;
+  }
+
+  String? noValidation(String? value){
+    return null;
+  }
+
+  String? dateFromValidator(String? value)
+  {
+    if(value == null || value.isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(validationFailed);
+      return 'Įveskite datą';
+    }
+    DateTime? dateFrom, dateTo;
+    try{
+      dateFrom = DateFormat('MM/dd/yyyy').parse(widget._dateFromText.text);
+    } on FormatException{
+      ScaffoldMessenger.of(context).showSnackBar(validationFailed);
+      return 'Įveskite datą';
+    }
+
+    try{
+      dateTo = DateFormat('MM/dd/yyyy').parse(widget._dateToText.text);
+    } on FormatException{
+      dateTo = null;
+    }
+
+    if(dateTo == null || dateFrom.isAfter(dateTo) || dateFrom.isAtSameMomentAs(dateTo)) {
+      ScaffoldMessenger.of(context).showSnackBar(validationFailed);
+      return 'Klaidingas laikotarpis';
+    }
+    return null;
+  }
+
+  String? dateToValidator(String? value)
+  {
+    if(value == null || value.isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(validationFailed);
+      return 'Įveskite datą';
+    }
+    try{
+      DateFormat('MM/dd/yyyy').parse(widget._dateToText.text);
+    } on FormatException{
+      ScaffoldMessenger.of(context).showSnackBar(validationFailed);
+      return 'Įveskite datą';
+    }
+    return null;
   }
 
 }

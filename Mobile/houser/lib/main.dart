@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:io';
 
 import 'package:flutter/foundation.dart';
@@ -22,7 +23,13 @@ void main() async {
 
 Future ensureLoggedIn() async
 {
-  bool _isLoggedInResult = await isLoggedIn();
+  bool _isLoggedInResult = false;
+  try{
+    _isLoggedInResult = await isLoggedIn().timeout(const Duration(seconds: 3));
+  }on TimeoutException catch(e)
+  {
+    _isLoggedInResult = false;
+  }
   if (kDebugMode) {
     print('Is logged in result: $_isLoggedInResult');
   }
