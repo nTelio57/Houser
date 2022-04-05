@@ -22,7 +22,7 @@ class Offer{
   @JsonKey(defaultValue: true)
   bool utilityBillsRequired = true;
   @JsonKey(defaultValue: 0)
-  double area = 75;
+  double? area = 75;
 
   DateTime availableFrom = DateTime.now();
   DateTime availableTo = DateTime.now().add(const Duration(days: 90));
@@ -37,8 +37,8 @@ class Offer{
   @JsonKey(defaultValue: false)
   bool ruleAnimals = true;
 
-  @JsonKey(defaultValue: 1)
-  int bedCount = 1;
+  @JsonKey(defaultValue: 0)
+  int? bedCount = 1;
   BedType bedType = BedType.single;
 
   @JsonKey(defaultValue: false)

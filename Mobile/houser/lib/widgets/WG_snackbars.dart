@@ -15,3 +15,7 @@ const failedLogin = SnackBar(
 const failedFileUpload = SnackBar(
     content: Text('Nepavyko įkelti failo.')
 );
+
+const validationFailed = SnackBar(
+    content: Text('Patikrinkite įvestus duomenis.')
+);
