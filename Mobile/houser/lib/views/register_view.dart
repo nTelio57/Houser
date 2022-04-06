@@ -89,7 +89,7 @@ class _RegisterViewState extends State<RegisterView> {
           },
           style: TextButton.styleFrom(
             primary: Colors.white,
-            padding: const EdgeInsets.only(right: 32, top: 16, bottom: 16),
+            padding: const EdgeInsets.only(right: 16, top: 16, bottom: 16),
           ),
           icon: const Icon(
             Icons.west,
@@ -139,10 +139,6 @@ class _RegisterViewState extends State<RegisterView> {
     if(value.length < 8)
       {
         return 'Slaptažodį turi sudaryti bent 8 simboliai';
-      }
-    if(!value.hasUpperCase)
-      {
-        return 'Trūksta didžiosios raidės.';
       }
     return null;
   }

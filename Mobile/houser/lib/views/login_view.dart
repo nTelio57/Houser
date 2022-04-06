@@ -85,7 +85,7 @@ class _LoginViewState extends State<LoginView> {
           },
           style: TextButton.styleFrom(
             primary: Colors.white,
-            padding: const EdgeInsets.only(right: 32, top: 16, bottom: 16),
+            padding: const EdgeInsets.only(right: 16, top: 16, bottom: 16),
           ),
           icon: const Icon(
             Icons.west,
