@@ -288,7 +288,7 @@ class _RegisterViewState extends State<RegisterView> {
                   currentLogin.user = authResult.user!;
                   currentLogin.saveUserDataToSharedPreferences();
 
-                  Navigator.push(context, MaterialPageRoute(builder: (context) => PersonalDetailsCreateStepper()));
+                  Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (context) => PersonalDetailsCreateStepper()), (Route<dynamic> route) => false);
                 }
                 else{
                   ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(authResult.errors!.first)));

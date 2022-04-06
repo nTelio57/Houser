@@ -181,7 +181,7 @@ class _PersonalDetailsCreateStepperState extends State<PersonalDetailsCreateStep
     if(result)
       {
         await CurrentLogin().loadUserDataFromSharedPreferences();
-        Navigator.push(context, MaterialPageRoute(builder: (context) => const OfferView()));
+        Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (context) => const OfferView()), (Route<dynamic> route) => false);
       }
     return;
   }

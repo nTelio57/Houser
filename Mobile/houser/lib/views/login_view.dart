@@ -265,7 +265,7 @@ class _LoginViewState extends State<LoginView> {
                   if(CurrentLogin().user!.name == null) {
                     Navigator.push(context, MaterialPageRoute(builder: (context) => PersonalDetailsCreateStepper()));
                   } else {
-                    Navigator.push(context, MaterialPageRoute(builder: (context) => const OfferView()));
+                    Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (context) => const OfferView()), (Route<dynamic> route) => false);
                   }
                 }
                 else{
