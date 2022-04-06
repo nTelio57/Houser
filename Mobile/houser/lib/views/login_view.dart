@@ -255,7 +255,7 @@ class _LoginViewState extends State<LoginView> {
             {
               AuthRequest authRequest = AuthRequest(_emailTextController.text, _passwordTextController.text);
               try{
-                var authResult = await widget._apiService.Login(authRequest).timeout(const Duration(seconds: 3));
+                var authResult = await widget._apiService.Login(authRequest).timeout(const Duration(seconds: 5));
                 if(authResult.success!)
                 {
                   currentLogin.jwtToken = authResult.token!;

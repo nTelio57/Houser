@@ -108,7 +108,7 @@ class _WGAlbumSliderState extends State<WGAlbumSlider> {
       File file = File(result.files.single.path!);
       print('Selected '+ file.path);
       try{
-        ApiResponse postResult = await widget._apiService.PostImage(file.path).timeout(const Duration(seconds: 4));
+        ApiResponse postResult = await widget._apiService.PostImage(file.path).timeout(const Duration(seconds: 5));
         if(postResult.statusCode.isSuccessStatusCode)
         {
           setState(() {

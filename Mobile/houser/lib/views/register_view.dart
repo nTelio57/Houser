@@ -277,7 +277,7 @@ class _RegisterViewState extends State<RegisterView> {
             {
               AuthRequest authRequest = AuthRequest(_emailTextController.text, _passwordTextController.text);
               try{
-                AuthResult authResult = await widget._apiService.Register(authRequest).timeout(const Duration(seconds: 3));
+                AuthResult authResult = await widget._apiService.Register(authRequest).timeout(const Duration(seconds: 5));
                 if(authResult.success!)
                 {
                   currentLogin.jwtToken = authResult.token!;
