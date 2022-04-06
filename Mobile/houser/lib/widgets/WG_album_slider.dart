@@ -66,21 +66,43 @@ class _WGAlbumSliderState extends State<WGAlbumSlider> {
     var deviceHeight = MediaQuery.of(context).size.height;
     double imageHeight = deviceHeight * 0.25;
 
-    return SizedBox(
-      height: imageHeight,
-      child: Card(
-        elevation: 8,
-        shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(8)
-        ),
-        child: AspectRatio(
-          aspectRatio: 2/3,
-          child: ClipRRect(
-            borderRadius: BorderRadius.circular(8),
-            child: networkImage(id),
+    return Stack(
+      children: [
+        SizedBox(
+          height: imageHeight,
+          child: Card(
+            elevation: 8,
+            shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(8)
+            ),
+            child: AspectRatio(
+              aspectRatio: 2/3,
+              child: ClipRRect(
+                borderRadius: BorderRadius.circular(8),
+                child: networkImage(id),
+              ),
+            ),
           ),
         ),
-      ),
+        Positioned.fill(
+            child: SizedBox(
+              height: imageHeight,
+              child: Card(
+                elevation: 8,
+                color: Colors.transparent,
+                shadowColor: Colors.transparent,
+                child: Material(
+                    color: Colors.transparent,
+                    child: InkWell(
+                      splashColor: Colors.white.withOpacity(0.2),
+                      borderRadius: BorderRadius.circular(8),
+                      onTap: () {},
+                    )
+                ),
+              ),
+            )
+        )
+      ],
     );
   }
 
@@ -135,47 +157,69 @@ class _WGAlbumSliderState extends State<WGAlbumSlider> {
     var deviceHeight = MediaQuery.of(context).size.height;
     double imageHeight = deviceHeight * 0.25;
 
-    return SizedBox(
-      height: imageHeight,
-      child: GestureDetector(
-        onTap: onTap,
-        child: Card(
-          elevation: 8,
-          shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(8)
-          ),
-          child: AspectRatio(
-            aspectRatio: 2/3,
-            child: Container(
-              decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(8),
-                  border: Border.all(
-                      color: Theme.of(context).primaryColor,
-                      width: 4
-                  )
+    return Stack(
+      children: [
+        SizedBox(
+          height: imageHeight,
+          child: GestureDetector(
+            onTap: onTap,
+            child: Card(
+              elevation: 8,
+              shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(8)
               ),
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Icon(
-                    icon,
-                    color: Theme.of(context).primaryColor,
-                    size: 40,
+              child: AspectRatio(
+                aspectRatio: 2/3,
+                child: Container(
+                  decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(8),
+                      border: Border.all(
+                          color: Theme.of(context).primaryColor,
+                          width: 4
+                      )
                   ),
-                  Text(
-                    text,
-                    textAlign: TextAlign.center,
-                    style: TextStyle(
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Icon(
+                        icon,
                         color: Theme.of(context).primaryColor,
-                        fontWeight: FontWeight.w600
-                    ),
-                  )
-                ],
+                        size: 40,
+                      ),
+                      Text(
+                        text,
+                        textAlign: TextAlign.center,
+                        style: TextStyle(
+                            color: Theme.of(context).primaryColor,
+                            fontWeight: FontWeight.w600
+                        ),
+                      )
+                    ],
+                  ),
+                ),
               ),
             ),
           ),
         ),
-      ),
+        Positioned.fill(
+            child: SizedBox(
+              height: imageHeight,
+              child: Card(
+                elevation: 8,
+                color: Colors.transparent,
+                shadowColor: Colors.transparent,
+                child: Material(
+                    color: Colors.transparent,
+                    child: InkWell(
+                      splashColor: Theme.of(context).primaryColor.withOpacity(0.2),
+                      borderRadius: BorderRadius.circular(8),
+                      onTap: () {},
+                    )
+                ),
+              ),
+            )
+        )
+      ],
     );
   }
 
