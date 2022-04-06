@@ -1,7 +1,4 @@
-﻿using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
-using System;
-using System.Collections.Generic;
+﻿using Microsoft.AspNetCore.Mvc;
 using System.Linq;
 using System.Threading.Tasks;
 using AutoMapper;
@@ -35,6 +32,7 @@ namespace HouserAPI.Controllers
         [AllowAnonymous]
         public async Task<IActionResult> Register(UserCreateDto authRequest)
         {
+            authRequest.Email = authRequest.Email.Trim();
             var user = await _userManager.FindByEmailAsync(authRequest.Email);
             if (user != null)
             {
