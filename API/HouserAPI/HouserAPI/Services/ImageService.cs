@@ -73,7 +73,15 @@ namespace HouserAPI.Services
             if (image == null)
                 return false;
 
-            File.Delete(image.Path);
+            try
+            {
+                File.Delete(image.Path);
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine($"Failed to delete image file of id {id} with error: {e.Message}");
+            }
+            
             await _repository.Delete(image);
             return await _repository.SaveChanges();
         }
