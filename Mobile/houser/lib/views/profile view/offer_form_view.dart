@@ -69,6 +69,7 @@ class _OfferFormViewState extends State<OfferFormView> {
 
   final _formKey = GlobalKey<FormState>();
   bool editInitialized = false;
+  bool _isLoginButtonEnabled = true;
 
   @override
   Widget build(BuildContext context) {
@@ -207,6 +208,7 @@ class _OfferFormViewState extends State<OfferFormView> {
   {
     return Container(
       padding: const EdgeInsets.only(top: 7, bottom: 14),
+      width: double.infinity,
       child: Wrap(
         spacing: 16,
         runSpacing: 8,
@@ -340,7 +342,11 @@ class _OfferFormViewState extends State<OfferFormView> {
         height: 90,
         width: double.infinity,
         child: TextButton(
-          onPressed: () async {
+          onPressed: !_isLoginButtonEnabled ? null : () async {
+            setState(() {
+              //_isLoginButtonEnabled = false;
+            });
+
             if(!_formKey.currentState!.validate()) {
               return;
             }
@@ -349,6 +355,10 @@ class _OfferFormViewState extends State<OfferFormView> {
             } else {
               await uploadOffer();
             }
+
+            setState(() {
+              _isLoginButtonEnabled = true;
+            });
           },
           style: TextButton.styleFrom(
             backgroundColor: Theme.of(context).primaryColor
@@ -367,7 +377,7 @@ class _OfferFormViewState extends State<OfferFormView> {
 
   Future updateOffer() async
   {
-    var newOffer = getOfferByForm(replacer: widget.offerToEdit);
+    var newOffer = getOfferByForm();
 
     var result = await widget._apiService.UpdateOfer(widget.offerToEdit!.id, newOffer);
     if(result)
@@ -387,18 +397,9 @@ class _OfferFormViewState extends State<OfferFormView> {
       }
   }
 
-  Offer getOfferByForm({Offer? replacer})
+  Offer getOfferByForm()
   {
-    Offer newOffer;
-    if(replacer != null)
-      {
-        newOffer = replacer;
-      }
-    else
-      {
-        newOffer = Offer(title: widget._titleText.text);
-      }
-
+    Offer newOffer = Offer(title: widget._titleText.text);
     newOffer.ownerId = CurrentLogin().user!.id;
     newOffer.city = widget._cityText.text;
     newOffer.address = widget._addressText.text;

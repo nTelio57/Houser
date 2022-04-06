@@ -59,7 +59,7 @@ class _MyOfferListViewState extends State<MyOfferListView> {
   Widget offerLoader()
   {
     return FutureBuilder(
-      future: loadOffers(),
+      future: loadOffers().timeout(const Duration(seconds: 5)),
       builder: (BuildContext context, AsyncSnapshot<dynamic> snapshot)
       {
         if(snapshot.hasData)
@@ -68,8 +68,17 @@ class _MyOfferListViewState extends State<MyOfferListView> {
           }
         else if(snapshot.hasError)
           {
-            return Container(
-              color: Colors.red,
+            return SizedBox(
+              width: double.infinity,
+              child: Text(
+                'Įvyko klaida bandant gauti pasiūlymų sąrašą.'.toUpperCase(),
+                textAlign: TextAlign.center,
+                style: const TextStyle(
+                  fontWeight: FontWeight.w700,
+                  fontSize: 14,
+                  color: Colors.red
+                ),
+              ),
             );
           }
         else
@@ -122,7 +131,7 @@ class _MyOfferListViewState extends State<MyOfferListView> {
   void onVisibilityClicked(Offer offer)
   {
     offer.isVisible = !offer.isVisible;
-    widget._apiService.UpdateOfer(offer.id, offer).timeout(const Duration(seconds: 2)).then((value) {
+    widget._apiService.UpdateOfer(offer.id, offer).timeout(const Duration(seconds: 5)).then((value) {
       setState(() {
 
       });
@@ -142,7 +151,7 @@ class _MyOfferListViewState extends State<MyOfferListView> {
   }
 
   void handleVisibilityException(Object o){
-    ScaffoldMessenger.of(context).showSnackBar(noConnectionSnackbar);
+    ScaffoldMessenger.of(context).showSnackBar(visibilityChangeFailed);
   }
 
   void onDeleteClicked(Offer offer)
@@ -151,12 +160,6 @@ class _MyOfferListViewState extends State<MyOfferListView> {
       context: context,
       builder: (context) => deleteDialog(offer)
     );
-
-    /*widget._apiService.DeleteOffer(offer.id).then((value) {
-      setState(() {
-
-      });
-    });*/
   }
 
   AlertDialog deleteDialog(Offer offer)

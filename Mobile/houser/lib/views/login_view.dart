@@ -85,7 +85,7 @@ class _LoginViewState extends State<LoginView> {
           },
           style: TextButton.styleFrom(
             primary: Colors.white,
-            padding: const EdgeInsets.only(right: 32, top: 16, bottom: 16),
+            padding: const EdgeInsets.only(right: 16, top: 16, bottom: 16),
           ),
           icon: const Icon(
             Icons.west,
@@ -255,7 +255,7 @@ class _LoginViewState extends State<LoginView> {
             {
               AuthRequest authRequest = AuthRequest(_emailTextController.text, _passwordTextController.text);
               try{
-                var authResult = await widget._apiService.Login(authRequest).timeout(const Duration(seconds: 3));
+                var authResult = await widget._apiService.Login(authRequest).timeout(const Duration(seconds: 5));
                 if(authResult.success!)
                 {
                   currentLogin.jwtToken = authResult.token!;
@@ -265,7 +265,7 @@ class _LoginViewState extends State<LoginView> {
                   if(CurrentLogin().user!.name == null) {
                     Navigator.push(context, MaterialPageRoute(builder: (context) => PersonalDetailsCreateStepper()));
                   } else {
-                    Navigator.push(context, MaterialPageRoute(builder: (context) => const OfferView()));
+                    Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (context) => const OfferView()), (Route<dynamic> route) => false);
                   }
                 }
                 else{

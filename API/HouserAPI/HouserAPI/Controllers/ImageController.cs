@@ -79,12 +79,19 @@ namespace HouserAPI.Controllers
                 var imageStream = System.IO.File.OpenRead(image.Path);
                 return File(imageStream, "image/png");
             }
+            catch (FileNotFoundException e)
+            {
+                await _imageService.Delete(id);
+                return BadRequest("Image file was not found.");
+            }
+            catch (DirectoryNotFoundException e)
+            {
+                await _imageService.Delete(id);
+                return BadRequest("Image file was not found.");
+            }
             catch (Exception e)
             {
-                if(e is FileNotFoundException || e is DirectoryNotFoundException)
-                    return BadRequest("Image file was not found.");
-
-                return BadRequest("Failed to post image.");
+                return BadRequest("Failed to find image.");
             }
         }
 

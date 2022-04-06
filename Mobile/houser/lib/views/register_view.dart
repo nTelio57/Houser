@@ -89,7 +89,7 @@ class _RegisterViewState extends State<RegisterView> {
           },
           style: TextButton.styleFrom(
             primary: Colors.white,
-            padding: const EdgeInsets.only(right: 32, top: 16, bottom: 16),
+            padding: const EdgeInsets.only(right: 16, top: 16, bottom: 16),
           ),
           icon: const Icon(
             Icons.west,
@@ -139,10 +139,6 @@ class _RegisterViewState extends State<RegisterView> {
     if(value.length < 8)
       {
         return 'Slaptažodį turi sudaryti bent 8 simboliai';
-      }
-    if(!value.hasUpperCase)
-      {
-        return 'Trūksta didžiosios raidės.';
       }
     return null;
   }
@@ -281,14 +277,14 @@ class _RegisterViewState extends State<RegisterView> {
             {
               AuthRequest authRequest = AuthRequest(_emailTextController.text, _passwordTextController.text);
               try{
-                AuthResult authResult = await widget._apiService.Register(authRequest).timeout(const Duration(seconds: 3));
+                AuthResult authResult = await widget._apiService.Register(authRequest).timeout(const Duration(seconds: 5));
                 if(authResult.success!)
                 {
                   currentLogin.jwtToken = authResult.token!;
                   currentLogin.user = authResult.user!;
                   currentLogin.saveUserDataToSharedPreferences();
 
-                  Navigator.push(context, MaterialPageRoute(builder: (context) => PersonalDetailsCreateStepper()));
+                  Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (context) => PersonalDetailsCreateStepper()), (Route<dynamic> route) => false);
                 }
                 else{
                   ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(authResult.errors!.first)));

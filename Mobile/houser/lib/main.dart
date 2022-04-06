@@ -25,7 +25,7 @@ Future ensureLoggedIn() async
 {
   bool _isLoggedInResult = false;
   try{
-    _isLoggedInResult = await isLoggedIn().timeout(const Duration(seconds: 3));
+    _isLoggedInResult = await isLoggedIn().timeout(const Duration(seconds: 5));
   }on TimeoutException catch(e)
   {
     _isLoggedInResult = false;
