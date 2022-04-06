@@ -208,6 +208,7 @@ class _OfferFormViewState extends State<OfferFormView> {
   {
     return Container(
       padding: const EdgeInsets.only(top: 7, bottom: 14),
+      width: double.infinity,
       child: Wrap(
         spacing: 16,
         runSpacing: 8,
