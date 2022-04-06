@@ -83,6 +83,7 @@ namespace HouserAPI.Controllers
         [AllowAnonymous]
         public async Task<IActionResult> Login(AuthRequest authRequest)
         {
+            authRequest.Email = authRequest.Email.Trim();
             var user = await _userManager.FindByEmailAsync(authRequest.Email);
             if (user == null)
             {
