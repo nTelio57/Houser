@@ -162,7 +162,7 @@ class _WGAlbumSliderState extends State<WGAlbumSlider> {
         SizedBox(
           height: imageHeight,
           child: GestureDetector(
-            onTap: onTap,
+            onTap: (){},
             child: Card(
               elevation: 8,
               shape: RoundedRectangleBorder(
@@ -213,7 +213,7 @@ class _WGAlbumSliderState extends State<WGAlbumSlider> {
                     child: InkWell(
                       splashColor: Theme.of(context).primaryColor.withOpacity(0.2),
                       borderRadius: BorderRadius.circular(8),
-                      onTap: () {},
+                      onTap: onTap,
                     )
                 ),
               ),
