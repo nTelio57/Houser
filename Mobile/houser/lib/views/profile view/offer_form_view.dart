@@ -106,7 +106,7 @@ class _OfferFormViewState extends State<OfferFormView> {
                 children: [
                   textField('Pavadinimas', widget._titleText, titleValidator, icon: Icons.title, maxLength: 50),
                   textField('Miestas', widget._cityText, basicFieldValidator, icon: Icons.location_city),
-                  textField('Adresas', widget._addressText, basicFieldValidator, icon: Icons.home),
+                  textField('Adresas', widget._addressText, basicFieldValidator, icon: Icons.location_on_outlined),
                   textField('Kaina', widget._priceText, basicFieldValidator, icon: Icons.euro, keyboardType: TextInputType.number),
                   textField('Plotas', widget._areaText, noValidation, icon: Icons.square_foot, keyboardType: TextInputType.number, helperText: 'Neprivaloma'),
                   durationDates(),

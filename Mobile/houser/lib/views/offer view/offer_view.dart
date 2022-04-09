@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:houser/views/profile%20view/profile_view.dart';
+import 'package:sliding_up_panel/sliding_up_panel.dart';
 
 class OfferView extends StatefulWidget {
   const OfferView({Key? key}) : super(key: key);
@@ -26,12 +27,95 @@ class _OfferViewState extends State<OfferView> {
   {
     return Stack(
       children: [
-        image(),
+        slidingUpPanel(),
         topPanel(),
-        bottomPanel(),
+        //bottomPanel(),
       ],
     );
   }
+
+  Widget slidingUpPanel()
+  {
+    var deviceHeight = MediaQuery.of(context).size.height;
+
+    return SlidingUpPanel(
+      panel: slidePanel(),//Tas kas slidina
+      body: image(),//pagr vaizdas
+      collapsed: slidePanelCollapsed(),
+      renderPanelSheet: false,
+      minHeight: deviceHeight * 0.24,
+    );
+  }
+
+  Widget slidePanelCollapsed()
+  {
+    return Container(
+      child: Wrap(
+        children: [
+          Container(
+            decoration: const BoxDecoration(
+              color: Colors.transparent,
+              borderRadius: BorderRadius.only(topLeft: Radius.circular(16.0), topRight: Radius.circular(16.0)),
+            ),
+            margin: const EdgeInsets.fromLTRB(12.0, 0, 12.0, 12),
+            padding: const EdgeInsets.fromLTRB(20, 20, 20, 20),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                title(),
+                durationDate(),
+                price(),
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget offerDetailsList()
+  {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        title(),
+        durationDate(),
+        price(),
+        const SizedBox(height: 47),
+        basicTextField(Icons.location_city, 'Kaunas'),
+        basicTextField(Icons.location_on, 'K. Baršausko g. 86'),
+        basicTextField(Icons.square_foot, ('75m\u00B2')),
+        basicTextField(Icons.meeting_room, '1 laisvas kambarys iš 3'),
+        const SizedBox(height: 20),
+        basicTextField(Icons.tv, 'TV'),
+        basicTextField(Icons.wifi, 'Wifi'),
+        basicTextField(Icons.balcony, 'Balkonas'),
+      ],
+    );
+  }
+
+  Widget slidePanel()
+  {
+    return Container(
+      decoration: BoxDecoration(
+          color: Theme.of(context).primaryColor.withOpacity(0.7),
+          borderRadius: const BorderRadius.all(Radius.circular(16.0)),
+          boxShadow: [
+            BoxShadow(
+              blurRadius: 10.0,
+              color: Theme.of(context).primaryColor.withOpacity(0.3),
+            ),
+          ]
+      ),
+      margin: const EdgeInsets.fromLTRB(12.0, 0, 12.0, 12),
+      padding: const EdgeInsets.fromLTRB(20, 20, 20, 20),
+      child: offerDetailsList(
+
+      ),
+    );
+  }
+
+
 
   Widget image()
   {
@@ -153,10 +237,6 @@ class _OfferViewState extends State<OfferView> {
         crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             title(),
-            const Spacer(),
-            location(),
-            const SizedBox(height: 4),
-            spaceCount(),
           ],
       ),
     );
@@ -164,50 +244,61 @@ class _OfferViewState extends State<OfferView> {
 
   Widget title()
   {
-    return const Text(
-      'Ieškomas vienas kambariokas labai labai ilgas ir dar ilgesnis pavadinimas',
+    return Text(
+      'Ieškomas vienas kambariokas dviems mėnesiams'.toUpperCase(),
       textAlign: TextAlign.left,
-      style: TextStyle(
+      maxLines: 3,
+      overflow: TextOverflow.ellipsis,
+      style: const TextStyle(
         color: Colors.white,
-        fontSize: 20
+        fontSize: 23,
+        fontWeight: FontWeight.w800
       ),
     );
   }
 
-  Widget location()
+  Widget durationDate()
   {
-    return Row(
-      children: const [
-        Icon(
-          Icons.place,
+    return const Text(
+      '04/09/2022 - 12/29/2022',
+      style: TextStyle(
           color: Colors.white,
-        ),
-        Text(
-          'Kaunas, Baršausko g. 86',
-          style: TextStyle(
-            color: Colors.white,
-            fontSize: 16
-          ),
-        )
-      ],
+          fontSize: 16,
+          fontWeight: FontWeight.w700
+      ),
     );
   }
 
-  Widget spaceCount()
+  Widget price()
+  {
+    return const Text(
+      '150.00\$',
+      style: TextStyle(
+          color: Colors.white,
+          fontSize: 23,
+          fontWeight: FontWeight.w700
+      ),
+    );
+  }
+
+  Widget basicTextField(IconData icon, String text)
   {
     return Row(
-      children: const [
+      children: [
         Icon(
-          Icons.person_search,
+          icon,
           color: Colors.white,
+          size: 20,
         ),
+        const SizedBox(width: 5),
         Text(
-          '1/3',
-          style: TextStyle(
+          text,
+          style: const TextStyle(
               color: Colors.white,
-              fontSize: 16
+              fontSize: 19,
+              fontWeight: FontWeight.w600
           ),
-        )
+        ),
       ],
     );
   }
