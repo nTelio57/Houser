@@ -8,6 +8,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Threading.Tasks;
+using HouserAPI.DTOs.Offer;
 
 namespace HouserAPI.Services
 {
@@ -24,11 +25,21 @@ namespace HouserAPI.Services
             _hostEnvironment = hostEnvironment;
         }
 
-        public async Task<ImageReadDto> Create(string userId, IFormFile image)
+        public async Task<ImageReadDto> CreateUserImage(string userId, IFormFile image)
+        {
+            return await Create(userId, $"Images/User/{userId}", image);
+        }
+
+        public async Task<ImageReadDto> CreateOfferImage(string userId, OfferReadDto offer, IFormFile image)
+        {
+            return await Create(userId, $"Images/Offer/{offer.Id}", image);
+        }
+
+        private async Task<ImageReadDto> Create(string userId, string imageDirectory, IFormFile image)
         {
             string extension = Path.GetExtension(image.FileName);
             string fileName = DateTime.Now.ToString("yyyyMMddHHmmssff") + extension;
-            string directory = Path.Combine(_hostEnvironment.ContentRootPath, $"Images/{userId}");
+            string directory = Path.Combine(_hostEnvironment.ContentRootPath, imageDirectory);
             string fullPath = Path.Combine($"{directory}/{fileName}");
 
             Directory.CreateDirectory(directory);
