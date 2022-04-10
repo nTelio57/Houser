@@ -4,18 +4,15 @@ import 'dart:io';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
-import 'package:houser/extensions/int_extensions.dart';
 import 'package:houser/utils/current_login.dart';
 import 'package:houser/models/Image.dart' as apiImage;
-import 'package:houser/services/api_client.dart';
 import 'package:houser/services/api_service.dart';
-import 'package:houser/widgets/WG_snackbars.dart';
 
 class WGAlbumSlider extends StatefulWidget {
 
   List<apiImage.Image> images;
   final ApiService _apiService = ApiService();
-  Function() onUpload;
+  Function(File) onUpload;
 
   WGAlbumSlider(this.images, this.onUpload, {Key? key}) : super(key: key);
 
@@ -56,12 +53,12 @@ class _WGAlbumSliderState extends State<WGAlbumSlider> {
       itemBuilder: (context, index)
       {
         if(index == 0) return newPhotoCard!;
-        return photoCard(images[index-1].id);
+        return photoCard(images[index-1]);
       }
     );
   }
 
-  Widget photoCard(int id)
+  Widget photoCard(apiImage.Image image)
   {
     var deviceHeight = MediaQuery.of(context).size.height;
     double imageHeight = deviceHeight * 0.25;
@@ -79,7 +76,7 @@ class _WGAlbumSliderState extends State<WGAlbumSlider> {
               aspectRatio: 2/3,
               child: ClipRRect(
                 borderRadius: BorderRadius.circular(8),
-                child: networkImage(id),
+                child: image.id != 0 ? networkImage(image.id) : localImage(image.path),
               ),
             ),
           ),
@@ -120,6 +117,15 @@ class _WGAlbumSliderState extends State<WGAlbumSlider> {
     );
   }
 
+  Widget localImage(String path)
+  {
+    return Image.file(
+        File(path),
+      fit: BoxFit.fitHeight,
+      alignment: FractionalOffset.center,
+    );
+  }
+
   Future uploadImage() async
   {
     FilePickerResult? result = await FilePicker.platform.pickFiles(
@@ -129,23 +135,7 @@ class _WGAlbumSliderState extends State<WGAlbumSlider> {
     if (result != null) {
       File file = File(result.files.single.path!);
       print('Selected '+ file.path);
-      try{
-        ApiResponse postResult = await widget._apiService.PostImage(file.path).timeout(const Duration(seconds: 5));
-        if(postResult.statusCode.isSuccessStatusCode)
-        {
-          setState(() {
-            widget.onUpload();
-          });
-        }else{
-          ScaffoldMessenger.of(context).showSnackBar(failedFileUpload);
-        }
-      }on SocketException {
-        ScaffoldMessenger.of(context).showSnackBar(noConnectionSnackbar);
-      } on TimeoutException {
-        ScaffoldMessenger.of(context).showSnackBar(serverErrorSnackbar);
-      } on Exception {
-        ScaffoldMessenger.of(context).showSnackBar(failedFileUpload);
-      }
+      await widget.onUpload(file);
 
     } else {
       // Atšaukė nuotraukos pasirinkimą

@@ -72,9 +72,15 @@ class ApiService {
     return parsed.map<Image>((e) => Image.fromJson(e)).toList();
   }
 
-  Future<ApiResponse> PostImage(String path) async
+  Future<ApiResponse> PostUserImage(String path) async
   {
-    ApiResponse response = await _apiClient.PostImage('/api/Image', path);
+    ApiResponse response = await _apiClient.PostImage('/api/Image/user', path);
+    return response;
+  }
+
+  Future<ApiResponse> PostOfferImage(String path, int offerId) async
+  {
+    ApiResponse response = await _apiClient.PostImage('/api/Image/offer/$offerId', path);
     return response;
   }
 
