@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:houser/models/CurrentLogin.dart';
+import 'package:houser/utils/current_login.dart';
 import 'package:houser/services/api_service.dart';
 import 'package:houser/views/profile%20view/my_offer_list_view.dart';
 import 'package:houser/views/welcome_view.dart';

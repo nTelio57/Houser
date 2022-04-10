@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:houser/enums/BedType.dart';
 import 'package:houser/extensions/int_extensions.dart';
-import 'package:houser/models/CurrentLogin.dart';
+import 'package:houser/utils/current_login.dart';
 import 'package:houser/models/Offer.dart';
 import 'package:houser/models/widget_data/multi_button_selection.dart';
 import 'package:houser/services/api_client.dart';

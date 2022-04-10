@@ -5,7 +5,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:houser/extensions/int_extensions.dart';
-import 'package:houser/models/CurrentLogin.dart';
+import 'package:houser/utils/current_login.dart';
 import 'package:houser/models/Image.dart' as apiImage;
 import 'package:houser/services/api_client.dart';
 import 'package:houser/services/api_service.dart';

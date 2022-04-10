@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:houser/enums/CardResponseType.dart';
-import 'package:houser/models/CurrentLogin.dart';
+import 'package:houser/utils/current_login.dart';
 import 'package:houser/models/Offer.dart';
 import 'package:houser/services/api_service.dart';
 

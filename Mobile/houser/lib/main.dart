@@ -3,7 +3,7 @@ import 'dart:io';
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:houser/models/CurrentLogin.dart';
+import 'package:houser/utils/current_login.dart';
 import 'package:houser/resources/app_colors.dart';
 import 'package:houser/views/offer%20view/offer_view.dart';
 import 'package:houser/views/welcome_view.dart';
