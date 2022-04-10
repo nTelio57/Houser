@@ -6,8 +6,9 @@ import 'package:flutter/material.dart';
 import 'package:houser/models/CurrentLogin.dart';
 import 'package:houser/resources/app_colors.dart';
 import 'package:houser/views/offer%20view/offer_view.dart';
-import 'package:houser/views/personal%20details%20view/personal_details_create_stepper.dart';
 import 'package:houser/views/welcome_view.dart';
+import 'package:houser/utils/offer_card_manager.dart';
+import 'package:provider/provider.dart';
 
 Widget _defaultHome = const WelcomeView();
 
@@ -26,8 +27,7 @@ Future ensureLoggedIn() async
   bool _isLoggedInResult = false;
   try{
     _isLoggedInResult = await isLoggedIn().timeout(const Duration(seconds: 5));
-  }on TimeoutException catch(e)
-  {
+  }on TimeoutException {
     _isLoggedInResult = false;
   }
   if (kDebugMode) {
@@ -63,22 +63,25 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'Houser',
-      theme: ThemeData(
-        primarySwatch: AppColors.primaryPalette,
-        primaryColor: AppColors.primaryColor,
-        backgroundColor: AppColors.backgroundColor,
+    return ChangeNotifierProvider(
+      create: (context) => OfferCardManager(),
+      child: MaterialApp(
+        title: 'Houser',
+        theme: ThemeData(
+          primarySwatch: AppColors.primaryPalette,
+          primaryColor: AppColors.primaryColor,
+          backgroundColor: AppColors.backgroundColor,
 
-        fontFamily: 'OpenSans',
-        textTheme: const TextTheme(
+          fontFamily: 'OpenSans',
+          textTheme: const TextTheme(
+
+          ),
+
+
 
         ),
-
-
-
+        home: _defaultHome,
       ),
-      home: _defaultHome,
     );
   }
 }
