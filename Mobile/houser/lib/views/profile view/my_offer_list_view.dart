@@ -26,13 +26,9 @@ class _MyOfferListViewState extends State<MyOfferListView> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-
+      floatingActionButton: newOfferFab(),
       body: body(),
-      appBar: AppBar(
-        actions: [
-          newOfferButton()
-        ],
-      ),
+      appBar: AppBar(),
       backgroundColor: Theme.of(context).backgroundColor,
     );
   }
@@ -213,6 +209,18 @@ class _MyOfferListViewState extends State<MyOfferListView> {
               ),)
         ),
       ],
+    );
+  }
+
+  Widget newOfferFab()
+  {
+    return FloatingActionButton(
+      backgroundColor: Theme.of(context).primaryColorDark,
+      child: const Icon(Icons.add),
+      onPressed: () {
+        Navigator.push(context, MaterialPageRoute(
+            builder: (context) => OfferFormView())).then((value) => setState((){}));
+      },
     );
   }
 
