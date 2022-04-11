@@ -2,21 +2,24 @@ import 'package:flutter/material.dart';
 import 'package:houser/models/widget_data/multi_button_selection.dart';
 import 'package:houser/widgets/WG_multi_button.dart';
 
-
+// ignore: must_be_immutable
 class PersonalDetailsThirdInfo extends StatefulWidget {
 
-  final List<MultiButtonSelection> _guestCountSelections = [MultiButtonSelection('0-1', null), MultiButtonSelection('2-3', null), MultiButtonSelection('4-5', null), MultiButtonSelection('6-7', null), MultiButtonSelection('>8', null)];
-  final List<MultiButtonSelection> _partyCountSelections = [MultiButtonSelection('0-1', null), MultiButtonSelection('2', null), MultiButtonSelection('3', null), MultiButtonSelection('4', null), MultiButtonSelection('>5', null)];
   final List<MultiButtonSelection> _sleepTimeSelections = [MultiButtonSelection('Vyturys', const Icon(Icons.wb_sunny)), MultiButtonSelection('Nei vienas', const Icon(Icons.compare_arrows)), MultiButtonSelection('Pelėda', const Icon(Icons.nights_stay))];
+  final List<MultiButtonSelection> _studySelections = [ MultiButtonSelection('Nestudijuoju', const Icon(Icons.home)), MultiButtonSelection('Studijuoju', const Icon(Icons.school))];
+  final List<MultiButtonSelection> _workSelections = [MultiButtonSelection('Nedirbu', const Icon(Icons.work_off)), MultiButtonSelection('Dirbu', const Icon(Icons.work))];
+  final List<MultiButtonSelection> _smokeSelections = [MultiButtonSelection('Nerūkau', const Icon(Icons.smoke_free)), MultiButtonSelection('Rūkau', const Icon(Icons.smoking_rooms))];
 
   WGMultiButton? sleepButtons;
-  WGMultiButton? guestCountButtons;
-  WGMultiButton? partyCountButtons;
+  WGMultiButton? studyButtons;
+  WGMultiButton? workButtons;
+  WGMultiButton? smokeButtons;
 
   PersonalDetailsThirdInfo({Key? key}) : super(key: key){
     sleepButtons = WGMultiButton(selections: _sleepTimeSelections);
-    guestCountButtons = WGMultiButton(selections: _guestCountSelections);
-    partyCountButtons = WGMultiButton(selections: _partyCountSelections);
+    studyButtons = WGMultiButton(selections: _studySelections);
+    workButtons = WGMultiButton(selections: _workSelections);
+    smokeButtons = WGMultiButton(selections: _smokeSelections);
   }
 
   @override
@@ -24,8 +27,6 @@ class PersonalDetailsThirdInfo extends StatefulWidget {
 }
 
 class _PersonalDetailsThirdInfoState extends State<PersonalDetailsThirdInfo> {
-
-  List<String> hours =  ['12h', '13h', '14h', '15h', '16h', '17h', '18h', '19h', '20h', '21h', '22h', '23h', '24h', '00h', '01h', '02h', '03h', '04h', '05h', '06h', '07h', '08h', '09h', '10h' , '11h',];
 
   @override
   Widget build(BuildContext context) {
@@ -36,12 +37,12 @@ class _PersonalDetailsThirdInfoState extends State<PersonalDetailsThirdInfo> {
   {
     return Column(
       children: [
-        label('Kokiomis valandomis dažniausiai miegate:'),
+        label('Kuriam tipui prisiskirtumėte save:'),
         widget.sleepButtons!,
-        label('Kiek kartų į mėnesį lankysis svečiai:'),
-        widget.guestCountButtons!,
-        label('Kiek kartų į mėnesį planuojate turėti vakarėlių:'),
-        widget.partyCountButtons!,
+        label('Informacija apie jus:'),
+        widget.studyButtons!,
+        widget.workButtons!,
+        widget.smokeButtons!,
       ],
     );
   }

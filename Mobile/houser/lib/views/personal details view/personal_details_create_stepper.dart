@@ -10,6 +10,7 @@ import 'personal_details_secondary_info.dart';
 
 import 'personal_details_third_info.dart';
 
+// ignore: must_be_immutable
 class PersonalDetailsCreateStepper extends StatefulWidget {
 
   final ApiService _apiService = ApiService();
@@ -155,14 +156,15 @@ class _PersonalDetailsCreateStepperState extends State<PersonalDetailsCreateStep
     var sex = widget._detailsA!.sexSelectionButtons!.isButtonSelected.indexOf(true);
 
     var animalCount = widget._detailsB!.animalCountSlider.selectedValue.toInt();
-    var isStudying = widget._detailsB!.studyButtons!.isButtonSelected.indexOf(true)== 0 ? false : true;
-    var isWorking = widget._detailsB!.workButtons!.isButtonSelected.indexOf(true)== 0 ? false : true;
-    var isSmoking = widget._detailsB!.smokeButtons!.isButtonSelected.indexOf(true)== 0 ? false : true;
+    var guestCount = widget._detailsB!.guestCountSlider.selectedValue.toInt();
+    var partyCount = widget._detailsB!.partyCountSlider.selectedValue.toInt();
+
+    var isStudying = widget._detailsC!.studyButtons!.isButtonSelected.indexOf(true)== 0 ? false : true;
+    var isWorking = widget._detailsC!.workButtons!.isButtonSelected.indexOf(true)== 0 ? false : true;
+    var isSmoking = widget._detailsC!.smokeButtons!.isButtonSelected.indexOf(true)== 0 ? false : true;
 
     var sleepType = SleepType.values[widget._detailsC!.sleepButtons!.isButtonSelected.indexOf(true)];
-    var guestCount = widget._detailsC!.guestCountButtons!.isButtonSelected.indexOf(true) * 2;
-    var partyCount = widget._detailsC!.partyCountButtons!.isButtonSelected.indexOf(true)+1;
-
+    
     User userUpdate = User('', '');
     userUpdate.name = name;
     userUpdate.birthDate = birthDate;
