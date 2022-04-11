@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:houser/models/widget_data/multi_button_selection.dart';
 
+// ignore: must_be_immutable
 class WGMultiButton extends StatefulWidget {
 
   final List<MultiButtonSelection> selections;
@@ -58,14 +59,17 @@ class _WGMultiButtonState extends State<WGMultiButton> {
 
   Widget singleButton(MultiButtonSelection selection)
   {
-    return SizedBox(
+    return Container(
         width: (MediaQuery.of(context).size.width-64)/widget.selections.length,
+        padding: const EdgeInsets.only(left: 10),
         child: Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             if (selection.icon != null) selection.icon!,
             if (selection.icon != null) const SizedBox(width: 10),
-            Text(selection.title),
+            Expanded(
+              child: Text(selection.title)
+            ),
           ],
         )
     );

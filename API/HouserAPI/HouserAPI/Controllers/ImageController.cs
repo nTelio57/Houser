@@ -4,7 +4,7 @@ using System;
 using System.IO;
 using System.Threading.Tasks;
 using HouserAPI.Auth;
-using HouserAPI.DTOs.Offer;
+using HouserAPI.DTOs.Image;
 using HouserAPI.Services;
 using Microsoft.AspNetCore.Authorization;
 
@@ -109,20 +109,38 @@ namespace HouserAPI.Controllers
                 var imageStream = System.IO.File.OpenRead(image.Path);
                 return File(imageStream, "image/png");
             }
-            catch (FileNotFoundException e)
+            catch (FileNotFoundException)
             {
                 await _imageService.Delete(id);
                 return BadRequest("Image file was not found.");
             }
-            catch (DirectoryNotFoundException e)
+            catch (DirectoryNotFoundException)
             {
                 await _imageService.Delete(id);
                 return BadRequest("Image file was not found.");
             }
-            catch (Exception e)
+            catch (Exception)
             {
                 return BadRequest("Failed to find image.");
             }
+        }
+
+        [HttpPut("{id}")]
+        public async Task<IActionResult> UpdateImage(int id, ImageUpdateDto imageUpdateDto)
+        {
+            var userId = User.FindFirst(CustomClaims.UserId)?.Value;
+
+            var image = await _imageService.GetById(id);
+            if (image == null)
+                return NotFound();
+
+            if (userId != image.UserId)
+                return Forbid();
+
+            await _imageService.Update(id, imageUpdateDto);
+
+            return NoContent();
+
         }
 
         [HttpDelete("{id}")]

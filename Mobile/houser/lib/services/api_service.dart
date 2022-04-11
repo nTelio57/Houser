@@ -84,6 +84,18 @@ class ApiService {
     return response;
   }
 
+  Future<bool> UpdateImage(int id, Image image) async
+  {
+    ApiResponse response = await _apiClient.Put('/api/Image/$id', image);
+    return response.statusCode.isSuccessStatusCode;
+  }
+
+  Future<bool> DeleteImage(int id) async
+  {
+    ApiResponse response = await _apiClient.Delete('/api/Image/$id');
+    return response.statusCode.isSuccessStatusCode;
+  }
+
   Future<bool> UpdateOfer(int id, Offer offer) async
   {
     ApiResponse response = await _apiClient.Put('/api/Offer/$id', offer);

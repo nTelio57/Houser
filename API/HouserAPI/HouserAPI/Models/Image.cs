@@ -6,6 +6,7 @@ namespace HouserAPI.Models
     public class Image : Entity
     {
         public string Path { get; set; }
+        public bool IsMain { get; set; }
         public string UserId { get; set; }
         public User User { get; set; }
         public int? OfferId { get; set; }

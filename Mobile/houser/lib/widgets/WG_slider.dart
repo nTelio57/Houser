@@ -1,16 +1,20 @@
 import 'package:flutter/material.dart';
 
+// ignore: must_be_immutable
 class WGSlider extends StatefulWidget {
   double min, max;
   double selectedValue = 0;
   bool canBeMoreThanMax;
+  String label = '';
+  Function() onValueChange = (){};
 
   WGSlider({Key? key,
     this.min = 0,
     this.max = 5,
-    this.canBeMoreThanMax = false
+    this.canBeMoreThanMax = false,
   }) : super(key: key){
     selectedValue = (min + (max - min)/2).floorToDouble();
+    label = selectedValue.toInt().toString();
   }
 
   @override
@@ -43,6 +47,8 @@ class _WGSliderState extends State<WGSlider> {
         setState(() {
           widget.selectedValue = value;
         });
+        widget.label = label();
+        widget.onValueChange();
       },
     );
   }

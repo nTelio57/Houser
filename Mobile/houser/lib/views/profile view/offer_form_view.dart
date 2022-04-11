@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:io';
 
 import 'package:flutter/material.dart';
@@ -15,11 +16,13 @@ import 'package:houser/widgets/WG_snackbars.dart';
 import 'package:houser/widgets/WG_toggle_icon_button.dart';
 import 'package:intl/intl.dart';
 
+// ignore: must_be_immutable
 class OfferFormView extends StatefulWidget {
 
   final ApiService _apiService = ApiService();
 
   List<apiImage.Image> offerImages = [];
+  List<apiImage.Image> imagesToDelete = [];
 
   List<MultiButtonSelection> bedTypeSelections =
   [
@@ -410,9 +413,19 @@ class _OfferFormViewState extends State<OfferFormView> {
 
     for (var image in widget.offerImages) {
       if(image.id == 0) {
+        image.offerId = widget.offerToEdit!.id;
         await widget._apiService.PostOfferImage(image.path, widget.offerToEdit!.id);
       }
     }
+
+    for (var image in widget.imagesToDelete) {
+      if(image.id != 0) {
+        await widget._apiService.DeleteImage(image.id);
+      }
+    }
+
+    var mainImage = widget.offerImages.firstWhere((image) => image.isMain);
+    await widget._apiService.UpdateImage(mainImage.id, mainImage);
 
     Navigator.pop(context);
   }
@@ -429,8 +442,12 @@ class _OfferFormViewState extends State<OfferFormView> {
     var offerResult = Offer.fromJson(offerPostResult.body);
 
     for (var image in widget.offerImages) {
-      widget._apiService.PostOfferImage(image.path, offerResult.id);
+      image.offerId = offerResult.id;
+      await widget._apiService.PostOfferImage(image.path, offerResult.id);
     }
+    var mainImage = widget.offerImages.firstWhere((image) => image.isMain);
+    await widget._apiService.UpdateImage(mainImage.id, mainImage);
+
     Navigator.pop(context);
   }
 
@@ -564,16 +581,48 @@ class _OfferFormViewState extends State<OfferFormView> {
 
   Widget imagePicker()
   {
-    return WGAlbumSlider(widget.offerImages.reversed.toList(), onImageUpload);
+    return WGAlbumSlider(widget.offerImages.reversed.toList(), onImageUpload, onImageDelete, onImageSetAsMain);
   }
 
   Future onImageUpload(File file) async
   {
-    widget.offerImages.add(apiImage.Image(0, file.path, CurrentLogin().user!.id));
+    var image = apiImage.Image(0, file.path, CurrentLogin().user!.id, null, false);
+    if(widget.offerImages.isEmpty) {
+      image.isMain = true;
+    }
+
+    widget.offerImages.add(image);
     setState(() {
 
     });
     return true;
+  }
+
+  Future onImageSetAsMain(apiImage.Image image) async
+  {
+    for(apiImage.Image i in widget.offerImages)
+    {
+      i.isMain = false;
+      if(i == image)
+        {
+          i.isMain = true;
+        }
+    }
+    setState(() {
+
+    });
+  }
+
+  Future onImageDelete(apiImage.Image image) async
+  {
+    widget.imagesToDelete.add(image);
+    widget.offerImages.remove(image);
+    if(image.isMain && widget.offerImages.isNotEmpty)
+      {
+        widget.offerImages.last.isMain = true;
+      }
+    setState(() {
+    });
   }
 
 }

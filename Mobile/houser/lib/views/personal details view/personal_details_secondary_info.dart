@@ -1,24 +1,15 @@
+import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
-import 'package:houser/models/widget_data/multi_button_selection.dart';
 import 'package:houser/widgets/WG_slider.dart';
-import 'package:houser/widgets/WG_multi_button.dart';
 
+// ignore: must_be_immutable
 class PersonalDetailsSecondaryInfo extends StatefulWidget {
 
-  final List<MultiButtonSelection> _studySelections = [ MultiButtonSelection('Nestudijuoju', const Icon(Icons.home)), MultiButtonSelection('Studijuoju', const Icon(Icons.school))];
-  final List<MultiButtonSelection> _workSelections = [MultiButtonSelection('Nedirbu', const Icon(Icons.work_off)), MultiButtonSelection('Dirbu', const Icon(Icons.work))];
-  final List<MultiButtonSelection> _smokeSelections = [MultiButtonSelection('Nerūkau', const Icon(Icons.smoke_free)), MultiButtonSelection('Rūkau', const Icon(Icons.smoking_rooms))];
-
   WGSlider animalCountSlider = WGSlider(min: 0, max: 5, canBeMoreThanMax: true);
-  WGMultiButton? studyButtons;
-  WGMultiButton? workButtons;
-  WGMultiButton? smokeButtons;
+  WGSlider guestCountSlider = WGSlider(min: 0, max: 10, canBeMoreThanMax: true);
+  WGSlider partyCountSlider = WGSlider(min: 0, max: 5, canBeMoreThanMax: true);
 
-  PersonalDetailsSecondaryInfo({Key? key}) : super(key: key){
-    studyButtons = WGMultiButton(selections: _studySelections);
-    workButtons = WGMultiButton(selections: _workSelections);
-    smokeButtons = WGMultiButton(selections: _smokeSelections);
-  }
+  PersonalDetailsSecondaryInfo({Key? key}) : super(key: key);
 
   @override
   _PersonalDetailsSecondaryInfoState createState() => _PersonalDetailsSecondaryInfoState();
@@ -26,8 +17,18 @@ class PersonalDetailsSecondaryInfo extends StatefulWidget {
 
 class _PersonalDetailsSecondaryInfoState extends State<PersonalDetailsSecondaryInfo> {
 
+  void refresh(){
+    setState(() {
+
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
+    widget.animalCountSlider.onValueChange = refresh;
+    widget.guestCountSlider.onValueChange = refresh;
+    widget.partyCountSlider.onValueChange = refresh;
+
     return body();
   }
 
@@ -35,47 +36,51 @@ class _PersonalDetailsSecondaryInfoState extends State<PersonalDetailsSecondaryI
   {
     return Column(
       children: [
-        animalCountRow(),
+        sliderValueRow('Kiek turite gyvūnų:',Icons.pets, widget.animalCountSlider),
         widget.animalCountSlider,
-        widget.studyButtons!,
-        widget.workButtons!,
-        widget.smokeButtons!,
+        sliderValueRow('Kiek kartų į mėnesį lankysis svečiai:', Icons.groups, widget.guestCountSlider),
+        widget.guestCountSlider,
+        sliderValueRow('Kiek kartų į mėnesį planuojate turėti vakarėlių:', Icons.celebration, widget.partyCountSlider),
+        widget.partyCountSlider,
+
         const SizedBox(height: 50,),
       ],
     );
   }
 
-  Widget animalCountRow()
+  Widget sliderValueRow(String label, IconData icon, WGSlider slider)
   {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 8),
       child: Row(
         children: [
-          const Icon(Icons.pets, color:  Color.fromRGBO(0, 153, 204, 1)),
+          Icon(icon, color:  const Color.fromRGBO(0, 153, 204, 1)),
           const SizedBox(width: 8,),
-          const Text(
-            'Kiek turite gyvūnų:',
-            style: TextStyle(
-              fontSize: 16,
-              color: Color.fromRGBO(0, 153, 204, 1)
+          Expanded(
+            flex: 3,
+            child: AutoSizeText(
+              label,
+              maxLines: 2,
+              style: const TextStyle(
+                fontSize: 16,
+                color: Color.fromRGBO(0, 153, 204, 1)
+              ),
             ),
           ),
           Expanded(child: Container()),
-          //animalCountTextField(),
+          Container(
+            padding: const EdgeInsets.only(right: 16),
+            child: Text(
+              slider.label,
+              style: const TextStyle(
+                  fontSize: 20,
+                  color: Color.fromRGBO(0, 153, 204, 1),
+                fontWeight: FontWeight.w700
+              ),
+            ),
+          ),
         ],
       ),
     );
   }
-
-  Widget animalCountTextField()
-  {
-    return const SizedBox(
-      width: 75,
-      child: TextField(
-        keyboardType: TextInputType.number,
-        textAlign: TextAlign.center,
-      ),
-    );
-  }
-
 }

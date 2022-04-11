@@ -7,14 +7,19 @@ import 'package:flutter/material.dart';
 import 'package:houser/utils/current_login.dart';
 import 'package:houser/models/Image.dart' as apiImage;
 import 'package:houser/services/api_service.dart';
+import 'package:houser/widgets/WG_image_popup.dart';
 
+// ignore: must_be_immutable
 class WGAlbumSlider extends StatefulWidget {
 
-  List<apiImage.Image> images;
   final ApiService _apiService = ApiService();
-  Function(File) onUpload;
 
-  WGAlbumSlider(this.images, this.onUpload, {Key? key}) : super(key: key);
+  List<apiImage.Image> images;
+  Function(File) onUpload;
+  Function(apiImage.Image) onDelete;
+  Function(apiImage.Image) onSetAsMain;
+
+  WGAlbumSlider(this.images, this.onUpload, this.onDelete, this.onSetAsMain, {Key? key}) : super(key: key);
 
   @override
   _WGAlbumSliderState createState() => _WGAlbumSliderState();
@@ -63,43 +68,79 @@ class _WGAlbumSliderState extends State<WGAlbumSlider> {
     var deviceHeight = MediaQuery.of(context).size.height;
     double imageHeight = deviceHeight * 0.25;
 
-    return Stack(
-      children: [
-        SizedBox(
-          height: imageHeight,
-          child: Card(
-            elevation: 8,
-            shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(8)
-            ),
-            child: AspectRatio(
-              aspectRatio: 2/3,
-              child: ClipRRect(
-                borderRadius: BorderRadius.circular(8),
-                child: image.id != 0 ? networkImage(image.id) : localImage(image.path),
-              ),
+    List<Widget> widgets = [
+      SizedBox(
+        height: imageHeight,
+        child: Card(
+          elevation: 8,
+          shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(8)
+          ),
+          child: AspectRatio(
+            aspectRatio: 2/3,
+            child: ClipRRect(
+              borderRadius: BorderRadius.circular(8),
+              child: image.id != 0 ? networkImage(image.id) : localImage(image.path),
             ),
           ),
         ),
+      ),
+    ];
+
+    if(image.isMain) {
+      widgets.add(mainImageFrame());
+    }
+
+    widgets.add(
         Positioned.fill(
-            child: SizedBox(
-              height: imageHeight,
-              child: Card(
-                elevation: 8,
+        child: SizedBox(
+          height: imageHeight,
+          child: Card(
+            elevation: 8,
+            color: Colors.transparent,
+            shadowColor: Colors.transparent,
+            child: Material(
                 color: Colors.transparent,
-                shadowColor: Colors.transparent,
-                child: Material(
-                    color: Colors.transparent,
-                    child: InkWell(
-                      splashColor: Colors.white.withOpacity(0.2),
-                      borderRadius: BorderRadius.circular(8),
-                      onTap: () {},
-                    )
-                ),
-              ),
-            )
+                child: InkWell(
+                  splashColor: Colors.white.withOpacity(0.2),
+                  borderRadius: BorderRadius.circular(8),
+                  onTap: () {
+                    showPopup(image);
+                  },
+                )
+            ),
+          ),
         )
-      ],
+    ));
+
+    return Stack(
+      children: widgets,
+    );
+  }
+
+  Widget mainImageFrame()
+  {
+    return Positioned.fill(
+      child: Card(
+        elevation: 8,
+        color: Colors.transparent,
+        shadowColor: Colors.transparent,
+        shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(8)
+        ),
+        child: AspectRatio(
+          aspectRatio: 2/3,
+          child: Container(
+            decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(8),
+                border: Border.all(
+                    color: Theme.of(context).primaryColorDark,
+                    width: 5
+                )
+            ),
+          ),
+        ),
+      ),
     );
   }
 
@@ -239,6 +280,26 @@ class _WGAlbumSliderState extends State<WGAlbumSlider> {
           ),
         ),
       ),
+    );
+  }
+
+  Future deleteImage(apiImage.Image image) async
+  {
+    await widget.onDelete(image);
+  }
+
+  Future setAsMain(apiImage.Image image) async
+  {
+    await widget.onSetAsMain(image);
+  }
+
+  void showPopup(apiImage.Image image)
+  {
+    Navigator.of(context).push(
+        PageRouteBuilder(
+          opaque: false,
+          pageBuilder: (BuildContext context, Animation<double> animation, Animation<double> secondaryAnimation) => WGImagePopup(image, deleteImage, setAsMain)
+        )
     );
   }
 

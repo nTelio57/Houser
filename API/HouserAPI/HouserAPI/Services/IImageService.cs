@@ -13,6 +13,7 @@ namespace HouserAPI.Services
         Task<IEnumerable<ImageReadDto>> GetAll();
         Task<ImageReadDto> GetById(int id);
         Task<IEnumerable<ImageReadDto>> GetAllByUser(string id);
+        Task<bool> Update(int id, ImageUpdateDto imageUpdateDto);
         Task<bool> Delete(int id);
     }
 }
