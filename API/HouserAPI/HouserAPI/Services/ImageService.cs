@@ -73,6 +73,7 @@ namespace HouserAPI.Services
         public async Task<IEnumerable<ImageReadDto>> GetAllByUser(string id)
         {
             var images = await _repository.GetAllByUser(id);
+            images = images.Where(x => x.OfferId == null);
             return _mapper.Map<IEnumerable<ImageReadDto>>(images);
         }
 
