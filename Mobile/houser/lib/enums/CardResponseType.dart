@@ -1,0 +1,4 @@
+enum CardResponseType {
+  like,
+  dislike
+}

@@ -19,6 +19,9 @@ Offer _$OfferFromJson(Map<String, dynamic> json) => Offer(
       ..monthlyPrice = (json['monthlyPrice'] as num).toDouble()
       ..utilityBillsRequired = json['utilityBillsRequired'] as bool? ?? true
       ..area = (json['area'] as num?)?.toDouble() ?? 0
+      ..images = (json['images'] as List<dynamic>)
+          .map((e) => apiImage.Image.fromJson(e as Map<String, dynamic>))
+          .toList()
       ..availableFrom = DateTime.parse(json['availableFrom'] as String)
       ..availableTo = DateTime.parse(json['availableTo'] as String)
       ..freeRoomCount = json['freeRoomCount'] as int? ?? 1
@@ -47,6 +50,7 @@ Map<String, dynamic> _$OfferToJson(Offer instance) => <String, dynamic>{
       'monthlyPrice': instance.monthlyPrice,
       'utilityBillsRequired': instance.utilityBillsRequired,
       'area': instance.area,
+      'images': instance.images,
       'availableFrom': instance.availableFrom.toIso8601String(),
       'availableTo': instance.availableTo.toIso8601String(),
       'freeRoomCount': instance.freeRoomCount,

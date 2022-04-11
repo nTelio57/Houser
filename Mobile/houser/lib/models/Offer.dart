@@ -1,5 +1,5 @@
-import 'package:flutter/animation.dart';
 import 'package:houser/enums/BedType.dart';
+import 'package:houser/models/Image.dart' as apiImage;
 import 'package:json_annotation/json_annotation.dart';
 
 part 'Offer.g.dart';
@@ -23,6 +23,7 @@ class Offer{
   bool utilityBillsRequired = true;
   @JsonKey(defaultValue: 0)
   double? area = 75;
+  List<apiImage.Image> images = [];
 
   DateTime availableFrom = DateTime.now();
   DateTime availableTo = DateTime.now().add(const Duration(days: 90));

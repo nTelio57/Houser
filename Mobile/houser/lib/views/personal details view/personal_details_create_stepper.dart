@@ -1,7 +1,7 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:houser/enums/SleepType.dart';
-import 'package:houser/models/CurrentLogin.dart';
+import 'package:houser/utils/current_login.dart';
 import 'package:houser/models/User.dart';
 import 'package:houser/services/api_service.dart';
 import 'package:houser/views/offer%20view/offer_view.dart';

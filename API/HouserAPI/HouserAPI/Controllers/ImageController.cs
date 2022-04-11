@@ -4,6 +4,7 @@ using System;
 using System.IO;
 using System.Threading.Tasks;
 using HouserAPI.Auth;
+using HouserAPI.DTOs.Offer;
 using HouserAPI.Services;
 using Microsoft.AspNetCore.Authorization;
 
@@ -15,25 +16,54 @@ namespace HouserAPI.Controllers
     public class ImageController : ControllerBase
     {
         private readonly IImageService _imageService;
+        private readonly IOfferService _offerService;
 
-        public ImageController(IImageService imageService)
+        public ImageController(IImageService imageService, IOfferService offerService)
         {
             _imageService = imageService;
+            _offerService = offerService;
         }
 
-        [HttpPost]
+        [HttpPost("user")]
         [Roles(UserRoles.Basic)]
-        public async Task<IActionResult> PostImage(IFormFile image)
+        public async Task<IActionResult> PostUserImage(IFormFile image)
         {
             var userId = User.FindFirst(CustomClaims.UserId)?.Value;
 
-            if(image == null)
+            if (image == null)
                 return BadRequest("Value cannot be null.");
 
             try
             {
-                var imageReadDto = await _imageService.Create(userId, image);
-                return CreatedAtAction(nameof(PostImage), imageReadDto);
+                var imageReadDto = await _imageService.CreateUserImage(userId, image);
+                return CreatedAtAction(nameof(PostUserImage), imageReadDto);
+            }
+            catch (Exception)
+            {
+                return BadRequest("Failed to post image.");
+            }
+        }
+
+        [HttpPost("offer/{id}")]
+        [Roles(UserRoles.Basic)]
+        public async Task<IActionResult> PostOfferImage(int id, IFormFile image)
+        {
+            var userId = User.FindFirst(CustomClaims.UserId)?.Value;
+
+            if (image == null)
+                return BadRequest("Value cannot be null.");
+
+            var offer = await _offerService.GetById(id);
+            if (offer == null)
+                return NotFound("Offer not found");
+
+            if (offer.UserId != userId)
+                return Forbid();
+
+            try
+            {
+                var imageReadDto = await _imageService.CreateOfferImage(userId, offer, image);
+                return CreatedAtAction(nameof(PostOfferImage), imageReadDto);
             }
             catch (Exception)
             {

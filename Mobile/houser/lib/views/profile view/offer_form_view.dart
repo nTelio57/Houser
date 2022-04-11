@@ -1,11 +1,15 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:houser/enums/BedType.dart';
 import 'package:houser/extensions/int_extensions.dart';
-import 'package:houser/models/CurrentLogin.dart';
+import 'package:houser/models/Image.dart' as apiImage;
+import 'package:houser/utils/current_login.dart';
 import 'package:houser/models/Offer.dart';
 import 'package:houser/models/widget_data/multi_button_selection.dart';
 import 'package:houser/services/api_client.dart';
 import 'package:houser/services/api_service.dart';
+import 'package:houser/widgets/WG_album_slider.dart';
 import 'package:houser/widgets/WG_multi_button.dart';
 import 'package:houser/widgets/WG_snackbars.dart';
 import 'package:houser/widgets/WG_toggle_icon_button.dart';
@@ -14,6 +18,8 @@ import 'package:intl/intl.dart';
 class OfferFormView extends StatefulWidget {
 
   final ApiService _apiService = ApiService();
+
+  List<apiImage.Image> offerImages = [];
 
   List<MultiButtonSelection> bedTypeSelections =
   [
@@ -59,6 +65,10 @@ class OfferFormView extends StatefulWidget {
   ) : super(key: key)
   {
     bedTypeButton = WGMultiButton(selections: bedTypeSelections);
+    if(offerToEdit != null)
+      {
+        offerImages = offerToEdit!.images;
+      }
   }
 
   @override
@@ -106,11 +116,17 @@ class _OfferFormViewState extends State<OfferFormView> {
                 children: [
                   textField('Pavadinimas', widget._titleText, titleValidator, icon: Icons.title, maxLength: 50),
                   textField('Miestas', widget._cityText, basicFieldValidator, icon: Icons.location_city),
-                  textField('Adresas', widget._addressText, basicFieldValidator, icon: Icons.home),
+                  textField('Adresas', widget._addressText, basicFieldValidator, icon: Icons.location_on_outlined),
                   textField('Kaina', widget._priceText, basicFieldValidator, icon: Icons.euro, keyboardType: TextInputType.number),
                   textField('Plotas', widget._areaText, noValidation, icon: Icons.square_foot, keyboardType: TextInputType.number, helperText: 'Neprivaloma'),
                   durationDates(),
                 ],
+              ),
+              label('Nuotraukos'),
+              panel(
+                children: [
+                  imagePicker()
+                ]
               ),
               label('Buto taisyklės'),
               panel(
@@ -350,6 +366,12 @@ class _OfferFormViewState extends State<OfferFormView> {
             if(!_formKey.currentState!.validate()) {
               return;
             }
+            if(widget.offerImages.isEmpty)
+              {
+                ScaffoldMessenger.of(context).showSnackBar(offerHasToHaveImages);
+                return;
+              }
+
             if(widget.isEditingMode) {
               await updateOffer();
             } else {
@@ -378,23 +400,38 @@ class _OfferFormViewState extends State<OfferFormView> {
   Future updateOffer() async
   {
     var newOffer = getOfferByForm();
+    newOffer.images = widget.offerToEdit!.images;
 
     var result = await widget._apiService.UpdateOfer(widget.offerToEdit!.id, newOffer);
-    if(result)
+    if(!result)
     {
-      Navigator.pop(context);
+      return false;
     }
+
+    for (var image in widget.offerImages) {
+      if(image.id == 0) {
+        await widget._apiService.PostOfferImage(image.path, widget.offerToEdit!.id);
+      }
+    }
+
+    Navigator.pop(context);
   }
 
   Future uploadOffer() async
   {
     var newOffer = getOfferByForm();
 
-    ApiResponse result = await widget._apiService.PostOffer(newOffer);
-    if(result.statusCode.isSuccessStatusCode)
+    ApiResponse offerPostResult = await widget._apiService.PostOffer(newOffer);
+    if(!offerPostResult.statusCode.isSuccessStatusCode)
       {
-        Navigator.pop(context);
+        return false;
       }
+    var offerResult = Offer.fromJson(offerPostResult.body);
+
+    for (var image in widget.offerImages) {
+      widget._apiService.PostOfferImage(image.path, offerResult.id);
+    }
+    Navigator.pop(context);
   }
 
   Offer getOfferByForm()
@@ -523,6 +560,20 @@ class _OfferFormViewState extends State<OfferFormView> {
       return 'Įveskite datą';
     }
     return null;
+  }
+
+  Widget imagePicker()
+  {
+    return WGAlbumSlider(widget.offerImages.reversed.toList(), onImageUpload);
+  }
+
+  Future onImageUpload(File file) async
+  {
+    widget.offerImages.add(apiImage.Image(0, file.path, CurrentLogin().user!.id));
+    setState(() {
+
+    });
+    return true;
   }
 
 }

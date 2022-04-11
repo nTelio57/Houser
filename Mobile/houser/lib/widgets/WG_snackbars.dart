@@ -23,3 +23,7 @@ const validationFailed = SnackBar(
 const visibilityChangeFailed = SnackBar(
     content: Text('Nepavyko pakeisti matomumo.')
 );
+
+const offerHasToHaveImages = SnackBar(
+    content: Text('Privalote įkelti bent 1 nuotrauką.')
+);
