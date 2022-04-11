@@ -89,6 +89,32 @@ namespace HouserAPI.Services
             if (image == null)
                 return false;
 
+            if (image.IsMain)
+            {
+                if (image.OfferId != null)// in offer
+                {
+                    var offer = await _offerService.GetById((int)image.OfferId);
+                    var defaultImageDto = offer.Images.FirstOrDefault();
+                    if (defaultImageDto != null)
+                    {
+                        var defaultImage = await _repository.GetById(defaultImageDto.Id);
+                        defaultImage.IsMain = true;
+                        await _repository.Update(defaultImage);
+                    }
+                }
+                else // in user
+                {
+                    var userImages = await _repository.GetAllByUser(image.UserId);
+                    userImages = userImages.Where(x => x.OfferId == null);
+                    var defaultImage = userImages.FirstOrDefault();
+                    if (defaultImage != null)
+                    {
+                        defaultImage.IsMain = true;
+                        await _repository.Update(defaultImage);
+                    }
+                }
+            }
+
             try
             {
                 File.Delete(image.Path);
@@ -114,14 +140,21 @@ namespace HouserAPI.Services
                     var offer = await _offerService.GetById((int)image.OfferId);
                     var currentlyMainImage = offer.Images.FirstOrDefault(x => x.IsMain);
                     if (currentlyMainImage != null)
+                    {
                         currentlyMainImage.IsMain = false;
+                        await _repository.Update(currentlyMainImage);
+                    }
                 }
                 else // in user
                 {
-                    var userImages = await GetAllByUser(imageUpdateDto.UserId);
+                    var userImages = await _repository.GetAllByUser(imageUpdateDto.UserId);
+                    userImages = userImages.Where(x => x.OfferId == null);
                     var currentlyMainImage = userImages.FirstOrDefault(x => x.IsMain);
                     if (currentlyMainImage != null)
+                    {
                         currentlyMainImage.IsMain = false;
+                        await _repository.Update(currentlyMainImage);
+                    }
                 }
             }
 
