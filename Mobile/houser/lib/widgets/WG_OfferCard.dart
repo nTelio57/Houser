@@ -11,7 +11,7 @@ class WGOfferCard extends StatefulWidget {
   final Offer offer;
   final bool isFront;
 
-  const WGOfferCard({
+  WGOfferCard({
     Key? key,
     required this.offer,
     required this.isFront

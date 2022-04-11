@@ -7,14 +7,18 @@ import 'package:flutter/material.dart';
 import 'package:houser/utils/current_login.dart';
 import 'package:houser/models/Image.dart' as apiImage;
 import 'package:houser/services/api_service.dart';
+import 'package:houser/widgets/WG_image_popup.dart';
 
+// ignore: must_be_immutable
 class WGAlbumSlider extends StatefulWidget {
 
-  List<apiImage.Image> images;
   final ApiService _apiService = ApiService();
-  Function(File) onUpload;
 
-  WGAlbumSlider(this.images, this.onUpload, {Key? key}) : super(key: key);
+  List<apiImage.Image> images;
+  Function(File) onUpload;
+  Function(apiImage.Image) onDelete;
+
+  WGAlbumSlider(this.images, this.onUpload, this.onDelete, {Key? key}) : super(key: key);
 
   @override
   _WGAlbumSliderState createState() => _WGAlbumSliderState();
@@ -93,7 +97,9 @@ class _WGAlbumSliderState extends State<WGAlbumSlider> {
                     child: InkWell(
                       splashColor: Colors.white.withOpacity(0.2),
                       borderRadius: BorderRadius.circular(8),
-                      onTap: () {},
+                      onTap: () {
+                        showPopup(image);
+                      },
                     )
                 ),
               ),
@@ -239,6 +245,21 @@ class _WGAlbumSliderState extends State<WGAlbumSlider> {
           ),
         ),
       ),
+    );
+  }
+
+  Future deleteImage(apiImage.Image image) async
+  {
+    await widget.onDelete(image);
+  }
+
+  void showPopup(apiImage.Image image)
+  {
+    Navigator.of(context).push(
+        PageRouteBuilder(
+          opaque: false,
+          pageBuilder: (BuildContext context, Animation<double> animation, Animation<double> secondaryAnimation) => WGImagePopup(image, deleteImage)
+        )
     );
   }
 

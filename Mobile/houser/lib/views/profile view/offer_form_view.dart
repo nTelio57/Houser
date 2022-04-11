@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:io';
 
 import 'package:flutter/material.dart';
@@ -15,11 +16,13 @@ import 'package:houser/widgets/WG_snackbars.dart';
 import 'package:houser/widgets/WG_toggle_icon_button.dart';
 import 'package:intl/intl.dart';
 
+// ignore: must_be_immutable
 class OfferFormView extends StatefulWidget {
 
   final ApiService _apiService = ApiService();
 
   List<apiImage.Image> offerImages = [];
+  List<apiImage.Image> imagesToDelete = [];
 
   List<MultiButtonSelection> bedTypeSelections =
   [
@@ -414,6 +417,13 @@ class _OfferFormViewState extends State<OfferFormView> {
       }
     }
 
+    for (var image in widget.imagesToDelete) {
+      if(image.id != 0) {
+        await widget._apiService.DeleteImage(image.id);
+      }
+    }
+
+
     Navigator.pop(context);
   }
 
@@ -564,7 +574,7 @@ class _OfferFormViewState extends State<OfferFormView> {
 
   Widget imagePicker()
   {
-    return WGAlbumSlider(widget.offerImages.reversed.toList(), onImageUpload);
+    return WGAlbumSlider(widget.offerImages.reversed.toList(), onImageUpload, onImageDelete);
   }
 
   Future onImageUpload(File file) async
@@ -574,6 +584,14 @@ class _OfferFormViewState extends State<OfferFormView> {
 
     });
     return true;
+  }
+
+  Future onImageDelete(apiImage.Image image) async
+  {
+    widget.imagesToDelete.add(image);
+    widget.offerImages.remove(image);
+    setState(() {
+    });
   }
 
 }

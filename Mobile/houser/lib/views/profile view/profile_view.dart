@@ -79,7 +79,7 @@ class _ProfileViewState extends State<ProfileView> {
 
           if(snapshot.hasData)
           {
-            return WGAlbumSlider(images, onImageUpload);
+            return WGAlbumSlider(images, onImageUpload, onImageDelete);
           }
           else if(snapshot.hasError)
           {
@@ -89,7 +89,7 @@ class _ProfileViewState extends State<ProfileView> {
           }
           else
           {
-            return WGAlbumSlider(images, onImageUpload);
+            return WGAlbumSlider(images, onImageUpload, onImageDelete);
           }
         }
     );
@@ -111,6 +111,27 @@ class _ProfileViewState extends State<ProfileView> {
       ScaffoldMessenger.of(context).showSnackBar(failedFileUpload);
     }
     setState(() {
+    });
+  }
+
+  Future onImageDelete(apiImage.Image image) async
+  {
+    try{
+      var deleteResult = await widget._apiService.DeleteImage(image.id).timeout(const Duration(seconds: 5));
+
+      if(!deleteResult)
+      {
+        ScaffoldMessenger.of(context).showSnackBar(failedImageDelete);
+      }
+    }on SocketException {
+      ScaffoldMessenger.of(context).showSnackBar(noConnectionSnackbar);
+    } on TimeoutException {
+      ScaffoldMessenger.of(context).showSnackBar(serverErrorSnackbar);
+    } on Exception {
+      ScaffoldMessenger.of(context).showSnackBar(failedImageDelete);
+    }
+    setState(() {
+
     });
   }
 
