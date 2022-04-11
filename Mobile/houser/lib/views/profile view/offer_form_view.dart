@@ -413,6 +413,7 @@ class _OfferFormViewState extends State<OfferFormView> {
 
     for (var image in widget.offerImages) {
       if(image.id == 0) {
+        image.offerId = widget.offerToEdit!.id;
         await widget._apiService.PostOfferImage(image.path, widget.offerToEdit!.id);
       }
     }
@@ -422,7 +423,6 @@ class _OfferFormViewState extends State<OfferFormView> {
         await widget._apiService.DeleteImage(image.id);
       }
     }
-
 
     Navigator.pop(context);
   }
@@ -439,6 +439,7 @@ class _OfferFormViewState extends State<OfferFormView> {
     var offerResult = Offer.fromJson(offerPostResult.body);
 
     for (var image in widget.offerImages) {
+      image.offerId = offerResult.id;
       widget._apiService.PostOfferImage(image.path, offerResult.id);
     }
     Navigator.pop(context);
@@ -579,7 +580,12 @@ class _OfferFormViewState extends State<OfferFormView> {
 
   Future onImageUpload(File file) async
   {
-    widget.offerImages.add(apiImage.Image(0, file.path, CurrentLogin().user!.id));
+    var image = apiImage.Image(0, file.path, CurrentLogin().user!.id, null, false);
+    if(widget.offerImages.isEmpty) {
+      image.isMain = true;
+    }
+
+    widget.offerImages.add(image);
     setState(() {
 
     });

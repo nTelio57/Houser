@@ -67,45 +67,77 @@ class _WGAlbumSliderState extends State<WGAlbumSlider> {
     var deviceHeight = MediaQuery.of(context).size.height;
     double imageHeight = deviceHeight * 0.25;
 
-    return Stack(
-      children: [
-        SizedBox(
-          height: imageHeight,
-          child: Card(
-            elevation: 8,
-            shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(8)
-            ),
-            child: AspectRatio(
-              aspectRatio: 2/3,
-              child: ClipRRect(
-                borderRadius: BorderRadius.circular(8),
-                child: image.id != 0 ? networkImage(image.id) : localImage(image.path),
-              ),
+    List<Widget> widgets = [
+      SizedBox(
+        height: imageHeight,
+        child: Card(
+          elevation: 8,
+          shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(8)
+          ),
+          child: AspectRatio(
+            aspectRatio: 2/3,
+            child: ClipRRect(
+              borderRadius: BorderRadius.circular(8),
+              child: image.id != 0 ? networkImage(image.id) : localImage(image.path),
             ),
           ),
         ),
-        Positioned.fill(
-            child: SizedBox(
-              height: imageHeight,
-              child: Card(
-                elevation: 8,
-                color: Colors.transparent,
-                shadowColor: Colors.transparent,
-                child: Material(
-                    color: Colors.transparent,
-                    child: InkWell(
-                      splashColor: Colors.white.withOpacity(0.2),
-                      borderRadius: BorderRadius.circular(8),
-                      onTap: () {
-                        showPopup(image);
-                      },
-                    )
-                ),
+      ),
+      Positioned.fill(
+          child: SizedBox(
+            height: imageHeight,
+            child: Card(
+              elevation: 8,
+              color: Colors.transparent,
+              shadowColor: Colors.transparent,
+              child: Material(
+                  color: Colors.transparent,
+                  child: InkWell(
+                    splashColor: Colors.white.withOpacity(0.2),
+                    borderRadius: BorderRadius.circular(8),
+                    onTap: () {
+                      showPopup(image);
+                    },
+                  )
               ),
-            )
-        )
-      ],
+            ),
+          )
+      )
+    ];
+
+    if(image.isMain) {
+      widgets.add(mainImageFrame());
+    }
+
+    return Stack(
+      children: widgets,
+    );
+  }
+
+  Widget mainImageFrame()
+  {
+    return Positioned.fill(
+      child: Card(
+        elevation: 8,
+        color: Colors.transparent,
+        shadowColor: Colors.transparent,
+        shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(8)
+        ),
+        child: AspectRatio(
+          aspectRatio: 2/3,
+          child: Container(
+            decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(8),
+                border: Border.all(
+                    color: Theme.of(context).primaryColorDark,
+                    width: 5
+                )
+            ),
+          ),
+        ),
+      ),
     );
   }
 
