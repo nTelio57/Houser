@@ -17,8 +17,9 @@ class WGAlbumSlider extends StatefulWidget {
   List<apiImage.Image> images;
   Function(File) onUpload;
   Function(apiImage.Image) onDelete;
+  Function(apiImage.Image) onSetAsMain;
 
-  WGAlbumSlider(this.images, this.onUpload, this.onDelete, {Key? key}) : super(key: key);
+  WGAlbumSlider(this.images, this.onUpload, this.onDelete, this.onSetAsMain, {Key? key}) : super(key: key);
 
   @override
   _WGAlbumSliderState createState() => _WGAlbumSliderState();
@@ -84,31 +85,33 @@ class _WGAlbumSliderState extends State<WGAlbumSlider> {
           ),
         ),
       ),
-      Positioned.fill(
-          child: SizedBox(
-            height: imageHeight,
-            child: Card(
-              elevation: 8,
-              color: Colors.transparent,
-              shadowColor: Colors.transparent,
-              child: Material(
-                  color: Colors.transparent,
-                  child: InkWell(
-                    splashColor: Colors.white.withOpacity(0.2),
-                    borderRadius: BorderRadius.circular(8),
-                    onTap: () {
-                      showPopup(image);
-                    },
-                  )
-              ),
-            ),
-          )
-      )
     ];
 
     if(image.isMain) {
       widgets.add(mainImageFrame());
     }
+
+    widgets.add(
+        Positioned.fill(
+        child: SizedBox(
+          height: imageHeight,
+          child: Card(
+            elevation: 8,
+            color: Colors.transparent,
+            shadowColor: Colors.transparent,
+            child: Material(
+                color: Colors.transparent,
+                child: InkWell(
+                  splashColor: Colors.white.withOpacity(0.2),
+                  borderRadius: BorderRadius.circular(8),
+                  onTap: () {
+                    showPopup(image);
+                  },
+                )
+            ),
+          ),
+        )
+    ));
 
     return Stack(
       children: widgets,
@@ -285,12 +288,17 @@ class _WGAlbumSliderState extends State<WGAlbumSlider> {
     await widget.onDelete(image);
   }
 
+  Future setAsMain(apiImage.Image image) async
+  {
+    await widget.onSetAsMain(image);
+  }
+
   void showPopup(apiImage.Image image)
   {
     Navigator.of(context).push(
         PageRouteBuilder(
           opaque: false,
-          pageBuilder: (BuildContext context, Animation<double> animation, Animation<double> secondaryAnimation) => WGImagePopup(image, deleteImage)
+          pageBuilder: (BuildContext context, Animation<double> animation, Animation<double> secondaryAnimation) => WGImagePopup(image, deleteImage, setAsMain)
         )
     );
   }

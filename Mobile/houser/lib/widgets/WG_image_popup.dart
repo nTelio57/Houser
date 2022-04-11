@@ -12,8 +12,9 @@ class WGImagePopup extends StatefulWidget {
 
   apiImage.Image image;
   Function(apiImage.Image) onDelete;
+  Function(apiImage.Image) onSetAsMain;
 
-  WGImagePopup(this.image, this.onDelete, {Key? key}) : super(key: key);
+  WGImagePopup(this.image, this.onDelete, this.onSetAsMain, {Key? key}) : super(key: key);
 
   @override
   _WGImagePopupState createState() => _WGImagePopupState();
@@ -75,6 +76,10 @@ class _WGImagePopupState extends State<WGImagePopup> {
       alignment: FractionalOffset.center,
     );
   }
+  void setAsMainImage()
+  {
+    widget.onSetAsMain(widget.image);
+  }
 
   void delete()
   {
@@ -95,40 +100,52 @@ class _WGImagePopupState extends State<WGImagePopup> {
         fontWeight: FontWeight.w600
     );
 
+    List<SpeedDialChild> fabButtons = [];
+
+    if(!widget.image.isMain)
+      {
+        fabButtons.add(
+            SpeedDialChild(
+                child: const Icon(
+                  Icons.image,
+                  color: Colors.white,
+                ),
+                label: 'Nustatyti kaip pagrindine',
+                backgroundColor: theme.primaryColor,
+                labelStyle: labelStyle,
+                onTap: (){
+                  Navigator.pop(context);
+                  setAsMainImage();
+                }
+            )
+        );
+      }
+
+    fabButtons.add(
+        SpeedDialChild(
+            child: const Icon(
+              Icons.delete,
+              color: Colors.white,
+            ),
+            label: 'Ištrinti',
+            backgroundColor: Colors.red,
+            labelStyle: labelStyle,
+            onTap: (){
+              showDialog(
+                  context: context,
+                  builder: (context) => deleteDialog()
+              );
+            }
+        )
+    );
+
     return SpeedDial(
       icon: Icons.menu,
       backgroundColor: theme.primaryColor,
       activeIcon: Icons.close,
       activeBackgroundColor: theme.primaryColorDark,
       overlayOpacity: 0,
-      children: [
-        SpeedDialChild(
-            child: const Icon(
-              Icons.image,
-              color: Colors.white,
-            ),
-            label: 'Nustatyti kaip pagrindine',
-            backgroundColor: theme.primaryColor,
-            labelStyle: labelStyle,
-            onTap: (){
-            }
-        ),
-        SpeedDialChild(
-          child: const Icon(
-            Icons.delete,
-            color: Colors.white,
-          ),
-          label: 'Ištrinti',
-          backgroundColor: Colors.red,
-          labelStyle: labelStyle,
-          onTap: (){
-            showDialog(
-                context: context,
-                builder: (context) => deleteDialog()
-            );
-          }
-        ),
-      ],
+      children: fabButtons
     );
   }
 
@@ -162,5 +179,4 @@ class _WGImagePopupState extends State<WGImagePopup> {
       ],
     );
   }
-
 }

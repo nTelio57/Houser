@@ -20,6 +20,10 @@ const failedImageDelete = SnackBar(
     content: Text('Nepavyko pašalinti nuotraukos.')
 );
 
+const failedImageUpdate = SnackBar(
+    content: Text('Nepavyko atnaujinti nuotraukos.')
+);
+
 const validationFailed = SnackBar(
     content: Text('Patikrinkite įvestus duomenis.')
 );

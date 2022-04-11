@@ -424,6 +424,9 @@ class _OfferFormViewState extends State<OfferFormView> {
       }
     }
 
+    var mainImage = widget.offerImages.firstWhere((image) => image.isMain);
+    await widget._apiService.UpdateImage(mainImage.id, mainImage);
+
     Navigator.pop(context);
   }
 
@@ -440,8 +443,11 @@ class _OfferFormViewState extends State<OfferFormView> {
 
     for (var image in widget.offerImages) {
       image.offerId = offerResult.id;
-      widget._apiService.PostOfferImage(image.path, offerResult.id);
+      await widget._apiService.PostOfferImage(image.path, offerResult.id);
     }
+    var mainImage = widget.offerImages.firstWhere((image) => image.isMain);
+    await widget._apiService.UpdateImage(mainImage.id, mainImage);
+
     Navigator.pop(context);
   }
 
@@ -575,7 +581,7 @@ class _OfferFormViewState extends State<OfferFormView> {
 
   Widget imagePicker()
   {
-    return WGAlbumSlider(widget.offerImages.reversed.toList(), onImageUpload, onImageDelete);
+    return WGAlbumSlider(widget.offerImages.reversed.toList(), onImageUpload, onImageDelete, onImageSetAsMain);
   }
 
   Future onImageUpload(File file) async
@@ -592,10 +598,29 @@ class _OfferFormViewState extends State<OfferFormView> {
     return true;
   }
 
+  Future onImageSetAsMain(apiImage.Image image) async
+  {
+    for(apiImage.Image i in widget.offerImages)
+    {
+      i.isMain = false;
+      if(i == image)
+        {
+          i.isMain = true;
+        }
+    }
+    setState(() {
+
+    });
+  }
+
   Future onImageDelete(apiImage.Image image) async
   {
     widget.imagesToDelete.add(image);
     widget.offerImages.remove(image);
+    if(image.isMain && widget.offerImages.isNotEmpty)
+      {
+        widget.offerImages.last.isMain = true;
+      }
     setState(() {
     });
   }
