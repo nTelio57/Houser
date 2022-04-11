@@ -9,6 +9,8 @@ namespace HouserAPI.Profiles
         public ImageProfile()
         {
             CreateMap<Image, ImageReadDto>();
+            CreateMap<ImageUpdateDto, Image>();
+            CreateMap<Image, ImageUpdateDto>();
         }
     }
 }

@@ -7,6 +7,7 @@ using Microsoft.Extensions.Hosting;
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Threading.Tasks;
 using HouserAPI.DTOs.Offer;
 
@@ -15,12 +16,14 @@ namespace HouserAPI.Services
     public class ImageService : IImageService
     {
         private readonly ImageRepository _repository;
+        private readonly IOfferService _offerService;
         private readonly IMapper _mapper;
         private readonly IHostEnvironment _hostEnvironment;
 
-        public ImageService(IRepository<Image> repository, IMapper mapper, IHostEnvironment hostEnvironment)
+        public ImageService(IRepository<Image> repository, IOfferService offerService, IMapper mapper, IHostEnvironment hostEnvironment)
         {
             _repository = repository as ImageRepository;
+            _offerService = offerService;
             _mapper = mapper;
             _hostEnvironment = hostEnvironment;
         }
@@ -95,6 +98,34 @@ namespace HouserAPI.Services
             }
             
             await _repository.Delete(image);
+            return await _repository.SaveChanges();
+        }
+
+        public async Task<bool> Update(int id, ImageUpdateDto imageUpdateDto)
+        {
+            var image = await _repository.GetById(id);
+
+            //is set as main image
+            if (imageUpdateDto.IsMain)
+            {
+                if (image.OfferId != null)// in offer
+                {
+                    var offer = await _offerService.GetById((int)image.OfferId);
+                    var currentlyMainImage = offer.Images.FirstOrDefault(x => x.IsMain);
+                    if (currentlyMainImage != null)
+                        currentlyMainImage.IsMain = false;
+                }
+                else // in user
+                {
+                    var userImages = await GetAllByUser(imageUpdateDto.UserId);
+                    var currentlyMainImage = userImages.FirstOrDefault(x => x.IsMain);
+                    if (currentlyMainImage != null)
+                        currentlyMainImage.IsMain = false;
+                }
+            }
+
+            _mapper.Map(imageUpdateDto, image);
+            await _repository.Update(image);
             return await _repository.SaveChanges();
         }
     }
