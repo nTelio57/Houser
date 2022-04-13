@@ -12,10 +12,12 @@ namespace HouserAPI.Controllers
     public class OfferController : ControllerBase
     {
         private readonly IOfferService _offerService;
+        private readonly IImageService _imageService;
 
-        public OfferController(IOfferService offerService)
+        public OfferController(IOfferService offerService, IImageService imageService)
         {
             _offerService = offerService;
+            _imageService = imageService;
         }
 
         [HttpPost]
@@ -86,6 +88,9 @@ namespace HouserAPI.Controllers
             if (userId != offer.UserId)
                 return Forbid();
 
+            foreach (var image in offer.Images)
+                await _imageService.Delete(image.Id);
+            
             if (await _offerService.Delete(id))
                 return NoContent();
             return BadRequest();

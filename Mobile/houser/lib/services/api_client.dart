@@ -105,15 +105,16 @@ class ApiClient{
         imagePath
     ));
     var response = await request.send();
+    var responseJson = await http.Response.fromStream(response);
 
     if(response.statusCode.isSuccessStatusCode)
     {
-      return ApiResponse(true, response.statusCode, response.reasonPhrase);
+      return ApiResponse(json.decode(responseJson.body), response.statusCode, response.reasonPhrase);
     }
     else
     {
       print('Failed to POST image. Status code: ${response.statusCode}. Reason: ${response.reasonPhrase}.');
-      return ApiResponse(false, response.statusCode, response.reasonPhrase);
+      return ApiResponse(json.decode(responseJson.body), response.statusCode, response.reasonPhrase);
     }
   }
 

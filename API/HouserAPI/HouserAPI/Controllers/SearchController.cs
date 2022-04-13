@@ -16,7 +16,7 @@ namespace HouserAPI.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> GetRecommendationByFilter(int id)
+        public async Task<IActionResult> GetRecommendationByFilter()
         {
             var offerReadDto = await _searchService.GetRecommendationByFilter();
             if (offerReadDto is null)

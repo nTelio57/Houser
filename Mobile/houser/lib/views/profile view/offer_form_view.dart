@@ -441,11 +441,17 @@ class _OfferFormViewState extends State<OfferFormView> {
       }
     var offerResult = Offer.fromJson(offerPostResult.body);
 
+    var mainImage = widget.offerImages.firstWhere((image) => image.isMain);
     for (var image in widget.offerImages) {
       image.offerId = offerResult.id;
-      await widget._apiService.PostOfferImage(image.path, offerResult.id);
+      var imageUploadResponse = await widget._apiService.PostOfferImage(image.path, offerResult.id);
+      var uploadedImage = apiImage.Image.fromJson(imageUploadResponse.body);
+      if(image.isMain)
+        {
+          mainImage.id = uploadedImage.id;
+        }
     }
-    var mainImage = widget.offerImages.firstWhere((image) => image.isMain);
+
     await widget._apiService.UpdateImage(mainImage.id, mainImage);
 
     Navigator.pop(context);
