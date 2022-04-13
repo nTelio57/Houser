@@ -108,4 +108,12 @@ class ApiService {
     return response.statusCode.isSuccessStatusCode;
   }
 
+  Future<Offer?> GetRecommendationByFilter() async
+  {
+    ApiResponse response = await _apiClient.Get('/api/Search');
+    if(response.statusCode.isSuccessStatusCode) {
+      return Offer.fromJson(response.body);
+    }
+    return null;
+  }
 }

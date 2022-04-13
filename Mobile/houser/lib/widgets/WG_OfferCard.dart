@@ -1,7 +1,10 @@
 import 'dart:math';
 
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:houser/models/Offer.dart';
+import 'package:houser/services/api_service.dart';
+import 'package:houser/utils/current_login.dart';
 import 'package:houser/utils/offer_card_manager.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
@@ -11,7 +14,7 @@ class WGOfferCard extends StatefulWidget {
   final Offer offer;
   final bool isFront;
 
-  WGOfferCard({
+  const WGOfferCard({
     Key? key,
     required this.offer,
     required this.isFront
@@ -94,10 +97,11 @@ class _WGOfferCardState extends State<WGOfferCard> {
   Widget slidingUpPanel(Offer offer)
   {
     var deviceHeight = MediaQuery.of(context).size.height;
+    var imageId = widget.offer.images.firstWhere((i) => i.isMain).id;
 
     return SlidingUpPanel(
       panel: slidePanel(),//Tas kas slidina
-      body: image(),//pagr vaizdas
+      body: networkImage(imageId),//pagr vaizdas
       collapsed: slidePanelCollapsed(),
       renderPanelSheet: false,
       minHeight: deviceHeight * 0.24,
@@ -200,6 +204,18 @@ class _WGOfferCardState extends State<WGOfferCard> {
           ),
         ),
       ),
+    );
+  }
+
+  Widget networkImage(int id)
+  {
+    return CachedNetworkImage(
+      imageUrl: 'https://${ApiService().apiUrl}/api/Image/$id',
+      httpHeaders: {
+        'Authorization': 'bearer ' + CurrentLogin().jwtToken,
+      },
+      fit: BoxFit.fitHeight,
+      alignment: FractionalOffset.center,
     );
   }
 

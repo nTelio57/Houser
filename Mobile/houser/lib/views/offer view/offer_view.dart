@@ -41,8 +41,27 @@ class _OfferViewState extends State<OfferView> {
     final provider = Provider.of<OfferCardManager>(context);
     final offers = provider.offers;
 
-    return Stack(
+    return offers.isEmpty ? noOffersResult() :
+    Stack(
       children: offers.reversed.map((offer) => WGOfferCard(offer: offer, isFront: offer == offers.first)).toList(),
+    );
+  }
+
+  Widget noOffersResult()
+  {
+    return Container(
+      padding: const EdgeInsets.all(30),
+      child: Center(
+        child: Text(
+          'Nerasta galimų rekomendacijų. Mėginkite pakoreguoti filtrą ir mėginkite dar kartą.',
+          textAlign: TextAlign.center,
+          style: TextStyle(
+            fontWeight: FontWeight.w600,
+            color: Theme.of(context).primaryColor,
+            fontSize: 16,
+          ),
+        ),
+      ),
     );
   }
 

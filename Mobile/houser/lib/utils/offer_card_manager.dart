@@ -105,6 +105,9 @@ class OfferCardManager extends ChangeNotifier {
 
   void addSingleOffer(){
     loadSingleOffer().then((value) {
+      if(value == null) {
+        return;
+      }
       _currentLogin.recommendedOffers.add(value);
       offers.add(value);
     });
@@ -118,8 +121,11 @@ class OfferCardManager extends ChangeNotifier {
     });
   }
 
-  Future<Offer> loadSingleOffer() async{
-    var offer = await _apiService.GetOfferById(7);
+  Future<Offer?> loadSingleOffer() async{
+    var offer = await _apiService.GetRecommendationByFilter();
+    if(offer == null) {
+      return null;
+    }
     _currentLogin.recommendedOffers.add(offer);
     return offer;
   }
@@ -128,17 +134,20 @@ class OfferCardManager extends ChangeNotifier {
   {
     if(_currentLogin.recommendedOffers.isEmpty)
     {
-      var a = await _apiService.GetOfferById(1);
-      var b = await _apiService.GetOfferById(2);
-      var c = await _apiService.GetOfferById(3);
-      var d = await _apiService.GetOfferById(5);
-      var e = await _apiService.GetOfferById(7);
-      _currentLogin.recommendedOffers.addAll([a, b, c, d, e]);
+      for(int i = 0; i < 5; i++)
+        {
+          var offer = await _apiService.GetRecommendationByFilter();
+          if(offer != null) {
+            _currentLogin.recommendedOffers.add(offer);
+          }
+        }
       return true;
     }
     else{
-      var a = await _apiService.GetOfferById(7);
-      _currentLogin.recommendedOffers.add(a);
+      var offer = await _apiService.GetRecommendationByFilter();
+      if(offer != null) {
+        _currentLogin.recommendedOffers.add(offer);
+      }
       return true;
     }
   }
