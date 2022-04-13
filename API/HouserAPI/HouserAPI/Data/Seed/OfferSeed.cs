@@ -11,7 +11,7 @@ namespace HouserAPI.Data.Seed
         {
             var offer1 = new Offer
             {
-                UserId = "570457bc-51a6-47d7-90a1-cc3cd1598563",
+                UserId = UserSeed.IdAdmin,
                 IsVisible = true,
                 UploadDate = new DateTime(2022, 2, 24),
                 Id = 1,
@@ -30,12 +30,12 @@ namespace HouserAPI.Data.Seed
                 RuleAnimals = true,
                 AccommodationTv = true,
                 AccommodationWifi = true,
-                AccommodationAc = false
+                AccommodationAc = false,
             };
 
             var offer2 = new Offer
             {
-                UserId = "570457bc-51a6-47d7-90a1-cc3cd1598563",
+                UserId = UserSeed.IdAdmin,
                 IsVisible = true,
                 UploadDate = new DateTime(2022, 2, 14),
                 Id = 2,
@@ -59,7 +59,7 @@ namespace HouserAPI.Data.Seed
 
             var offer3 = new Offer
             {
-                UserId = "6e58169a-cc76-45b9-8d20-ef40fda183a3",
+                UserId = UserSeed.IdBasic,
                 IsVisible = true,
                 UploadDate = new DateTime(2022, 2, 8),
                 Id = 3,

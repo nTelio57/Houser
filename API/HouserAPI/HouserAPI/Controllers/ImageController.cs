@@ -101,9 +101,6 @@ namespace HouserAPI.Controllers
             if (image == null) 
                 return NotFound();
 
-            if (!image.UserId.Equals(userId)) 
-                return Forbid();
-
             try
             {
                 var imageStream = System.IO.File.OpenRead(image.Path);
