@@ -3,14 +3,16 @@ using System;
 using HouserAPI.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace HouserAPI.Migrations
 {
     [DbContext(typeof(DatabaseContext))]
-    partial class DatabaseContextModelSnapshot : ModelSnapshot
+    [Migration("20220410174816_UpdateOfferModelImage")]
+    partial class UpdateOfferModelImage
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -22,9 +24,6 @@ namespace HouserAPI.Migrations
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
-
-                    b.Property<bool>("IsMain")
-                        .HasColumnType("tinyint(1)");
 
                     b.Property<int?>("OfferId")
                         .HasColumnType("int");
@@ -359,15 +358,13 @@ namespace HouserAPI.Migrations
 
             modelBuilder.Entity("HouserAPI.Models.Image", b =>
                 {
-                    b.HasOne("HouserAPI.Models.Offer", "Offer")
+                    b.HasOne("HouserAPI.Models.Offer", null)
                         .WithMany("Images")
                         .HasForeignKey("OfferId");
 
                     b.HasOne("HouserAPI.Models.User", "User")
                         .WithMany("Images")
                         .HasForeignKey("UserId");
-
-                    b.Navigation("Offer");
 
                     b.Navigation("User");
                 });

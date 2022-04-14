@@ -72,10 +72,28 @@ class ApiService {
     return parsed.map<Image>((e) => Image.fromJson(e)).toList();
   }
 
-  Future<ApiResponse> PostImage(String path) async
+  Future<ApiResponse> PostUserImage(String path) async
   {
-    ApiResponse response = await _apiClient.PostImage('/api/Image', path);
+    ApiResponse response = await _apiClient.PostImage('/api/Image/user', path);
     return response;
+  }
+
+  Future<ApiResponse> PostOfferImage(String path, int offerId) async
+  {
+    ApiResponse response = await _apiClient.PostImage('/api/Image/offer/$offerId', path);
+    return response;
+  }
+
+  Future<bool> UpdateImage(int id, Image image) async
+  {
+    ApiResponse response = await _apiClient.Put('/api/Image/$id', image);
+    return response.statusCode.isSuccessStatusCode;
+  }
+
+  Future<bool> DeleteImage(int id) async
+  {
+    ApiResponse response = await _apiClient.Delete('/api/Image/$id');
+    return response.statusCode.isSuccessStatusCode;
   }
 
   Future<bool> UpdateOfer(int id, Offer offer) async
@@ -90,4 +108,12 @@ class ApiService {
     return response.statusCode.isSuccessStatusCode;
   }
 
+  Future<Offer?> GetRecommendationByFilter() async
+  {
+    ApiResponse response = await _apiClient.Get('/api/Search');
+    if(response.statusCode.isSuccessStatusCode) {
+      return Offer.fromJson(response.body);
+    }
+    return null;
+  }
 }

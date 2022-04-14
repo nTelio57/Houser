@@ -1,10 +1,16 @@
+import 'dart:async';
+import 'dart:io';
+
 import 'package:flutter/material.dart';
-import 'package:houser/models/CurrentLogin.dart';
+import 'package:houser/extensions/int_extensions.dart';
+import 'package:houser/services/api_client.dart';
+import 'package:houser/utils/current_login.dart';
 import 'package:houser/services/api_service.dart';
 import 'package:houser/views/profile%20view/my_offer_list_view.dart';
 import 'package:houser/views/welcome_view.dart';
 import 'package:houser/widgets/WG_album_slider.dart';
 import 'package:houser/models/Image.dart' as apiImage;
+import 'package:houser/widgets/WG_snackbars.dart';
 
 class ProfileView extends StatefulWidget {
 
@@ -73,7 +79,7 @@ class _ProfileViewState extends State<ProfileView> {
 
           if(snapshot.hasData)
           {
-            return WGAlbumSlider(images, onImageUpload);
+            return WGAlbumSlider(images, onImageUpload, onImageDelete, onImageSetAsMain);
           }
           else if(snapshot.hasError)
           {
@@ -83,15 +89,71 @@ class _ProfileViewState extends State<ProfileView> {
           }
           else
           {
-            return WGAlbumSlider(images, onImageUpload);
+            return WGAlbumSlider(images, onImageUpload, onImageDelete, onImageSetAsMain);
           }
         }
     );
   }
 
-  void onImageUpload()
+  Future onImageUpload(File file) async
   {
+    try{
+      ApiResponse postResult = await widget._apiService.PostUserImage(file.path).timeout(const Duration(seconds: 5));
+      if(!postResult.statusCode.isSuccessStatusCode)
+      {
+        ScaffoldMessenger.of(context).showSnackBar(failedFileUpload);
+      }
+    }on SocketException {
+      ScaffoldMessenger.of(context).showSnackBar(noConnectionSnackbar);
+    } on TimeoutException {
+      ScaffoldMessenger.of(context).showSnackBar(serverErrorSnackbar);
+    } on Exception {
+      ScaffoldMessenger.of(context).showSnackBar(failedFileUpload);
+    }
     setState(() {
+    });
+  }
+
+  Future onImageDelete(apiImage.Image image) async
+  {
+    try{
+      var deleteResult = await widget._apiService.DeleteImage(image.id).timeout(const Duration(seconds: 5));
+
+      if(!deleteResult)
+      {
+        ScaffoldMessenger.of(context).showSnackBar(failedImageDelete);
+      }
+    }on SocketException {
+      ScaffoldMessenger.of(context).showSnackBar(noConnectionSnackbar);
+    } on TimeoutException {
+      ScaffoldMessenger.of(context).showSnackBar(serverErrorSnackbar);
+    } on Exception {
+      ScaffoldMessenger.of(context).showSnackBar(failedImageDelete);
+    }
+    setState(() {
+
+    });
+  }
+
+  Future onImageSetAsMain(apiImage.Image image) async
+  {
+    try{
+      image.isMain = true;
+      var updateResult = await widget._apiService.UpdateImage(image.id, image).timeout(const Duration(seconds: 5));
+
+      if(!updateResult)
+      {
+        ScaffoldMessenger.of(context).showSnackBar(failedImageUpdate);
+      }
+    }on SocketException {
+      ScaffoldMessenger.of(context).showSnackBar(noConnectionSnackbar);
+    } on TimeoutException {
+      ScaffoldMessenger.of(context).showSnackBar(serverErrorSnackbar);
+    } on Exception {
+      ScaffoldMessenger.of(context).showSnackBar(failedImageUpdate);
+    }
+    setState(() {
+
     });
   }
 

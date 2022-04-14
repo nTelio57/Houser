@@ -2,7 +2,7 @@ import 'dart:async';
 import 'dart:io';
 
 import 'package:flutter/material.dart';
-import 'package:houser/models/CurrentLogin.dart';
+import 'package:houser/utils/current_login.dart';
 import 'package:houser/models/Offer.dart';
 import 'package:houser/services/api_service.dart';
 import 'package:houser/views/profile%20view/my_offer_card.dart';
@@ -26,13 +26,9 @@ class _MyOfferListViewState extends State<MyOfferListView> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-
+      floatingActionButton: newOfferFab(),
       body: body(),
-      appBar: AppBar(
-        actions: [
-          newOfferButton()
-        ],
-      ),
+      appBar: AppBar(),
       backgroundColor: Theme.of(context).backgroundColor,
     );
   }
@@ -130,28 +126,10 @@ class _MyOfferListViewState extends State<MyOfferListView> {
 
   void onVisibilityClicked(Offer offer)
   {
-    offer.isVisible = !offer.isVisible;
-    widget._apiService.UpdateOfer(offer.id, offer).timeout(const Duration(seconds: 5)).then((value) {
-      setState(() {
-
-      });
-    })
-    .catchError(handleSocketException, test: (e) => e is SocketException)
-    .catchError(handleTimeoutException, test: (e) => e is TimeoutException)
-    .catchError(handleVisibilityException, test: (e) => e is Exception);
-
-  }
-
-  void handleSocketException(Object o){
-    ScaffoldMessenger.of(context).showSnackBar(noConnectionSnackbar);
-  }
-
-  void handleTimeoutException(Object o){
-    ScaffoldMessenger.of(context).showSnackBar(noConnectionSnackbar);
-  }
-
-  void handleVisibilityException(Object o){
-    ScaffoldMessenger.of(context).showSnackBar(visibilityChangeFailed);
+    showDialog(
+        context: context,
+        builder: (context) => visibilityDialog(offer)
+    );
   }
 
   void onDeleteClicked(Offer offer)
@@ -169,21 +147,92 @@ class _MyOfferListViewState extends State<MyOfferListView> {
       actions: [
         TextButton(
           onPressed: () => Navigator.pop(context),
-          child: const Text('ATŠAUKTI')
+          child: const Text(
+            'ATŠAUKTI',
+            style: TextStyle(
+              fontWeight: FontWeight.w600
+            ),
+          )
         ),
         TextButton(
             onPressed: () {
-              widget._apiService.DeleteOffer(offer.id).then((value) {
+              widget._apiService.DeleteOffer(offer.id).timeout(const Duration(seconds: 5)).then((value) {
                 setState(() {
 
                 });
               });
               Navigator.pop(context);
             },
-            child: const Text('IŠTRINTI')
+            child: const Text(
+              'IŠTRINTI',
+              style: TextStyle(
+                color: Colors.red,
+                fontWeight: FontWeight.w600
+              ),
+            )
         ),
       ],
     );
   }
 
+  AlertDialog visibilityDialog(Offer offer)
+  {
+    return AlertDialog(
+      content: const Text('Ar tikrai norite pasiūlymo matomumą?'),
+      actions: [
+        TextButton(
+            onPressed: () => Navigator.pop(context),
+            child: const Text(
+              'ATŠAUKTI',
+              style: TextStyle(
+                  fontWeight: FontWeight.w600
+              ),)
+        ),
+        TextButton(
+            onPressed: () {
+              offer.isVisible = !offer.isVisible;
+              widget._apiService.UpdateOfer(offer.id, offer).timeout(const Duration(seconds: 5)).then((value) {
+                setState(() {
+
+                });
+              })
+              .catchError(handleSocketException, test: (e) => e is SocketException)
+              .catchError(handleTimeoutException, test: (e) => e is TimeoutException)
+              .catchError(handleVisibilityException, test: (e) => e is Exception);
+
+              Navigator.pop(context);
+            },
+            child: const Text(
+              'TĘSTI',
+              style: TextStyle(
+                  fontWeight: FontWeight.w600
+              ),)
+        ),
+      ],
+    );
+  }
+
+  Widget newOfferFab()
+  {
+    return FloatingActionButton(
+      backgroundColor: Theme.of(context).primaryColorDark,
+      child: const Icon(Icons.add),
+      onPressed: () {
+        Navigator.push(context, MaterialPageRoute(
+            builder: (context) => OfferFormView())).then((value) => setState((){}));
+      },
+    );
+  }
+
+  void handleSocketException(Object o){
+    ScaffoldMessenger.of(context).showSnackBar(noConnectionSnackbar);
+  }
+
+  void handleTimeoutException(Object o){
+    ScaffoldMessenger.of(context).showSnackBar(noConnectionSnackbar);
+  }
+
+  void handleVisibilityException(Object o){
+    ScaffoldMessenger.of(context).showSnackBar(visibilityChangeFailed);
+  }
 }

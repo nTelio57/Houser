@@ -9,6 +9,7 @@ using HouserAPI.Data.Seed;
 using HouserAPI.Extensions;
 using HouserAPI.Models;
 using Microsoft.AspNetCore.Identity;
+using Newtonsoft.Json;
 using Newtonsoft.Json.Serialization;
 
 namespace HouserAPI
@@ -33,6 +34,7 @@ namespace HouserAPI
             services.AddControllers().AddNewtonsoftJson(s =>
             {
                 s.SerializerSettings.ContractResolver = new CamelCasePropertyNamesContractResolver();
+                s.SerializerSettings.ReferenceLoopHandling = ReferenceLoopHandling.Ignore;
             });
 
             services.AddCors(o => o.AddPolicy("MyPolicy", policyBuilder =>

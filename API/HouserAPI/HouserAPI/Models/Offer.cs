@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using HouserAPI.Enums;
 
 namespace HouserAPI.Models
@@ -20,6 +21,7 @@ namespace HouserAPI.Models
         public int TotalRoomCount { get; set; }
         public int BedCount { get; set; }
         public BedType BedType { get; set; }
+        public ICollection<Image> Images { get; set; }
         //--------Rules-----
         public bool RuleSmoking { get; set; }
         public bool RuleAnimals { get; set; }

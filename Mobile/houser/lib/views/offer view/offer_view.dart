@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:houser/views/profile%20view/profile_view.dart';
+import 'package:houser/widgets/WG_OfferCard.dart';
+import 'package:houser/utils/offer_card_manager.dart';
+import 'package:provider/provider.dart';
 
 class OfferView extends StatefulWidget {
   const OfferView({Key? key}) : super(key: key);
@@ -9,6 +12,7 @@ class OfferView extends StatefulWidget {
 }
 
 class _OfferViewState extends State<OfferView> {
+
   @override
   Widget build(BuildContext context) {
     return scaffold();
@@ -26,30 +30,35 @@ class _OfferViewState extends State<OfferView> {
   {
     return Stack(
       children: [
-        image(),
+        offerCardStack(),
         topPanel(),
-        bottomPanel(),
       ],
     );
   }
 
-  Widget image()
+  Widget offerCardStack()
   {
-    var deviceHeight = MediaQuery.of(context).size.height;
-    var deviceWidth = MediaQuery.of(context).size.width;
-    var imageHeight = deviceHeight;
+    final provider = Provider.of<OfferCardManager>(context);
+    final offers = provider.offers;
 
-    return SizedBox(
-      height: imageHeight,
-      child: AspectRatio(
-        aspectRatio: deviceWidth/(imageHeight),
-        child: Container(
-          decoration: const BoxDecoration(
-            image: DecorationImage(
-              fit: BoxFit.fitHeight,
-              alignment: FractionalOffset.center,
-              image: AssetImage('assets/images/apt_placeholder1.jpg')
-            )
+    return offers.isEmpty ? noOffersResult() :
+    Stack(
+      children: offers.reversed.map((offer) => WGOfferCard(offer: offer, isFront: offer == offers.first)).toList(),
+    );
+  }
+
+  Widget noOffersResult()
+  {
+    return Container(
+      padding: const EdgeInsets.all(30),
+      child: Center(
+        child: Text(
+          'Nerasta galimų rekomendacijų. Mėginkite pakoreguoti filtrą ir mėginkite dar kartą.',
+          textAlign: TextAlign.center,
+          style: TextStyle(
+            fontWeight: FontWeight.w600,
+            color: Theme.of(context).primaryColor,
+            fontSize: 16,
           ),
         ),
       ),
@@ -125,90 +134,6 @@ class _OfferViewState extends State<OfferView> {
         ),
         onPressed: () {},
       ),
-    );
-  }
-
-  Widget bottomPanel()
-  {
-    var deviceHeight = MediaQuery.of(context).size.height;
-
-    return Align(
-      alignment: Alignment.bottomCenter,
-      child: Container(
-        height: deviceHeight * 0.2,
-        width: double.infinity,
-        decoration: const BoxDecoration(
-            color: Color.fromRGBO(0, 0, 0, 0.4)
-        ),
-        child: offerDetails(),
-      ),
-    );
-  }
-
-  Widget offerDetails()
-  {
-    return Padding(
-      padding: const EdgeInsets.only(left: 8, right: 8, top: 8, bottom: 8),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            title(),
-            const Spacer(),
-            location(),
-            const SizedBox(height: 4),
-            spaceCount(),
-          ],
-      ),
-    );
-  }
-
-  Widget title()
-  {
-    return const Text(
-      'Ieškomas vienas kambariokas labai labai ilgas ir dar ilgesnis pavadinimas',
-      textAlign: TextAlign.left,
-      style: TextStyle(
-        color: Colors.white,
-        fontSize: 20
-      ),
-    );
-  }
-
-  Widget location()
-  {
-    return Row(
-      children: const [
-        Icon(
-          Icons.place,
-          color: Colors.white,
-        ),
-        Text(
-          'Kaunas, Baršausko g. 86',
-          style: TextStyle(
-            color: Colors.white,
-            fontSize: 16
-          ),
-        )
-      ],
-    );
-  }
-
-  Widget spaceCount()
-  {
-    return Row(
-      children: const [
-        Icon(
-          Icons.person_search,
-          color: Colors.white,
-        ),
-        Text(
-          '1/3',
-          style: TextStyle(
-              color: Colors.white,
-              fontSize: 16
-          ),
-        )
-      ],
     );
   }
 

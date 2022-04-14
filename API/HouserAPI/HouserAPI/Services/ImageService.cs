@@ -7,28 +7,42 @@ using Microsoft.Extensions.Hosting;
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Threading.Tasks;
+using HouserAPI.DTOs.Offer;
 
 namespace HouserAPI.Services
 {
     public class ImageService : IImageService
     {
         private readonly ImageRepository _repository;
+        private readonly IOfferService _offerService;
         private readonly IMapper _mapper;
         private readonly IHostEnvironment _hostEnvironment;
 
-        public ImageService(IRepository<Image> repository, IMapper mapper, IHostEnvironment hostEnvironment)
+        public ImageService(IRepository<Image> repository, IOfferService offerService, IMapper mapper, IHostEnvironment hostEnvironment)
         {
             _repository = repository as ImageRepository;
+            _offerService = offerService;
             _mapper = mapper;
             _hostEnvironment = hostEnvironment;
         }
 
-        public async Task<ImageReadDto> Create(string userId, IFormFile image)
+        public async Task<ImageReadDto> CreateUserImage(string userId, IFormFile image)
+        {
+            return await Create(userId, 0, $"Images/User/{userId}", image);
+        }
+
+        public async Task<ImageReadDto> CreateOfferImage(string userId, OfferReadDto offer, IFormFile image)
+        {
+            return await Create(userId, offer.Id, $"Images/Offer/{offer.Id}", image);
+        }
+
+        private async Task<ImageReadDto> Create(string userId, int offerId, string imageDirectory, IFormFile image)
         {
             string extension = Path.GetExtension(image.FileName);
             string fileName = DateTime.Now.ToString("yyyyMMddHHmmssff") + extension;
-            string directory = Path.Combine(_hostEnvironment.ContentRootPath, $"Images/{userId}");
+            string directory = Path.Combine(_hostEnvironment.ContentRootPath, imageDirectory);
             string fullPath = Path.Combine($"{directory}/{fileName}");
 
             Directory.CreateDirectory(directory);
@@ -40,7 +54,8 @@ namespace HouserAPI.Services
             var newImage = new Image
             {
                 Path = fullPath,
-                UserId = userId
+                UserId = userId,
+                OfferId = offerId != 0 ? offerId : null
             };
 
             await _repository.Create(newImage);
@@ -58,6 +73,7 @@ namespace HouserAPI.Services
         public async Task<IEnumerable<ImageReadDto>> GetAllByUser(string id)
         {
             var images = await _repository.GetAllByUser(id);
+            images = images.Where(x => x.OfferId == null);
             return _mapper.Map<IEnumerable<ImageReadDto>>(images);
         }
 
@@ -73,6 +89,32 @@ namespace HouserAPI.Services
             if (image == null)
                 return false;
 
+            if (image.IsMain)
+            {
+                if (image.OfferId != null)// in offer
+                {
+                    var offer = await _offerService.GetById((int)image.OfferId);
+                    var defaultImageDto = offer.Images.FirstOrDefault();
+                    if (defaultImageDto != null)
+                    {
+                        var defaultImage = await _repository.GetById(defaultImageDto.Id);
+                        defaultImage.IsMain = true;
+                        await _repository.Update(defaultImage);
+                    }
+                }
+                else // in user
+                {
+                    var userImages = await _repository.GetAllByUser(image.UserId);
+                    userImages = userImages.Where(x => x.OfferId == null);
+                    var defaultImage = userImages.FirstOrDefault();
+                    if (defaultImage != null)
+                    {
+                        defaultImage.IsMain = true;
+                        await _repository.Update(defaultImage);
+                    }
+                }
+            }
+
             try
             {
                 File.Delete(image.Path);
@@ -83,6 +125,41 @@ namespace HouserAPI.Services
             }
             
             await _repository.Delete(image);
+            return await _repository.SaveChanges();
+        }
+
+        public async Task<bool> Update(int id, ImageUpdateDto imageUpdateDto)
+        {
+            var image = await _repository.GetById(id);
+
+            //is set as main image
+            if (imageUpdateDto.IsMain)
+            {
+                if (image.OfferId != null)// in offer
+                {
+                    var offer = await _offerService.GetById((int)image.OfferId);
+                    var currentlyMainImage = offer.Images.FirstOrDefault(x => x.IsMain);
+                    if (currentlyMainImage != null)
+                    {
+                        currentlyMainImage.IsMain = false;
+                        await _repository.Update(currentlyMainImage);
+                    }
+                }
+                else // in user
+                {
+                    var userImages = await _repository.GetAllByUser(imageUpdateDto.UserId);
+                    userImages = userImages.Where(x => x.OfferId == null);
+                    var currentlyMainImage = userImages.FirstOrDefault(x => x.IsMain);
+                    if (currentlyMainImage != null)
+                    {
+                        currentlyMainImage.IsMain = false;
+                        await _repository.Update(currentlyMainImage);
+                    }
+                }
+            }
+
+            _mapper.Map(imageUpdateDto, image);
+            await _repository.Update(image);
             return await _repository.SaveChanges();
         }
     }

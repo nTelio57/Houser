@@ -4,6 +4,7 @@ using System;
 using System.IO;
 using System.Threading.Tasks;
 using HouserAPI.Auth;
+using HouserAPI.DTOs.Image;
 using HouserAPI.Services;
 using Microsoft.AspNetCore.Authorization;
 
@@ -15,25 +16,54 @@ namespace HouserAPI.Controllers
     public class ImageController : ControllerBase
     {
         private readonly IImageService _imageService;
+        private readonly IOfferService _offerService;
 
-        public ImageController(IImageService imageService)
+        public ImageController(IImageService imageService, IOfferService offerService)
         {
             _imageService = imageService;
+            _offerService = offerService;
         }
 
-        [HttpPost]
+        [HttpPost("user")]
         [Roles(UserRoles.Basic)]
-        public async Task<IActionResult> PostImage(IFormFile image)
+        public async Task<IActionResult> PostUserImage(IFormFile image)
         {
             var userId = User.FindFirst(CustomClaims.UserId)?.Value;
 
-            if(image == null)
+            if (image == null)
                 return BadRequest("Value cannot be null.");
 
             try
             {
-                var imageReadDto = await _imageService.Create(userId, image);
-                return CreatedAtAction(nameof(PostImage), imageReadDto);
+                var imageReadDto = await _imageService.CreateUserImage(userId, image);
+                return CreatedAtAction(nameof(PostUserImage), imageReadDto);
+            }
+            catch (Exception)
+            {
+                return BadRequest("Failed to post image.");
+            }
+        }
+
+        [HttpPost("offer/{id}")]
+        [Roles(UserRoles.Basic)]
+        public async Task<IActionResult> PostOfferImage(int id, IFormFile image)
+        {
+            var userId = User.FindFirst(CustomClaims.UserId)?.Value;
+
+            if (image == null)
+                return BadRequest("Value cannot be null.");
+
+            var offer = await _offerService.GetById(id);
+            if (offer == null)
+                return NotFound("Offer not found");
+
+            if (offer.UserId != userId)
+                return Forbid();
+
+            try
+            {
+                var imageReadDto = await _imageService.CreateOfferImage(userId, offer, image);
+                return CreatedAtAction(nameof(PostOfferImage), imageReadDto);
             }
             catch (Exception)
             {
@@ -71,28 +101,43 @@ namespace HouserAPI.Controllers
             if (image == null) 
                 return NotFound();
 
-            if (!image.UserId.Equals(userId)) 
-                return Forbid();
-
             try
             {
                 var imageStream = System.IO.File.OpenRead(image.Path);
                 return File(imageStream, "image/png");
             }
-            catch (FileNotFoundException e)
+            catch (FileNotFoundException)
             {
                 await _imageService.Delete(id);
                 return BadRequest("Image file was not found.");
             }
-            catch (DirectoryNotFoundException e)
+            catch (DirectoryNotFoundException)
             {
                 await _imageService.Delete(id);
                 return BadRequest("Image file was not found.");
             }
-            catch (Exception e)
+            catch (Exception)
             {
                 return BadRequest("Failed to find image.");
             }
+        }
+
+        [HttpPut("{id}")]
+        public async Task<IActionResult> UpdateImage(int id, ImageUpdateDto imageUpdateDto)
+        {
+            var userId = User.FindFirst(CustomClaims.UserId)?.Value;
+
+            var image = await _imageService.GetById(id);
+            if (image == null)
+                return NotFound();
+
+            if (userId != image.UserId)
+                return Forbid();
+
+            await _imageService.Update(id, imageUpdateDto);
+
+            return NoContent();
+
         }
 
         [HttpDelete("{id}")]

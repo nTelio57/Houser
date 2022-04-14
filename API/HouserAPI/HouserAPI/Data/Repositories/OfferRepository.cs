@@ -14,9 +14,20 @@ namespace HouserAPI.Data.Repositories
             Entities = context.Offers;
         }
 
+        protected override IQueryable<Offer> IncludeDependencies(IQueryable<Offer> queryable)
+        {
+            return queryable.Include(x => x.Images);
+        }
+
         public async Task<IEnumerable<Offer>> GetAllByUser(string userId)
         {
             return await IncludeDependencies(Entities).Where(x => x.UserId == userId).ToListAsync();
+        }
+
+        //Temporary for debug reasons
+        public async Task<Offer> GetFirstRandom()
+        {
+            return await IncludeDependencies(Entities).FirstOrDefaultAsync();
         }
     }
 }

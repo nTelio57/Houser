@@ -16,10 +16,22 @@ const failedFileUpload = SnackBar(
     content: Text('Nepavyko įkelti failo.')
 );
 
+const failedImageDelete = SnackBar(
+    content: Text('Nepavyko pašalinti nuotraukos.')
+);
+
+const failedImageUpdate = SnackBar(
+    content: Text('Nepavyko atnaujinti nuotraukos.')
+);
+
 const validationFailed = SnackBar(
     content: Text('Patikrinkite įvestus duomenis.')
 );
 
 const visibilityChangeFailed = SnackBar(
     content: Text('Nepavyko pakeisti matomumo.')
+);
+
+const offerHasToHaveImages = SnackBar(
+    content: Text('Privalote įkelti bent 1 nuotrauką.')
 );

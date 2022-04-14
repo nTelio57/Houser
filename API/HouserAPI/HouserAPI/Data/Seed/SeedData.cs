@@ -30,6 +30,7 @@ namespace HouserAPI.Data.Seed
 
             RoleSeed.Seed(_roleManager);
             UserSeed.Seed(_userManager);
+            ImageSeed.Seed(_context);
             OfferSeed.Seed(_context);
 
             _context.SaveChanges();

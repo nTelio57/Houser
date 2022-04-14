@@ -1,6 +1,7 @@
 import 'package:houser/enums/SleepType.dart';
 import 'package:houser/extensions/dateTime_extensions.dart';
 import 'package:json_annotation/json_annotation.dart';
+
 part 'User.g.dart';
 
 @JsonSerializable()
