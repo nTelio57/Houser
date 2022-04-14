@@ -19,7 +19,7 @@ namespace HouserAPI.Extensions
             return services
                 .AddScoped<IImageService, ImageService>()
                 .AddScoped<IOfferService, OfferService>()
-                .AddScoped<ISearchService, SearchService>();
+                .AddScoped<IRecommendationService, RecommendationService>();
         }
     }
 }

@@ -3,8 +3,8 @@ using HouserAPI.DTOs.Offer;
 
 namespace HouserAPI.Services
 {
-    public interface ISearchService
+    public interface IRecommendationService
     {
-        Task<OfferReadDto> GetRecommendationByFilter();
+        Task<OfferReadDto> GetRoomRecommendationByFilter();
     }
 }

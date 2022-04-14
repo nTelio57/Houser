@@ -6,18 +6,18 @@ using HouserAPI.Models;
 
 namespace HouserAPI.Services
 {
-    public class SearchService : ISearchService
+    public class RecommendationService : IRecommendationService
     {
         private readonly OfferRepository _offerRepository;
         private readonly IMapper _mapper;
 
-        public SearchService(IRepository<Offer> repository, IMapper mapper)
+        public RecommendationService(IRepository<Offer> repository, IMapper mapper)
         {
             _offerRepository = repository as OfferRepository;
             _mapper = mapper;
         }
 
-        public async Task<OfferReadDto> GetRecommendationByFilter()
+        public async Task<OfferReadDto> GetRoomRecommendationByFilter()
         {
             var offer = await _offerRepository.GetFirstRandom();
 
