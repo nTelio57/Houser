@@ -7,6 +7,6 @@ namespace HouserAPI.Services
 {
     public interface IRecommendationService
     {
-        Task<IEnumerable<OfferReadDto>> GetRoomRecommendationByFilter(int count, int offset, RoomFilter roomFilter);
+        Task<IEnumerable<OfferReadDto>> GetRoomRecommendationByFilter(int count, int offset, RoomFilter roomFilter, string userId);
     }
 }

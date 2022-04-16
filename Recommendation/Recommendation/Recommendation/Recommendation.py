@@ -35,6 +35,15 @@ class OfferPrediction():
         self.prediction = prediction
 
 @dataclass
+class User(db.Model):
+    Id: str
+    Elo: int
+
+    __tablename__ = 'Aspnetusers'
+    Id = db.Column(db.String, primary_key=True)
+    Elo = db.Column(db.Integer)
+
+@dataclass
 class Offer(db.Model):
     Id: int
     Title: str
@@ -83,12 +92,13 @@ class Offer(db.Model):
     AccommodationParking = db.Column(db.Boolean)
     AccommodationBalcony = db.Column(db.Boolean)
     AccommodationDisability = db.Column(db.Boolean)
-    UserId = db.Column(db.String)
+    UserId = db.Column(db.String, db.ForeignKey(User.Id))
 
 @dataclass
 class RoomFilter():
     Id: int
     UserId: str
+    Elo: int
     City: str
     MonthlyPrice: float
     Area: float
@@ -131,16 +141,17 @@ def CosineSimilarity(a, b):
     return dot(a, b)/(norm(a)*norm(b))
 
 def GetRoomRecommendation(filter):
-    offerList = Offer.query.\
-        filter_by(City=filter.City).\
+
+    offerList = db.session.query(Offer, User.Elo).join(User).\
+        filter(Offer.City == filter.City).\
         filter(Offer.AvailableFrom <= filter.AvailableFrom).\
         filter(Offer.AvailableTo >= filter.AvailableTo).\
         filter(Offer.IsVisible).\
         filter(Offer.UserId != filter.UserId).\
         all()
-
+    
     predictions = []
-    for offer in offerList:
+    for offer, elo in offerList:
         priceSimilarity = (EuclideanDistance(offer.MonthlyPrice, filter.MonthlyPrice))
         binarySimilarity = (CosineSimilarityBool((
             offer.RuleSmoking, 
@@ -151,8 +162,7 @@ def GetRoomRecommendation(filter):
             offer.AccommodationParking,
             offer.AccommodationBalcony,
             offer.AccommodationDisability,
-            ), 
-            (
+            ), (
             filter.RuleSmoking, 
             filter.RuleAnimals,
             filter.AccommodationTv,
@@ -163,15 +173,15 @@ def GetRoomRecommendation(filter):
             filter.AccommodationDisability
             )))
         floatSimilarity = (CosineSimilarity((offer.Area, offer.FreeRoomCount), (filter.Area, filter.FreeRoomCount)))
-        eloSimilarity = (EuclideanDistance(offer.MonthlyPrice, filter.MonthlyPrice))
+        eloSimilarity = (EuclideanDistance(elo, filter.Elo))
 
-        prediction = priceSimilarity * _priceWeight + binarySimilarity * _binaryWeight + floatSimilarity * _floatWeight
+        prediction = priceSimilarity * _priceWeight + binarySimilarity * _binaryWeight + floatSimilarity * _floatWeight + eloSimilarity * _eloWeight
         predictions.append(OfferPrediction(offer.Id, prediction))
         predictions.sort(key=lambda x: x.prediction, reverse=True)
 
     return predictions
 
-@app.route('/room_recommendation', methods=['POST'])
+@app.route('/room', methods=['POST'])
 def recommendation():
     filterString = json.dumps(request.get_json())
     filterJson = json.loads(filterString)

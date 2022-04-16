@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using System.Threading.Tasks;
+using HouserAPI.Auth;
 using HouserAPI.Models;
 using HouserAPI.Services;
 
@@ -17,9 +18,11 @@ namespace HouserAPI.Controllers
         }
 
         [HttpPost("room/{count}/{offset}")]
+        [Roles(UserRoles.Basic)]
         public async Task<IActionResult> GetRoomRecommendationByFilter(int count, int offset, RoomFilter roomFilter)
         {
-            var offerReadDto = await _recommendationService.GetRoomRecommendationByFilter(count, offset, roomFilter);
+            var userId = User.FindFirst(CustomClaims.UserId)?.Value;
+            var offerReadDto = await _recommendationService.GetRoomRecommendationByFilter(count, offset, roomFilter, userId);
 
             return Ok(offerReadDto);
         }
