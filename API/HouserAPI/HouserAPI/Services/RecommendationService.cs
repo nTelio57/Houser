@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using AutoMapper;
@@ -29,12 +30,18 @@ namespace HouserAPI.Services
             var user = await _userManager.FindByIdAsync(userId);
             roomFilter.Elo = user.Elo;
 
-            var recommendations = await _recommendationApiClient.Post<IEnumerable<OfferRecommendationResponse>>("/room", roomFilter);
-            var offers = await _offerRepository.GetAllWithId(recommendations.Select(x => x.Id));
+            var offerList = new List<Offer>();
+            var recommendationPredictions = await _recommendationApiClient.Post<IEnumerable<OfferRecommendationResponse>>("/room", roomFilter);
+            var offerRecommendationResponses = recommendationPredictions.ToList();
+            if(offset >= offerRecommendationResponses.Count)
+                return _mapper.Map<IEnumerable<OfferReadDto>>(offerList);
 
-            return _mapper.Map<IEnumerable<OfferReadDto>>(offers);
+            for (int i = 0; i < Math.Min(count, (offerRecommendationResponses.Count - offset)); i++)
+            {
+                offerList.Add(await _offerRepository.GetById(offerRecommendationResponses[i + offset].Id));
+            }
+
+            return _mapper.Map<IEnumerable<OfferReadDto>>(offerList);
         }
-
-        
     }
 }

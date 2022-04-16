@@ -142,7 +142,8 @@ def CosineSimilarity(a, b):
 
 def GetRoomRecommendation(filter):
 
-    offerList = db.session.query(Offer, User.Elo).join(User).\
+    offerList = db.session.query(Offer, User.Elo).\
+        join(User).\
         filter(Offer.City == filter.City).\
         filter(Offer.AvailableFrom <= filter.AvailableFrom).\
         filter(Offer.AvailableTo >= filter.AvailableTo).\
@@ -187,9 +188,8 @@ def recommendation():
     filterJson = json.loads(filterString)
     filter = RoomFilter(**filterJson)
 
-    rooms = GetRoomRecommendation(filter)
-    print(rooms)
-    return jsonify(rooms)
+    predictions = GetRoomRecommendation(filter)
+    return jsonify(predictions)
 
 if __name__ == '__main__':
     app.run(port=5002)
