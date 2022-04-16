@@ -17,6 +17,7 @@ namespace HouserAPI.Extensions
         public static IServiceCollection AddServiceDependencies(this IServiceCollection services)
         {
             return services
+                .AddScoped<ApiClient>()
                 .AddScoped<IImageService, ImageService>()
                 .AddScoped<IOfferService, OfferService>()
                 .AddScoped<IRecommendationService, RecommendationService>();

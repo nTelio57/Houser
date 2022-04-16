@@ -24,10 +24,9 @@ namespace HouserAPI.Data.Repositories
             return await IncludeDependencies(Entities).Where(x => x.UserId == userId).ToListAsync();
         }
 
-        //Temporary for debug reasons
-        public async Task<Offer> GetFirstRandom()
+        public async Task<IEnumerable<Offer>> GetAllWithId(IEnumerable<int> ids)
         {
-            return await IncludeDependencies(Entities).FirstOrDefaultAsync();
+            return await IncludeDependencies(Entities).Where(x => ids.Contains(x.Id)).ToListAsync();
         }
     }
 }

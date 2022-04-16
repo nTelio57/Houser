@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using System.Threading.Tasks;
+using HouserAPI.Models;
 using HouserAPI.Services;
 
 namespace HouserAPI.Controllers
@@ -15,12 +16,10 @@ namespace HouserAPI.Controllers
             _recommendationService = recommendationService;
         }
 
-        [HttpGet]
-        public async Task<IActionResult> GetRoomRecommendationByFilter()
+        [HttpPost("room/{count}/{offset}")]
+        public async Task<IActionResult> GetRoomRecommendationByFilter(int count, int offset, RoomFilter roomFilter)
         {
-            var offerReadDto = await _recommendationService.GetRoomRecommendationByFilter();
-            if (offerReadDto is null)
-                return NotFound();
+            var offerReadDto = await _recommendationService.GetRoomRecommendationByFilter(count, offset, roomFilter);
 
             return Ok(offerReadDto);
         }
