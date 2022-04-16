@@ -8,6 +8,7 @@ namespace HouserAPI.Models
     public class User : IdentityUser
     {
         public string Salt { get; set; }
+        public int Elo { get; set; }
         public string Name { get; set; }
         public string Surname { get; set; }
         public string City { get; set; }
