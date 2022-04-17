@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using AutoMapper;
 using HouserAPI.Data.Repositories;
 using HouserAPI.DTOs.Offer;
+using HouserAPI.DTOs.User;
 using HouserAPI.Models;
 using Microsoft.AspNetCore.Identity;
 
@@ -42,6 +43,25 @@ namespace HouserAPI.Services
             }
 
             return _mapper.Map<IEnumerable<OfferReadDto>>(offerList);
+        }
+
+        public async Task<IEnumerable<UserReadDto>> GetUserRecommendationByFilter(int count, int offset, UserFilter userFilter, string userId)
+        {
+            var user = await _userManager.FindByIdAsync(userId);
+            userFilter.Elo = user.Elo;
+
+            var userList = new List<User>();
+            var recommendationPredictions = await _recommendationApiClient.Post<IEnumerable<UserRecommendationResponse>>("/user", userFilter);
+            var userRecommendationResponses = recommendationPredictions.ToList();
+            if (offset >= userRecommendationResponses.Count)
+                return _mapper.Map<IEnumerable<UserReadDto>>(userList);
+
+            for (int i = 0; i < Math.Min(count, (userRecommendationResponses.Count - offset)); i++)
+            {
+                userList.Add(await _userManager.FindByIdAsync(userRecommendationResponses[i + offset].Id));
+            }
+
+            return _mapper.Map<IEnumerable<UserReadDto>>(userList);
         }
     }
 }

@@ -21,10 +21,26 @@ namespace HouserAPI.Controllers
         [Roles(UserRoles.Basic)]
         public async Task<IActionResult> GetRoomRecommendationByFilter(int count, int offset, RoomFilter roomFilter)
         {
-            var userId = User.FindFirst(CustomClaims.UserId)?.Value;
+            string userId = User.FindFirst(CustomClaims.UserId)?.Value;
+            if (roomFilter.UserId != userId)
+                return Forbid();
+
             var offerReadDto = await _recommendationService.GetRoomRecommendationByFilter(count, offset, roomFilter, userId);
 
             return Ok(offerReadDto);
+        }
+
+        [HttpPost("user/{count}/{offset}")]
+        [Roles(UserRoles.Basic)]
+        public async Task<IActionResult> GetUserRecommendationByFilter(int count, int offset, UserFilter userFilter)
+        {
+            string userId = User.FindFirst(CustomClaims.UserId)?.Value;
+            if (userFilter.UserId != userId)
+                return Forbid();
+
+            var userReadDto = await _recommendationService.GetUserRecommendationByFilter(count, offset, userFilter, userId);
+
+            return Ok(userReadDto);
         }
     }
 }
