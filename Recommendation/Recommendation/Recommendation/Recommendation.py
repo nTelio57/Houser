@@ -35,13 +35,42 @@ class OfferPrediction():
         self.prediction = prediction
 
 @dataclass
+class UserPrediction():
+    id: str
+    prediction: float
+
+    def __init__(self, id, prediction):
+        self.id = id
+        self.prediction = prediction
+
+@dataclass
 class User(db.Model):
     Id: str
+    IsVisible: bool
     Elo: int
+    BirthDate: datetime.datetime
+    Sex: int
+    AnimalCount: int
+    GuestCount: int
+    PartyCount: int
+    IsStudying: bool
+    IsWorking: bool
+    IsSmoking: bool
+    SleepType: int
 
     __tablename__ = 'Aspnetusers'
     Id = db.Column(db.String, primary_key=True)
+    IsVisible = db.Column(db.Boolean)
     Elo = db.Column(db.Integer)
+    BirthDate = db.Column(db.DateTime)
+    Sex = db.Column(db.Integer)
+    AnimalCount = db.Column(db.Integer)
+    GuestCount = db.Column(db.Integer)
+    PartyCount = db.Column(db.Integer)
+    IsStudying = db.Column(db.Boolean)
+    IsWorking = db.Column(db.Boolean)
+    IsSmoking = db.Column(db.Boolean)
+    SleepType = db.Column(db.Integer)
 
 @dataclass
 class Offer(db.Model):
@@ -115,6 +144,22 @@ class RoomFilter():
     AccommodationBalcony: bool
     AccommodationDisability: bool
 
+@dataclass
+class UserFilter():
+    Id: int
+    UserId: str
+    Elo: int
+    AgeFrom: int
+    AgeTo : int
+    Sex: int 
+    AnimalCount: int 
+    IsStudying: bool 
+    IsWorking: bool 
+    IsSmoking: bool 
+    GuestCount: int  
+    PartyCount: int  
+    SleepType: int  
+
 def EuclideanDistance(a, b):
     return 1 - (abs(a-b)/(a+b))
 
@@ -182,8 +227,42 @@ def GetRoomRecommendation(filter):
 
     return predictions
 
+def GetUserRecommendation(filter):
+
+    today = datetime.date.today()
+    ageFromDate = today.replace(today.year - filter.AgeFrom)
+    ageToDate = today.replace(today.year - filter.AgeTo)
+
+    userList = db.session.query(User).\
+        filter(User.IsVisible).\
+        filter(User.Sex == filter.Sex).\
+        filter(User.BirthDate <= ageFromDate).\
+        filter(User.BirthDate >= ageToDate).\
+        filter(User.Id != filter.UserId).\
+        all()
+    
+    predictions = []
+    for user in userList:
+        binarySimilarity = (CosineSimilarityBool((
+            user.IsSmoking, 
+            user.IsStudying,
+            user.IsWorking,
+            ), (
+            filter.IsSmoking, 
+            filter.IsStudying,
+            filter.IsWorking,
+            )))
+        floatSimilarity = (CosineSimilarity((user.AnimalCount, user.GuestCount, user.PartyCount, user.SleepType), (filter.AnimalCount, filter.GuestCount, filter.PartyCount, filter.SleepType)))
+        eloSimilarity = (EuclideanDistance(user.Elo, filter.Elo))
+
+        prediction = binarySimilarity * _binaryWeight + floatSimilarity * _floatWeight + eloSimilarity * _eloWeight
+        predictions.append(UserPrediction(user.Id, prediction))
+        predictions.sort(key=lambda x: x.prediction, reverse=True)
+
+    return predictions
+
 @app.route('/room', methods=['POST'])
-def recommendation():
+def roomRecommendation():
     filterString = json.dumps(request.get_json())
     filterJson = json.loads(filterString)
     filter = RoomFilter(**filterJson)
@@ -191,9 +270,14 @@ def recommendation():
     predictions = GetRoomRecommendation(filter)
     return jsonify(predictions)
 
+@app.route('/user', methods=['POST'])
+def userRecommendation():
+    filterString = json.dumps(request.get_json())
+    filterJson = json.loads(filterString)
+    filter = UserFilter(**filterJson)
+
+    predictions = GetUserRecommendation(filter)
+    return jsonify(predictions)
+
 if __name__ == '__main__':
     app.run(port=5002)
-
-
-
-
