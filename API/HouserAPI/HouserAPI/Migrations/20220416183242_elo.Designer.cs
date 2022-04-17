@@ -3,14 +3,16 @@ using System;
 using HouserAPI.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace HouserAPI.Migrations
 {
     [DbContext(typeof(DatabaseContext))]
-    partial class DatabaseContextModelSnapshot : ModelSnapshot
+    [Migration("20220416183242_elo")]
+    partial class elo
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -164,9 +166,6 @@ namespace HouserAPI.Migrations
                         .HasColumnType("tinyint(1)");
 
                     b.Property<bool>("IsStudying")
-                        .HasColumnType("tinyint(1)");
-
-                    b.Property<bool>("IsVisible")
                         .HasColumnType("tinyint(1)");
 
                     b.Property<bool>("IsWorking")

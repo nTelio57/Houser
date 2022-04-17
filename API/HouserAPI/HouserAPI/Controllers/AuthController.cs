@@ -55,7 +55,8 @@ namespace HouserAPI.Controllers
             {
                 UserName = authRequest.Email,
                 Email = authRequest.Email,
-                Salt = salt
+                Salt = salt,
+                Elo = 500
             };
 
             var createdUser = await _userManager.CreateAsync(newUser, authRequest.Password + salt);
