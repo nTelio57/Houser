@@ -5,6 +5,7 @@ namespace HouserAPI.DTOs.User
 {
     public class UserUpdateDto
     {
+        public bool IsVisible { get; set; }
         public string Name { get; set; }
         public string City { get; set; }
         public DateTime BirthDate { get; set; }
