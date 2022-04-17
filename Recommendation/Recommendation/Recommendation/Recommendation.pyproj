@@ -4,7 +4,7 @@
     <SchemaVersion>2.0</SchemaVersion>
     <ProjectGuid>3c4cb507-d1a7-4ed5-90a9-cceeb26dd644</ProjectGuid>
     <ProjectHome>.</ProjectHome>
-    <StartupFile>Recommendation.py</StartupFile>
+    <StartupFile>Main.py</StartupFile>
     <SearchPath>
     </SearchPath>
     <WorkingDirectory>.</WorkingDirectory>
@@ -21,7 +21,40 @@
     <EnableUnmanagedDebugging>false</EnableUnmanagedDebugging>
   </PropertyGroup>
   <ItemGroup>
-    <Compile Include="Recommendation.py" />
+    <Compile Include="DatabaseContext.py">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Models\Offer.py">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Models\RoomFilter.py">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Models\RoomPrediction.py">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Models\UserFilter.py">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Models\UserPrediction.py">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Main.py" />
+    <Compile Include="RecommendationService.py">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="CalculationUtils.py">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Models\User.py">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="RecommendationController.py">
+      <SubType>Code</SubType>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Models\" />
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)\Python Tools\Microsoft.PythonTools.targets" />
   <!-- Uncomment the CoreCompile target to enable the Build command in
