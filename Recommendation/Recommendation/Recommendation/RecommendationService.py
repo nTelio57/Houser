@@ -4,6 +4,7 @@ from Models.RoomPrediction import *
 from Models.User import *
 from Models.Offer import *
 import datetime
+from datetime import timedelta
 from DatabaseContext import db
 
 _binaryWeight = 2;
@@ -11,16 +12,21 @@ _floatWeight = 2;
 _priceWeight = 0.35;
 _eloWeight = 4;
 
+def GetRoomQuery(filter):
+    query = db.session.query(Offer, User.Elo).join(User).filter(Offer.IsVisible).filter(Offer.UserId != filter.UserId)
+
+    if(filter.AvailableFrom != None):
+        query.filter(offer.AvailableFrom <= filter.AvailableFrom)
+    if(filter.AvailableTo != None):
+        query.filter(offer.AvailableTo >= filter.AvailableTo)
+    if(filter.City != None):
+        Offer.City == filter.City
+
+    return query
+
 def GetRoomRecommendation(filter):
 
-    offerList = db.session.query(Offer, User.Elo).\
-        join(User).\
-        filter(Offer.City == filter.City).\
-        filter(Offer.AvailableFrom <= filter.AvailableFrom).\
-        filter(Offer.AvailableTo >= filter.AvailableTo).\
-        filter(Offer.IsVisible).\
-        filter(Offer.UserId != filter.UserId).\
-        all()
+    offerList = GetRoomQuery(filter).all()
     
     predictions = []
     for offer, elo in offerList:

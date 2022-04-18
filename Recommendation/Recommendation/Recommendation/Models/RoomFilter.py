@@ -5,6 +5,7 @@ import datetime
 class RoomFilter():
     Id: int
     UserId: str
+    FilterType: int
     Elo: int
     City: str
     MonthlyPrice: float
