@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:houser/views/filter%20view/filter_base.dart';
 import 'package:houser/views/profile%20view/profile_view.dart';
 import 'package:houser/widgets/WG_OfferCard.dart';
 import 'package:houser/utils/offer_card_manager.dart';
@@ -23,6 +24,7 @@ class _OfferViewState extends State<OfferView> {
     return Scaffold(
       backgroundColor: Theme.of(context).backgroundColor,
       body: body(),
+      floatingActionButton: filterFab(),
     );
   }
 
@@ -135,6 +137,21 @@ class _OfferViewState extends State<OfferView> {
         onPressed: () {},
       ),
     );
+  }
+
+  Widget filterFab()
+  {
+    return FloatingActionButton(
+      child: const Icon(Icons.filter_list),
+      onPressed: (){
+        Navigator.of(context).push(
+            PageRouteBuilder(
+                opaque: false,
+                pageBuilder: (BuildContext context, Animation<double> animation, Animation<double> secondaryAnimation) => const FilterBaseView()
+            )
+        );
+      })
+    ;
   }
 
 }
