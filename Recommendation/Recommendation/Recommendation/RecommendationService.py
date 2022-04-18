@@ -16,11 +16,11 @@ def GetRoomQuery(filter):
     query = db.session.query(Offer, User.Elo).join(User).filter(Offer.IsVisible).filter(Offer.UserId != filter.UserId)
 
     if(filter.AvailableFrom != None):
-        query.filter(offer.AvailableFrom <= filter.AvailableFrom)
+        query = query.filter(Offer.AvailableFrom <= filter.AvailableFrom)
     if(filter.AvailableTo != None):
-        query.filter(offer.AvailableTo >= filter.AvailableTo)
+        query = query.filter(Offer.AvailableTo >= filter.AvailableTo)
     if(filter.City != None):
-        Offer.City == filter.City
+        query = query.filter(Offer.City == filter.City)
 
     return query
 
