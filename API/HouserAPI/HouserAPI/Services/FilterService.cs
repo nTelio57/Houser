@@ -34,6 +34,17 @@ namespace HouserAPI.Services
         {
             if (filterCreateDto is null) throw new ArgumentNullException((nameof(filterCreateDto)));
 
+            var filter = await GetByUserId(userId);
+            if (filter != null)
+            {
+                switch (filterCreateDto.FilterType)
+                {
+                    case FilterType.Room:
+                        await DeleteRoomFilter(filter.Id);
+                        break;
+                }
+            }
+
             switch (filterCreateDto.FilterType)
             {
                 case FilterType.Room:
@@ -45,6 +56,16 @@ namespace HouserAPI.Services
                 default:
                     throw new ArgumentException((nameof(filterCreateDto)));
             }
+        }
+
+        public async Task<bool> DeleteRoomFilter(int id)
+        {
+            var filter = await _roomFilterRepository.GetById(id);
+            if (filter is null)
+                return false;
+
+            await _roomFilterRepository.Delete(filter);
+            return await _roomFilterRepository.SaveChanges();
         }
     }
 }
