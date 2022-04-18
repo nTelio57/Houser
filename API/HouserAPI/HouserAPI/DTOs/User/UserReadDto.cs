@@ -1,4 +1,5 @@
 ﻿using System;
+using HouserAPI.DTOs.Filter;
 using HouserAPI.Enums;
 
 namespace HouserAPI.DTOs.User
@@ -6,6 +7,7 @@ namespace HouserAPI.DTOs.User
     public class UserReadDto
     {
         public bool IsVisible { get; set; }
+        public FilterReadDto Filter { get; set; }
         public string Id { get; set; }
         public string Email { get; set; }
         public string Name { get; set; }

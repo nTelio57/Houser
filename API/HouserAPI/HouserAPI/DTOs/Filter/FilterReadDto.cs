@@ -1,11 +1,11 @@
 ﻿using HouserAPI.Enums;
 
-namespace HouserAPI.Models
+namespace HouserAPI.DTOs.Filter
 {
-    public class Filter : Entity
+    public class FilterReadDto
     {
+        public int Id { get; set; }
         public string UserId { get; set; }
-        public int Elo { get; set; }
         public FilterType FilterType { get; set; }
     }
 }
