@@ -25,7 +25,8 @@ namespace HouserAPI.Data.Seed
                 BirthDate = new DateTime(1999, 11, 08),
                 UserName = "Admin",
                 City = "Kaunas",
-                Salt = "zoOCL2CFBCqEtTK5Ua197SwyVv2rckZoJEe+Ko8bUCU="
+                Salt = "zoOCL2CFBCqEtTK5Ua197SwyVv2rckZoJEe+Ko8bUCU=",
+                Elo = 500
             };
 
             var basic = new User
@@ -37,7 +38,8 @@ namespace HouserAPI.Data.Seed
                 BirthDate = new DateTime(1987, 02, 25),
                 UserName = "Basic",
                 City = "Vilnius",
-                Salt = "kFcWCtYosDUdeiK0Gf+WcY0LcxdvcH3UtQQrvwf9fh8="
+                Salt = "kFcWCtYosDUdeiK0Gf+WcY0LcxdvcH3UtQQrvwf9fh8=",
+                Elo = 500
             };
 
             var basic2 = new User
@@ -49,7 +51,8 @@ namespace HouserAPI.Data.Seed
                 BirthDate = new DateTime(2000, 07, 16),
                 UserName = "basic2",
                 City = "Klaipeda",
-                Salt = "VoW7Vl2PL4g9erbq1ncE6cpQbVmHMR3dDhLGx9EYhbM="
+                Salt = "VoW7Vl2PL4g9erbq1ncE6cpQbVmHMR3dDhLGx9EYhbM=",
+                Elo = 500
             };
 
             CreateUser(userManager, admin, "test1234", UserRoles.All);
