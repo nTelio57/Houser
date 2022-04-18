@@ -8,8 +8,8 @@ namespace HouserAPI.DTOs.Filter
     public float? Area { get; set; }
     public float? MonthlyPrice { get; set; }
     public string City { get; set; }
-    public DateTime AvailableFrom { get; set; }
-    public DateTime AvailableTo { get; set; }
+    public DateTime? AvailableFrom { get; set; }
+    public DateTime? AvailableTo { get; set; }
     public int? FreeRoomCount { get; set; }
 
     public int? BedCount { get; set; }
