@@ -10,13 +10,24 @@ namespace HouserAPI.Services
 {
     public class FilterService : IFilterService
     {
-        private readonly IRepository<RoomFilter> _roomFilterRepository;
+        private readonly RoomFilterRepository _roomFilterRepository;
         private readonly IMapper _mapper;
 
         public FilterService(IRepository<RoomFilter> roomFilterRepository, IMapper mapper)
         {
-            _roomFilterRepository = roomFilterRepository;
+            _roomFilterRepository = roomFilterRepository as RoomFilterRepository;
             _mapper = mapper;
+        }
+
+        public async Task<FilterReadDto> GetByUserId(string userId)
+        {
+            var filter = await _roomFilterRepository.GetByUserId(userId);
+            switch (filter.FilterType)
+            {
+                case FilterType.Room:
+                    return _mapper.Map<RoomFilterReadDto>(filter);
+            }
+            return _mapper.Map<FilterReadDto>(filter);
         }
 
         public async Task<FilterReadDto> Create(FilterCreateDto filterCreateDto, string userId)

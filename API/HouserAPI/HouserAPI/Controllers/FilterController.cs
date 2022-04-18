@@ -18,6 +18,20 @@ namespace HouserAPI.Controllers
             _filterService = filterService;
         }
 
+        [HttpGet("{id}")]
+        public async Task<IActionResult> GetFilterByUserId(string id)
+        {
+            var userId = User.FindFirst(CustomClaims.UserId)?.Value;
+            if (userId != id)
+                return Forbid();
+
+            var filterReadDto = await _filterService.GetByUserId(id);
+            if (filterReadDto is null)
+                return NotFound();
+
+            return Ok(filterReadDto);
+        }
+
         [HttpPost("room")]
         [Roles(UserRoles.Basic)]
         public async Task<IActionResult> CreateRoomFilter(RoomFilterCreateDto roomFilterCreateDto)
