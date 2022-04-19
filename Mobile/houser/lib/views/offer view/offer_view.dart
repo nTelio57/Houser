@@ -8,17 +8,17 @@ import 'package:houser/widgets/WG_RoomCard.dart';
 import 'package:houser/utils/offer_card_manager.dart';
 import 'package:provider/provider.dart';
 
-class RoomView extends StatefulWidget {
-  RoomView({Key? key}) : super(key: key);
+class OfferView extends StatefulWidget {
+  OfferView({Key? key}) : super(key: key);
 
   final CurrentLogin _currentLogin = CurrentLogin();
   final ApiService _apiService = ApiService();
 
   @override
-  _RoomViewState createState() => _RoomViewState();
+  _OfferViewState createState() => _OfferViewState();
 }
 
-class _RoomViewState extends State<RoomView> {
+class _OfferViewState extends State<OfferView> {
 
   @override
   Widget build(BuildContext context) {

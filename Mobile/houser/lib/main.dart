@@ -5,7 +5,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:houser/utils/current_login.dart';
 import 'package:houser/resources/app_colors.dart';
-import 'package:houser/views/room%20view/room_view.dart';
+import 'package:houser/views/offer%20view/offer_view.dart';
 import 'package:houser/views/welcome_view.dart';
 import 'package:houser/utils/offer_card_manager.dart';
 import 'package:provider/provider.dart';
@@ -40,7 +40,7 @@ Future ensureLoggedIn() async
       CurrentLogin().clear();
       return;
     }
-    _defaultHome = RoomView();
+    _defaultHome = OfferView();
   }
 }
 
@@ -71,14 +71,9 @@ class MyApp extends StatelessWidget {
           primarySwatch: AppColors.primaryPalette,
           primaryColor: AppColors.primaryColor,
           backgroundColor: AppColors.backgroundColor,
-
           fontFamily: 'OpenSans',
           textTheme: const TextTheme(
-
           ),
-
-
-
         ),
         home: _defaultHome,
       ),

@@ -10,7 +10,7 @@ import 'package:houser/models/User.dart';
 import 'package:houser/services/api_service.dart';
 import 'package:houser/utils/offer_card_manager.dart';
 import 'package:houser/views/filter%20view/filter_base.dart';
-import 'package:houser/views/room%20view/room_view.dart';
+import 'package:houser/views/offer%20view/offer_view.dart';
 import 'package:provider/provider.dart';
 import 'personal_details_main_info.dart';
 import 'personal_details_secondary_info.dart';
@@ -212,7 +212,7 @@ class _PersonalDetailsCreateStepperState extends State<PersonalDetailsCreateStep
     await provider.loadRoomsAsync(3, 0, newFilter);
     provider.loadRoomsSync(7, 3, newFilter);
 
-    Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (context) => RoomView()), (Route<dynamic> route) => false);
+    Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (context) => OfferView()), (Route<dynamic> route) => false);
   }
 
   bool isLastStep()
