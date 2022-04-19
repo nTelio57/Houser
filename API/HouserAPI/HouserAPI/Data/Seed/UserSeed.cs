@@ -1,7 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using HouserAPI.Auth;
 using HouserAPI.Models;
 using Microsoft.AspNetCore.Identity;

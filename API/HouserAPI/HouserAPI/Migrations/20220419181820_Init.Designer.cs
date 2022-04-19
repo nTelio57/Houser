@@ -9,7 +9,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace HouserAPI.Migrations
 {
     [DbContext(typeof(DatabaseContext))]
-    [Migration("20220418172530_Init")]
+    [Migration("20220419181820_Init")]
     partial class Init
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -57,25 +57,25 @@ namespace HouserAPI.Migrations
                     b.Property<bool>("IsMain")
                         .HasColumnType("tinyint(1)");
 
-                    b.Property<int?>("OfferId")
-                        .HasColumnType("int");
-
                     b.Property<string>("Path")
                         .HasColumnType("text");
+
+                    b.Property<int?>("RoomId")
+                        .HasColumnType("int");
 
                     b.Property<string>("UserId")
                         .HasColumnType("varchar(767)");
 
                     b.HasKey("Id");
 
-                    b.HasIndex("OfferId");
+                    b.HasIndex("RoomId");
 
                     b.HasIndex("UserId");
 
                     b.ToTable("Images");
                 });
 
-            modelBuilder.Entity("HouserAPI.Models.Offer", b =>
+            modelBuilder.Entity("HouserAPI.Models.Room", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -154,7 +154,7 @@ namespace HouserAPI.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("Offers");
+                    b.ToTable("Rooms");
                 });
 
             modelBuilder.Entity("HouserAPI.Models.User", b =>
@@ -419,10 +419,10 @@ namespace HouserAPI.Migrations
                     b.Property<float?>("Area")
                         .HasColumnType("float");
 
-                    b.Property<DateTime>("AvailableFrom")
+                    b.Property<DateTime?>("AvailableFrom")
                         .HasColumnType("datetime");
 
-                    b.Property<DateTime>("AvailableTo")
+                    b.Property<DateTime?>("AvailableTo")
                         .HasColumnType("datetime");
 
                     b.Property<int?>("BedCount")
@@ -492,20 +492,20 @@ namespace HouserAPI.Migrations
 
             modelBuilder.Entity("HouserAPI.Models.Image", b =>
                 {
-                    b.HasOne("HouserAPI.Models.Offer", "Offer")
+                    b.HasOne("HouserAPI.Models.Room", "Room")
                         .WithMany("Images")
-                        .HasForeignKey("OfferId");
+                        .HasForeignKey("RoomId");
 
                     b.HasOne("HouserAPI.Models.User", "User")
                         .WithMany("Images")
                         .HasForeignKey("UserId");
 
-                    b.Navigation("Offer");
+                    b.Navigation("Room");
 
                     b.Navigation("User");
                 });
 
-            modelBuilder.Entity("HouserAPI.Models.Offer", b =>
+            modelBuilder.Entity("HouserAPI.Models.Room", b =>
                 {
                     b.HasOne("HouserAPI.Models.User", "User")
                         .WithMany()
@@ -565,7 +565,7 @@ namespace HouserAPI.Migrations
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("HouserAPI.Models.Offer", b =>
+            modelBuilder.Entity("HouserAPI.Models.Room", b =>
                 {
                     b.Navigation("Images");
                 });

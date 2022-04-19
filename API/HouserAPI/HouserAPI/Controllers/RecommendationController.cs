@@ -27,8 +27,8 @@ namespace HouserAPI.Controllers
 
             try
             {
-                var offerReadDto = await _recommendationService.GetRoomRecommendationByFilter(count, offset, roomFilter, userId);
-                return Ok(offerReadDto);
+                var roomReadDto = await _recommendationService.GetRoomRecommendationByFilter(count, offset, roomFilter, userId);
+                return Ok(roomReadDto);
             }
             catch
             {

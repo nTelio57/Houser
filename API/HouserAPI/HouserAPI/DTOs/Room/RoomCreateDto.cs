@@ -3,9 +3,9 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using HouserAPI.Enums;
 
-namespace HouserAPI.DTOs.Offer
+namespace HouserAPI.DTOs.Room
 {
-    public class OfferCreateDto
+    public class RoomCreateDto
     {
         [Required]
         public string UserId { get; set; }

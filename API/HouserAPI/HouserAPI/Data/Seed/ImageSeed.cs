@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using System.Linq;
 using HouserAPI.Models;
 
 namespace HouserAPI.Data.Seed
@@ -16,7 +13,7 @@ namespace HouserAPI.Data.Seed
                 Path = "E:\\GitHub\\Houser\\API\\HouserAPI\\HouserAPI\\Images\\Seed\\2022040221230518.jpg",
                 IsMain = true,
                 UserId = UserSeed.IdAdmin,
-                OfferId = 1
+                RoomId = 1
             };
 
             var image2 = new Image
@@ -25,7 +22,7 @@ namespace HouserAPI.Data.Seed
                 Path = "E:\\GitHub\\Houser\\API\\HouserAPI\\HouserAPI\\Images\\Seed\\2022040221311258.jpg",
                 IsMain = true,
                 UserId = UserSeed.IdAdmin,
-                OfferId = 2
+                RoomId = 2
             };
 
             var image3 = new Image
@@ -34,7 +31,7 @@ namespace HouserAPI.Data.Seed
                 Path = "E:\\GitHub\\Houser\\API\\HouserAPI\\HouserAPI\\Images\\Seed\\2022040221311520.jpg",
                 IsMain = true,
                 UserId = UserSeed.IdBasic,
-                OfferId = 3
+                RoomId = 3
             };
 
             var image4 = new Image
@@ -43,7 +40,7 @@ namespace HouserAPI.Data.Seed
                 Path = "E:\\GitHub\\Houser\\API\\HouserAPI\\HouserAPI\\Images\\Seed\\2022041201210199.jpeg",
                 IsMain = false,
                 UserId = UserSeed.IdAdmin,
-                OfferId = 1
+                RoomId = 1
             };
 
             var image5 = new Image
@@ -52,7 +49,7 @@ namespace HouserAPI.Data.Seed
                 Path = "E:\\GitHub\\Houser\\API\\HouserAPI\\HouserAPI\\Images\\Seed\\photo1.jpg",
                 IsMain = true,
                 UserId = UserSeed.IdBasic,
-                OfferId = null
+                RoomId = null
             };
 
             var image6 = new Image
@@ -61,7 +58,7 @@ namespace HouserAPI.Data.Seed
                 Path = "E:\\GitHub\\Houser\\API\\HouserAPI\\HouserAPI\\Images\\Seed\\photo2.jpg",
                 IsMain = true,
                 UserId = UserSeed.IdAdmin,
-                OfferId = null
+                RoomId = null
             };
 
             foreach (var image in new[] { image1, image2, image3, image4, image5, image6 })

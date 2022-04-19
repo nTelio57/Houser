@@ -16,12 +16,12 @@ namespace HouserAPI.Controllers
     public class ImageController : ControllerBase
     {
         private readonly IImageService _imageService;
-        private readonly IOfferService _offerService;
+        private readonly IRoomService _roomService;
 
-        public ImageController(IImageService imageService, IOfferService offerService)
+        public ImageController(IImageService imageService, IRoomService roomService)
         {
             _imageService = imageService;
-            _offerService = offerService;
+            _roomService = roomService;
         }
 
         [HttpPost("user")]
@@ -44,26 +44,26 @@ namespace HouserAPI.Controllers
             }
         }
 
-        [HttpPost("offer/{id}")]
+        [HttpPost("room/{id}")]
         [Roles(UserRoles.Basic)]
-        public async Task<IActionResult> PostOfferImage(int id, IFormFile image)
+        public async Task<IActionResult> PostRoomImage(int id, IFormFile image)
         {
             var userId = User.FindFirst(CustomClaims.UserId)?.Value;
 
             if (image == null)
                 return BadRequest("Value cannot be null.");
 
-            var offer = await _offerService.GetById(id);
-            if (offer == null)
-                return NotFound("Offer not found");
+            var room = await _roomService.GetById(id);
+            if (room == null)
+                return NotFound("Room not found");
 
-            if (offer.UserId != userId)
+            if (room.UserId != userId)
                 return Forbid();
 
             try
             {
-                var imageReadDto = await _imageService.CreateOfferImage(userId, offer, image);
-                return CreatedAtAction(nameof(PostOfferImage), imageReadDto);
+                var imageReadDto = await _imageService.CreateRoomImage(userId, room, image);
+                return CreatedAtAction(nameof(PostRoomImage), imageReadDto);
             }
             catch (Exception)
             {

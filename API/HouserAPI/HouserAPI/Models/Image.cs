@@ -9,9 +9,9 @@ namespace HouserAPI.Models
         public bool IsMain { get; set; }
         public string UserId { get; set; }
         public User User { get; set; }
-        public int? OfferId { get; set; }
+        public int? RoomId { get; set; }
         [JsonIgnore]
         [IgnoreDataMember]
-        public Offer Offer { get; set; }
+        public Room Room { get; set; }
     }
 }
