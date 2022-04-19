@@ -8,6 +8,8 @@ namespace HouserAPI.Data
     {
         public DbSet<Image> Images{ get; set; }
         public DbSet<Offer> Offers{ get; set; }
+        public DbSet<RoomFilter> RoomFilters { get; set; }
+        public DbSet<UserFilter> UserFilters { get; set; }
         public DatabaseContext(DbContextOptions<DatabaseContext> opt) : base(opt)
         {
             

@@ -1,11 +1,18 @@
 import 'package:flutter/material.dart';
+import 'package:houser/models/Filter.dart';
+import 'package:houser/services/api_service.dart';
+import 'package:houser/utils/current_login.dart';
+import 'package:houser/views/filter%20view/filter_base.dart';
 import 'package:houser/views/profile%20view/profile_view.dart';
 import 'package:houser/widgets/WG_OfferCard.dart';
 import 'package:houser/utils/offer_card_manager.dart';
 import 'package:provider/provider.dart';
 
 class OfferView extends StatefulWidget {
-  const OfferView({Key? key}) : super(key: key);
+  OfferView({Key? key}) : super(key: key);
+
+  final CurrentLogin _currentLogin = CurrentLogin();
+  final ApiService _apiService = ApiService();
 
   @override
   _OfferViewState createState() => _OfferViewState();
@@ -23,6 +30,7 @@ class _OfferViewState extends State<OfferView> {
     return Scaffold(
       backgroundColor: Theme.of(context).backgroundColor,
       body: body(),
+      floatingActionButton: filterFab(),
     );
   }
 
@@ -137,4 +145,32 @@ class _OfferViewState extends State<OfferView> {
     );
   }
 
+  Widget filterFab()
+  {
+    return FloatingActionButton(
+      child: const Icon(Icons.filter_list),
+      onPressed: (){
+        Navigator.of(context).push(
+            PageRouteBuilder(
+                opaque: false,
+                pageBuilder: (BuildContext context, Animation<double> animation, Animation<double> secondaryAnimation) => FilterBaseView(onFilterChanged)
+            )
+        );
+      })
+    ;
+  }
+
+  Future onFilterChanged(Filter newFilter) async{
+    widget._apiService.PostFilter(newFilter);
+    var currentUser = widget._currentLogin.user!;
+    final provider = Provider.of<OfferCardManager>(context, listen: false);
+
+    currentUser.filter = newFilter;
+    provider.resetOffers();
+    await provider.loadOffersAsync(3, 0, newFilter);
+    provider.loadOffersSync(7, 3, newFilter);
+
+    Navigator.pop(context);
+    return;
+  }
 }

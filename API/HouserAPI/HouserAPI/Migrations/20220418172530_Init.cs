@@ -27,11 +27,21 @@ namespace HouserAPI.Migrations
                 columns: table => new
                 {
                     Id = table.Column<string>(type: "varchar(255)", nullable: false),
+                    IsVisible = table.Column<bool>(type: "tinyint(1)", nullable: false),
                     Salt = table.Column<string>(type: "text", nullable: true),
+                    Elo = table.Column<int>(type: "int", nullable: false),
                     Name = table.Column<string>(type: "text", nullable: true),
                     Surname = table.Column<string>(type: "text", nullable: true),
-                    Age = table.Column<int>(type: "int", nullable: false),
                     City = table.Column<string>(type: "text", nullable: true),
+                    BirthDate = table.Column<DateTime>(type: "datetime", nullable: false),
+                    Sex = table.Column<int>(type: "int", nullable: false),
+                    AnimalCount = table.Column<int>(type: "int", nullable: false),
+                    IsStudying = table.Column<bool>(type: "tinyint(1)", nullable: false),
+                    IsWorking = table.Column<bool>(type: "tinyint(1)", nullable: false),
+                    IsSmoking = table.Column<bool>(type: "tinyint(1)", nullable: false),
+                    SleepType = table.Column<int>(type: "int", nullable: false),
+                    GuestCount = table.Column<int>(type: "int", nullable: false),
+                    PartyCount = table.Column<int>(type: "int", nullable: false),
                     UserName = table.Column<string>(type: "varchar(255)", maxLength: 255, nullable: true),
                     NormalizedUserName = table.Column<string>(type: "varchar(255)", maxLength: 255, nullable: true),
                     Email = table.Column<string>(type: "varchar(255)", maxLength: 255, nullable: true),
@@ -159,19 +169,46 @@ namespace HouserAPI.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Images",
+                name: "Filter",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("MySQL:ValueGenerationStrategy", MySQLValueGenerationStrategy.IdentityColumn),
-                    Path = table.Column<string>(type: "text", nullable: true),
-                    UserId = table.Column<string>(type: "varchar(255)", nullable: true)
+                    UserId = table.Column<string>(type: "varchar(255)", nullable: true),
+                    Elo = table.Column<int>(type: "int", nullable: false),
+                    FilterType = table.Column<int>(type: "int", nullable: false),
+                    Discriminator = table.Column<string>(type: "text", nullable: false),
+                    Area = table.Column<float>(type: "float", nullable: true),
+                    MonthlyPrice = table.Column<float>(type: "float", nullable: true),
+                    City = table.Column<string>(type: "text", nullable: true),
+                    AvailableFrom = table.Column<DateTime>(type: "datetime", nullable: true),
+                    AvailableTo = table.Column<DateTime>(type: "datetime", nullable: true),
+                    FreeRoomCount = table.Column<int>(type: "int", nullable: true),
+                    BedCount = table.Column<int>(type: "int", nullable: true),
+                    RuleSmoking = table.Column<bool>(type: "tinyint(1)", nullable: true),
+                    RuleAnimals = table.Column<bool>(type: "tinyint(1)", nullable: true),
+                    AccommodationTv = table.Column<bool>(type: "tinyint(1)", nullable: true),
+                    AccommodationWifi = table.Column<bool>(type: "tinyint(1)", nullable: true),
+                    AccommodationAc = table.Column<bool>(type: "tinyint(1)", nullable: true),
+                    AccommodationParking = table.Column<bool>(type: "tinyint(1)", nullable: true),
+                    AccommodationBalcony = table.Column<bool>(type: "tinyint(1)", nullable: true),
+                    AccommodationDisability = table.Column<bool>(type: "tinyint(1)", nullable: true),
+                    AgeFrom = table.Column<int>(type: "int", nullable: true),
+                    AgeTo = table.Column<int>(type: "int", nullable: true),
+                    Sex = table.Column<int>(type: "int", nullable: true),
+                    AnimalCount = table.Column<int>(type: "int", nullable: true),
+                    IsStudying = table.Column<bool>(type: "tinyint(1)", nullable: true),
+                    IsWorking = table.Column<bool>(type: "tinyint(1)", nullable: true),
+                    IsSmoking = table.Column<bool>(type: "tinyint(1)", nullable: true),
+                    GuestCount = table.Column<int>(type: "int", nullable: true),
+                    PartyCount = table.Column<int>(type: "int", nullable: true),
+                    SleepType = table.Column<int>(type: "int", nullable: true)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Images", x => x.Id);
+                    table.PrimaryKey("PK_Filter", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_Images_AspNetUsers_UserId",
+                        name: "FK_Filter_AspNetUsers_UserId",
                         column: x => x.UserId,
                         principalTable: "AspNetUsers",
                         principalColumn: "Id",
@@ -184,11 +221,14 @@ namespace HouserAPI.Migrations
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("MySQL:ValueGenerationStrategy", MySQLValueGenerationStrategy.IdentityColumn),
+                    IsVisible = table.Column<bool>(type: "tinyint(1)", nullable: false),
+                    UploadDate = table.Column<DateTime>(type: "datetime", nullable: false),
                     Title = table.Column<string>(type: "text", nullable: true),
                     City = table.Column<string>(type: "text", nullable: true),
                     Address = table.Column<string>(type: "text", nullable: true),
                     MonthlyPrice = table.Column<float>(type: "float", nullable: false),
                     UtilityBillsRequired = table.Column<bool>(type: "tinyint(1)", nullable: false),
+                    Area = table.Column<float>(type: "float", nullable: false),
                     AvailableFrom = table.Column<DateTime>(type: "datetime", nullable: false),
                     AvailableTo = table.Column<DateTime>(type: "datetime", nullable: false),
                     FreeRoomCount = table.Column<int>(type: "int", nullable: false),
@@ -200,6 +240,9 @@ namespace HouserAPI.Migrations
                     AccommodationTv = table.Column<bool>(type: "tinyint(1)", nullable: false),
                     AccommodationWifi = table.Column<bool>(type: "tinyint(1)", nullable: false),
                     AccommodationAc = table.Column<bool>(type: "tinyint(1)", nullable: false),
+                    AccommodationParking = table.Column<bool>(type: "tinyint(1)", nullable: false),
+                    AccommodationBalcony = table.Column<bool>(type: "tinyint(1)", nullable: false),
+                    AccommodationDisability = table.Column<bool>(type: "tinyint(1)", nullable: false),
                     UserId = table.Column<string>(type: "varchar(255)", nullable: true)
                 },
                 constraints: table =>
@@ -209,6 +252,34 @@ namespace HouserAPI.Migrations
                         name: "FK_Offers_AspNetUsers_UserId",
                         column: x => x.UserId,
                         principalTable: "AspNetUsers",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Images",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("MySQL:ValueGenerationStrategy", MySQLValueGenerationStrategy.IdentityColumn),
+                    Path = table.Column<string>(type: "text", nullable: true),
+                    IsMain = table.Column<bool>(type: "tinyint(1)", nullable: false),
+                    UserId = table.Column<string>(type: "varchar(255)", nullable: true),
+                    OfferId = table.Column<int>(type: "int", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Images", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Images_AspNetUsers_UserId",
+                        column: x => x.UserId,
+                        principalTable: "AspNetUsers",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_Images_Offers_OfferId",
+                        column: x => x.OfferId,
+                        principalTable: "Offers",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
                 });
@@ -251,6 +322,17 @@ namespace HouserAPI.Migrations
                 unique: true);
 
             migrationBuilder.CreateIndex(
+                name: "IX_Filter_UserId",
+                table: "Filter",
+                column: "UserId",
+                unique: true);
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Images_OfferId",
+                table: "Images",
+                column: "OfferId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_Images_UserId",
                 table: "Images",
                 column: "UserId");
@@ -279,13 +361,16 @@ namespace HouserAPI.Migrations
                 name: "AspNetUserTokens");
 
             migrationBuilder.DropTable(
+                name: "Filter");
+
+            migrationBuilder.DropTable(
                 name: "Images");
 
             migrationBuilder.DropTable(
-                name: "Offers");
+                name: "AspNetRoles");
 
             migrationBuilder.DropTable(
-                name: "AspNetRoles");
+                name: "Offers");
 
             migrationBuilder.DropTable(
                 name: "AspNetUsers");

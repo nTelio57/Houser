@@ -8,6 +8,7 @@ namespace HouserAPI.Models
     public class User : IdentityUser
     {
         public bool IsVisible { get; set; }
+        public Filter Filter { get; set; }
         public string Salt { get; set; }
         public int Elo { get; set; }
         public string Name { get; set; }

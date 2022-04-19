@@ -1,10 +1,17 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:houser/enums/FilterType.dart';
 import 'package:houser/enums/SleepType.dart';
+import 'package:houser/models/Filter.dart';
+import 'package:houser/models/RoomFilter.dart';
+import 'package:houser/models/UserFilter.dart';
 import 'package:houser/utils/current_login.dart';
 import 'package:houser/models/User.dart';
 import 'package:houser/services/api_service.dart';
+import 'package:houser/utils/offer_card_manager.dart';
+import 'package:houser/views/filter%20view/filter_base.dart';
 import 'package:houser/views/offer%20view/offer_view.dart';
+import 'package:provider/provider.dart';
 import 'personal_details_main_info.dart';
 import 'personal_details_secondary_info.dart';
 
@@ -182,10 +189,30 @@ class _PersonalDetailsCreateStepperState extends State<PersonalDetailsCreateStep
     bool result = await widget._apiService.UpdateUserDetails(CurrentLogin().user!.id, userUpdate);
     if(result)
       {
-        await CurrentLogin().loadUserDataFromSharedPreferences();
-        Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (context) => const OfferView()), (Route<dynamic> route) => false);
+        Navigator.push(context, MaterialPageRoute(builder: (context) => FilterBaseView(onFilterChanged)));
       }
     return;
+  }
+
+  Future onFilterChanged(Filter newFilter) async {
+    var currentUser = CurrentLogin().user!;
+    final provider = Provider.of<OfferCardManager>(context, listen: false);
+
+    currentUser.filter = newFilter;
+    switch(newFilter.filterType){
+      case FilterType.room:
+        widget._apiService.PostFilter(newFilter as RoomFilter);
+        break;
+      case FilterType.user:
+        widget._apiService.PostFilter(newFilter as UserFilter);
+        break;
+      case FilterType.none:
+    }
+    await CurrentLogin().loadUserDataFromSharedPreferences();
+    await provider.loadOffersAsync(3, 0, newFilter);
+    provider.loadOffersSync(7, 3, newFilter);
+
+    Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (context) => OfferView()), (Route<dynamic> route) => false);
   }
 
   bool isLastStep()

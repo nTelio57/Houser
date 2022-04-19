@@ -363,15 +363,17 @@ class _OfferFormViewState extends State<OfferFormView> {
         child: TextButton(
           onPressed: !_isLoginButtonEnabled ? null : () async {
             setState(() {
-              //_isLoginButtonEnabled = false;
+              _isLoginButtonEnabled = false;
             });
 
             if(!_formKey.currentState!.validate()) {
+              _isLoginButtonEnabled = true;
               return;
             }
             if(widget.offerImages.isEmpty)
               {
                 ScaffoldMessenger.of(context).showSnackBar(offerHasToHaveImages);
+                _isLoginButtonEnabled = true;
                 return;
               }
 

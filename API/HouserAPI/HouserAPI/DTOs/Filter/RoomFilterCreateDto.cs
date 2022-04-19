@@ -1,8 +1,8 @@
 ﻿using System;
 
-namespace HouserAPI.Models
+namespace HouserAPI.DTOs.Filter
 {
-    public class RoomFilter : Filter
+    public class RoomFilterCreateDto : FilterCreateDto
     {
         public float? Area { get; set; }
         public float? MonthlyPrice { get; set; }

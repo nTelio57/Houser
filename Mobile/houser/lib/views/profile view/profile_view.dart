@@ -6,11 +6,13 @@ import 'package:houser/extensions/int_extensions.dart';
 import 'package:houser/services/api_client.dart';
 import 'package:houser/utils/current_login.dart';
 import 'package:houser/services/api_service.dart';
+import 'package:houser/utils/offer_card_manager.dart';
 import 'package:houser/views/profile%20view/my_offer_list_view.dart';
 import 'package:houser/views/welcome_view.dart';
 import 'package:houser/widgets/WG_album_slider.dart';
 import 'package:houser/models/Image.dart' as apiImage;
 import 'package:houser/widgets/WG_snackbars.dart';
+import 'package:provider/provider.dart';
 
 class ProfileView extends StatefulWidget {
 
@@ -256,6 +258,9 @@ class _ProfileViewState extends State<ProfileView> {
   Future onLogoutClicked() async
   {
     await widget._currentLogin.clear();
+    final provider = Provider.of<OfferCardManager>(context, listen: false);
+    provider.resetOffers();
+
     Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (context) => const WelcomeView()), (Route<dynamic> route) => false);
   }
 }

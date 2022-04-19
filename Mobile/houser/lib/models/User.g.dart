@@ -23,6 +23,9 @@ User _$UserFromJson(Map<String, dynamic> json) => User(
       sleepType: $enumDecodeNullable(_$SleepTypeEnumMap, json['sleepType']),
       guestCount: json['guestCount'] as int?,
       partyCount: json['partyCount'] as int?,
+      filter: json['filter'] == null
+          ? null
+          : Filter.fromJson(json['filter'] as Map<String, dynamic>),
     );
 
 Map<String, dynamic> _$UserToJson(User instance) => <String, dynamic>{
@@ -40,6 +43,7 @@ Map<String, dynamic> _$UserToJson(User instance) => <String, dynamic>{
       'sleepType': _$SleepTypeEnumMap[instance.sleepType],
       'guestCount': instance.guestCount,
       'partyCount': instance.partyCount,
+      'filter': instance.filter,
     };
 
 const _$SleepTypeEnumMap = {

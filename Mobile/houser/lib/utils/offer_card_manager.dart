@@ -1,12 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:houser/enums/CardResponseType.dart';
+import 'package:houser/enums/FilterType.dart';
+import 'package:houser/models/Filter.dart';
+import 'package:houser/utils/RoomOfferManager.dart';
 import 'package:houser/utils/current_login.dart';
 import 'package:houser/models/Offer.dart';
-import 'package:houser/services/api_service.dart';
 
 class OfferCardManager extends ChangeNotifier {
   final CurrentLogin _currentLogin = CurrentLogin();
-  final ApiService _apiService = ApiService();
+
+  late RoomOfferManager _roomOfferManager;
 
   List<Offer> offers = [];
   Offset position = Offset.zero;
@@ -16,7 +19,9 @@ class OfferCardManager extends ChangeNotifier {
   double maxRotationAngle = 25;
 
   OfferCardManager(){
+    _roomOfferManager = RoomOfferManager(this);
     resetOffers();
+    loadOffersSync(3, 0, _currentLogin.user!.filter!);
   }
 
   void startPosition(DragStartDetails details)
@@ -67,10 +72,9 @@ class OfferCardManager extends ChangeNotifier {
     final x = position.dx;
     const threshold = 100;
 
-    if(x >= threshold)
-      {
-        return CardResponseType.like;
-      }else if(x <= -threshold){
+    if(x >= threshold) {
+      return CardResponseType.like;
+    }else if(x <= -threshold){
       return CardResponseType.dislike;
     }
   }
@@ -104,51 +108,44 @@ class OfferCardManager extends ChangeNotifier {
   }
 
   void addSingleOffer(){
-    loadSingleOffer().then((value) {
-      if(value == null) {
-        return;
-      }
-      _currentLogin.recommendedOffers.add(value);
-      offers.add(value);
-    });
+    loadSingleOffer();
   }
 
   void resetOffers()
   {
-    loadOffers().then((value) {
-      offers = _currentLogin.recommendedOffers;
+    _currentLogin.recommendedOffers = [];
+    offers = _currentLogin.recommendedOffers;
+    notifyListeners();
+  }
+
+  Future loadSingleOffer() async{
+    if(_currentLogin.user!.filter!.filterType == FilterType.room) {
+      _roomOfferManager.loadSingleOffer(offers.length);
+    }
+    return;
+  }
+
+  Future loadOffersAsync(int count, int offset, Filter filter) async{
+    if(_currentLogin.user!.filter!.filterType == FilterType.room) {
+      await _roomOfferManager.loadOffersAsync(count, offset, filter);
       notifyListeners();
-    });
-  }
-
-  Future<Offer?> loadSingleOffer() async{
-    var offer = await _apiService.GetRecommendationByFilter();
-    if(offer == null) {
-      return null;
     }
-    _currentLogin.recommendedOffers.add(offer);
-    return offer;
+    return;
   }
 
-  Future loadOffers() async
+  void loadOffersSync(int count, int offset, Filter filter){
+    if(_currentLogin.user!.filter!.filterType == FilterType.room) {
+      _roomOfferManager.loadOffersAsync(count, offset, filter).then((value) {
+        notifyListeners();
+      });
+    }
+    return;
+  }
+
+  void deleteRange(int start)
   {
-    if(_currentLogin.recommendedOffers.isEmpty)
-    {
-      for(int i = 0; i < 5; i++)
-        {
-          var offer = await _apiService.GetRecommendationByFilter();
-          if(offer != null) {
-            _currentLogin.recommendedOffers.add(offer);
-          }
-        }
-      return true;
-    }
-    else{
-      var offer = await _apiService.GetRecommendationByFilter();
-      if(offer != null) {
-        _currentLogin.recommendedOffers.add(offer);
-      }
-      return true;
-    }
+    _currentLogin.recommendedOffers.removeRange(start, _currentLogin.recommendedOffers.length-1);
+    offers = _currentLogin.recommendedOffers;
+    notifyListeners();
   }
 }

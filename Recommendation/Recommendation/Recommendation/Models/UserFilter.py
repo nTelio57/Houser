@@ -5,6 +5,7 @@ import datetime
 class UserFilter():
     Id: int
     UserId: str
+    FilterType: int
     Elo: int
     AgeFrom: int
     AgeTo : int

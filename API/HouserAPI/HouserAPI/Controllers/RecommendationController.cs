@@ -25,9 +25,15 @@ namespace HouserAPI.Controllers
             if (roomFilter.UserId != userId)
                 return Forbid();
 
-            var offerReadDto = await _recommendationService.GetRoomRecommendationByFilter(count, offset, roomFilter, userId);
-
-            return Ok(offerReadDto);
+            try
+            {
+                var offerReadDto = await _recommendationService.GetRoomRecommendationByFilter(count, offset, roomFilter, userId);
+                return Ok(offerReadDto);
+            }
+            catch
+            {
+                return BadRequest("Failed to get recommendations");
+            }
         }
 
         [HttpPost("user/{count}/{offset}")]
@@ -38,9 +44,15 @@ namespace HouserAPI.Controllers
             if (userFilter.UserId != userId)
                 return Forbid();
 
-            var userReadDto = await _recommendationService.GetUserRecommendationByFilter(count, offset, userFilter, userId);
-
-            return Ok(userReadDto);
+            try
+            {
+                var userReadDto = await _recommendationService.GetUserRecommendationByFilter(count, offset, userFilter, userId);
+                return Ok(userReadDto);
+            }
+            catch
+            {
+                return BadRequest("Failed to get recommendations");
+            }
         }
     }
 }

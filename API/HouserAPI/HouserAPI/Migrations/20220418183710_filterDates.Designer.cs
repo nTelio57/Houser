@@ -9,8 +9,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace HouserAPI.Migrations
 {
     [DbContext(typeof(DatabaseContext))]
-    [Migration("20220411180616_UpdateImageModel")]
-    partial class UpdateImageModel
+    [Migration("20220418183710_filterDates")]
+    partial class filterDates
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -18,6 +18,35 @@ namespace HouserAPI.Migrations
             modelBuilder
                 .HasAnnotation("Relational:MaxIdentifierLength", 64)
                 .HasAnnotation("ProductVersion", "5.0.15");
+
+            modelBuilder.Entity("HouserAPI.Models.Filter", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    b.Property<string>("Discriminator")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<int>("Elo")
+                        .HasColumnType("int");
+
+                    b.Property<int>("FilterType")
+                        .HasColumnType("int");
+
+                    b.Property<string>("UserId")
+                        .HasColumnType("varchar(767)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("UserId")
+                        .IsUnique();
+
+                    b.ToTable("Filter");
+
+                    b.HasDiscriminator<string>("Discriminator").HasValue("Filter");
+                });
 
             modelBuilder.Entity("HouserAPI.Models.Image", b =>
                 {
@@ -149,6 +178,9 @@ namespace HouserAPI.Migrations
                         .IsConcurrencyToken()
                         .HasColumnType("text");
 
+                    b.Property<int>("Elo")
+                        .HasColumnType("int");
+
                     b.Property<string>("Email")
                         .HasMaxLength(256)
                         .HasColumnType("varchar(256)");
@@ -163,6 +195,9 @@ namespace HouserAPI.Migrations
                         .HasColumnType("tinyint(1)");
 
                     b.Property<bool>("IsStudying")
+                        .HasColumnType("tinyint(1)");
+
+                    b.Property<bool>("IsVisible")
                         .HasColumnType("tinyint(1)");
 
                     b.Property<bool>("IsWorking")
@@ -359,6 +394,102 @@ namespace HouserAPI.Migrations
                     b.ToTable("AspNetUserTokens");
                 });
 
+            modelBuilder.Entity("HouserAPI.Models.RoomFilter", b =>
+                {
+                    b.HasBaseType("HouserAPI.Models.Filter");
+
+                    b.Property<bool?>("AccommodationAc")
+                        .HasColumnType("tinyint(1)");
+
+                    b.Property<bool?>("AccommodationBalcony")
+                        .HasColumnType("tinyint(1)");
+
+                    b.Property<bool?>("AccommodationDisability")
+                        .HasColumnType("tinyint(1)");
+
+                    b.Property<bool?>("AccommodationParking")
+                        .HasColumnType("tinyint(1)");
+
+                    b.Property<bool?>("AccommodationTv")
+                        .HasColumnType("tinyint(1)");
+
+                    b.Property<bool?>("AccommodationWifi")
+                        .HasColumnType("tinyint(1)");
+
+                    b.Property<float?>("Area")
+                        .HasColumnType("float");
+
+                    b.Property<DateTime?>("AvailableFrom")
+                        .HasColumnType("datetime");
+
+                    b.Property<DateTime?>("AvailableTo")
+                        .HasColumnType("datetime");
+
+                    b.Property<int?>("BedCount")
+                        .HasColumnType("int");
+
+                    b.Property<string>("City")
+                        .HasColumnType("text");
+
+                    b.Property<int?>("FreeRoomCount")
+                        .HasColumnType("int");
+
+                    b.Property<float?>("MonthlyPrice")
+                        .HasColumnType("float");
+
+                    b.Property<bool?>("RuleAnimals")
+                        .HasColumnType("tinyint(1)");
+
+                    b.Property<bool?>("RuleSmoking")
+                        .HasColumnType("tinyint(1)");
+
+                    b.HasDiscriminator().HasValue("RoomFilter");
+                });
+
+            modelBuilder.Entity("HouserAPI.Models.UserFilter", b =>
+                {
+                    b.HasBaseType("HouserAPI.Models.Filter");
+
+                    b.Property<int>("AgeFrom")
+                        .HasColumnType("int");
+
+                    b.Property<int>("AgeTo")
+                        .HasColumnType("int");
+
+                    b.Property<int>("AnimalCount")
+                        .HasColumnType("int");
+
+                    b.Property<int>("GuestCount")
+                        .HasColumnType("int");
+
+                    b.Property<bool>("IsSmoking")
+                        .HasColumnType("tinyint(1)");
+
+                    b.Property<bool>("IsStudying")
+                        .HasColumnType("tinyint(1)");
+
+                    b.Property<bool>("IsWorking")
+                        .HasColumnType("tinyint(1)");
+
+                    b.Property<int>("PartyCount")
+                        .HasColumnType("int");
+
+                    b.Property<int>("Sex")
+                        .HasColumnType("int");
+
+                    b.Property<int>("SleepType")
+                        .HasColumnType("int");
+
+                    b.HasDiscriminator().HasValue("UserFilter");
+                });
+
+            modelBuilder.Entity("HouserAPI.Models.Filter", b =>
+                {
+                    b.HasOne("HouserAPI.Models.User", null)
+                        .WithOne("Filter")
+                        .HasForeignKey("HouserAPI.Models.Filter", "UserId");
+                });
+
             modelBuilder.Entity("HouserAPI.Models.Image", b =>
                 {
                     b.HasOne("HouserAPI.Models.Offer", "Offer")
@@ -441,6 +572,8 @@ namespace HouserAPI.Migrations
 
             modelBuilder.Entity("HouserAPI.Models.User", b =>
                 {
+                    b.Navigation("Filter");
+
                     b.Navigation("Images");
                 });
 #pragma warning restore 612, 618

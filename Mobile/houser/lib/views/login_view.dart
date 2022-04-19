@@ -3,18 +3,26 @@ import 'dart:io';
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:houser/enums/FilterType.dart';
 import 'package:houser/extensions/string_extensions.dart';
 import 'package:houser/models/AuthRequest.dart';
+import 'package:houser/models/Filter.dart';
+import 'package:houser/models/RoomFilter.dart';
+import 'package:houser/models/UserFilter.dart';
 import 'package:houser/utils/current_login.dart';
 import 'package:houser/services/api_service.dart';
+import 'package:houser/utils/offer_card_manager.dart';
+import 'package:houser/views/filter%20view/filter_base.dart';
 import 'package:houser/views/offer%20view/offer_view.dart';
 import 'package:houser/views/personal%20details%20view/personal_details_create_stepper.dart';
 import 'package:houser/widgets/WG_snackbars.dart';
+import 'package:provider/provider.dart';
 
 class LoginView extends StatefulWidget {
   LoginView({Key? key}) : super(key: key);
 
   final ApiService _apiService = ApiService();
+  final CurrentLogin _currentLogin = CurrentLogin();
 
   @override
   _LoginViewState createState() => _LoginViewState();
@@ -262,10 +270,16 @@ class _LoginViewState extends State<LoginView> {
                   currentLogin.user = authResult.user!;
                   currentLogin.saveUserDataToSharedPreferences();
 
+                  currentLogin.user!.filter = await widget._apiService.GetUsersFilter(currentLogin.user!.id);
+
                   if(CurrentLogin().user!.name == null) {
                     Navigator.push(context, MaterialPageRoute(builder: (context) => PersonalDetailsCreateStepper()));
                   } else {
-                    Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (context) => const OfferView()), (Route<dynamic> route) => false);
+                    if(CurrentLogin().user!.filter == null) {
+                      Navigator.push(context, MaterialPageRoute(builder: (context) => FilterBaseView(onFilterChanged)));
+                    }else{
+                      Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (context) => OfferView()), (Route<dynamic> route) => false);
+                    }
                   }
                 }
                 else{
@@ -313,5 +327,24 @@ class _LoginViewState extends State<LoginView> {
         ),
       ),
     );
+  }
+
+  Future onFilterChanged(Filter newFilter) async {
+    widget._currentLogin.user!.filter = newFilter;
+    final provider = Provider.of<OfferCardManager>(context, listen: false);
+
+    switch(newFilter.filterType){
+      case FilterType.room:
+        widget._apiService.PostFilter(newFilter as RoomFilter);
+        break;
+      case FilterType.user:
+        widget._apiService.PostFilter(newFilter as UserFilter);
+        break;
+      case FilterType.none:
+    }
+    await provider.loadOffersAsync(3, 0, newFilter);
+    provider.loadOffersSync(7, 3, newFilter);
+
+    Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (context) => OfferView()), (Route<dynamic> route) => false);
   }
 }
