@@ -22,6 +22,9 @@ namespace HouserAPI.Services
         public async Task<FilterReadDto> GetByUserId(string userId)
         {
             var filter = await _roomFilterRepository.GetByUserId(userId);
+            if (filter == null)
+                return null;
+
             switch (filter.FilterType)
             {
                 case FilterType.Room:
