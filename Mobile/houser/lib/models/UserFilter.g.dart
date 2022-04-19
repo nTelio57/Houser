@@ -9,16 +9,16 @@ part of 'UserFilter.dart';
 UserFilter _$UserFilterFromJson(Map<String, dynamic> json) => UserFilter(
       json['id'] as int,
       json['userId'] as String,
-      json['ageFrom'] as int,
-      json['ageTo'] as int,
-      json['sex'] as int,
-      json['animalCount'] as int,
-      json['isStudying'] as bool,
-      json['isWorking'] as bool,
-      json['isSmoking'] as bool,
-      json['guestCount'] as int,
-      json['partyCount'] as int,
-      $enumDecode(_$SleepTypeEnumMap, json['sleepType']),
+      json['ageFrom'] as int?,
+      json['ageTo'] as int?,
+      json['sex'] as int?,
+      json['animalCount'] as int?,
+      json['isStudying'] as bool?,
+      json['isWorking'] as bool?,
+      json['isSmoking'] as bool?,
+      json['guestCount'] as int?,
+      json['partyCount'] as int?,
+      $enumDecodeNullable(_$SleepTypeEnumMap, json['sleepType']),
     )..filterType = $enumDecode(_$FilterTypeEnumMap, json['filterType']);
 
 Map<String, dynamic> _$UserFilterToJson(UserFilter instance) =>
