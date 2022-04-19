@@ -120,6 +120,14 @@ class ApiService {
     return parsed.map<Room>((e) => Room.fromJson(e)).toList();
   }
 
+  Future<List<User>> GetUserRecommendationByFilter(int count, int offset, UserFilter filter) async
+  {
+    ApiResponse response = await _apiClient.Post('/api/Recommendation/user/$count/$offset', filter);
+    List<dynamic> jsonData = response.body;
+    final parsed = jsonData.cast<Map<String, dynamic>>();
+    return parsed.map<User>((e) => User.fromJson(e)).toList();
+  }
+
   Future<Filter?> GetUsersFilter(String id) async{
     ApiResponse response = await _apiClient.Get('/api/Filter/$id');
     if(!response.statusCode.isSuccessStatusCode) {
