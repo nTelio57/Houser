@@ -43,6 +43,12 @@ class CurrentLogin{
       var userResponse = await _apiService.GetUserById(id);
       user = userResponse;
 
+      var filter = await _apiService.GetUsersFilter(user!.id);
+      if(filter == null) {
+        return false;
+      }
+      user!.filter = filter;
+
       saveUserDataToSharedPreferences();
     }catch(e){
       if (kDebugMode) {

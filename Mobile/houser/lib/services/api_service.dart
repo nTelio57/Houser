@@ -1,10 +1,14 @@
 import 'package:flutter/foundation.dart';
+import 'package:houser/enums/FilterType.dart';
 import 'package:houser/extensions/int_extensions.dart';
 import 'package:houser/models/AuthRequest.dart';
 import 'package:houser/models/AuthResult.dart';
+import 'package:houser/models/Filter.dart';
 import 'package:houser/models/Image.dart';
 import 'package:houser/models/Offer.dart';
+import 'package:houser/models/RoomFilter.dart';
 import 'package:houser/models/User.dart';
+import 'package:houser/models/UserFilter.dart';
 import 'package:houser/services/api_client.dart';
 
 class ApiService {
@@ -108,12 +112,45 @@ class ApiService {
     return response.statusCode.isSuccessStatusCode;
   }
 
-  Future<Offer?> GetRecommendationByFilter() async
+  Future<List<Offer>> GetRoomRecommendationByFilter(int count, int offset, RoomFilter filter) async
   {
-    ApiResponse response = await _apiClient.Get('/api/Search');
-    if(response.statusCode.isSuccessStatusCode) {
-      return Offer.fromJson(response.body);
+    ApiResponse response = await _apiClient.Post('/api/Recommendation/room/$count/$offset', filter);
+    List<dynamic> jsonData = response.body;
+    final parsed = jsonData.cast<Map<String, dynamic>>();
+    return parsed.map<Offer>((e) => Offer.fromJson(e)).toList();
+  }
+
+  Future<Filter?> GetUsersFilter(String id) async{
+    ApiResponse response = await _apiClient.Get('/api/Filter/$id');
+    if(!response.statusCode.isSuccessStatusCode) {
+      return null;
     }
-    return null;
+
+    var filterType = Filter.fromJson(response.body).filterType;
+    switch(filterType)
+    {
+      case FilterType.room:
+        return RoomFilter.fromJson(response.body);
+      case FilterType.user:
+        return UserFilter.fromJson(response.body);
+      default:
+        return null;
+    }
+  }
+
+  Future<ApiResponse> PostFilter(Filter filter) async
+  {
+    switch(filter.filterType)
+    {
+      case FilterType.room:
+        ApiResponse response = await _apiClient.Post('/api/Filter/room', filter.toJson());
+        return response;
+      case FilterType.user:
+        ApiResponse response = await _apiClient.Post('/api/Filter/user', filter.toJson());
+        return response;
+      default:
+        ApiResponse response = await _apiClient.Post('/api/Filter/room', filter.toJson());
+        return response;
+    }
   }
 }
