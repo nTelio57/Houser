@@ -9,12 +9,15 @@ part of 'RoomFilter.dart';
 RoomFilter _$RoomFilterFromJson(Map<String, dynamic> json) => RoomFilter(
       json['id'] as int,
       json['userId'] as String,
-      json['elo'] as int?,
       (json['area'] as num?)?.toDouble(),
       (json['monthlyPrice'] as num?)?.toDouble(),
       json['city'] as String,
-      DateTime.parse(json['availableFrom'] as String),
-      DateTime.parse(json['availableTo'] as String),
+      json['availableFrom'] == null
+          ? null
+          : DateTime.parse(json['availableFrom'] as String),
+      json['availableTo'] == null
+          ? null
+          : DateTime.parse(json['availableTo'] as String),
       json['freeRoomCount'] as int?,
       json['bedCount'] as int?,
       json['ruleSmoking'] as bool?,
@@ -25,18 +28,18 @@ RoomFilter _$RoomFilterFromJson(Map<String, dynamic> json) => RoomFilter(
       json['accommodationParking'] as bool?,
       json['accommodationBalcony'] as bool?,
       json['accommodationDisability'] as bool?,
-    );
+    )..filterType = $enumDecode(_$FilterTypeEnumMap, json['filterType']);
 
 Map<String, dynamic> _$RoomFilterToJson(RoomFilter instance) =>
     <String, dynamic>{
       'id': instance.id,
       'userId': instance.userId,
-      'elo': instance.elo,
+      'filterType': _$FilterTypeEnumMap[instance.filterType],
       'area': instance.area,
       'monthlyPrice': instance.monthlyPrice,
       'city': instance.city,
-      'availableFrom': instance.availableFrom.toIso8601String(),
-      'availableTo': instance.availableTo.toIso8601String(),
+      'availableFrom': instance.availableFrom?.toIso8601String(),
+      'availableTo': instance.availableTo?.toIso8601String(),
       'freeRoomCount': instance.freeRoomCount,
       'bedCount': instance.bedCount,
       'ruleSmoking': instance.ruleSmoking,
@@ -48,3 +51,9 @@ Map<String, dynamic> _$RoomFilterToJson(RoomFilter instance) =>
       'accommodationBalcony': instance.accommodationBalcony,
       'accommodationDisability': instance.accommodationDisability,
     };
+
+const _$FilterTypeEnumMap = {
+  FilterType.room: 0,
+  FilterType.user: 1,
+  FilterType.none: 2,
+};

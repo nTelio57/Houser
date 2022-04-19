@@ -1,3 +1,4 @@
+import 'package:houser/enums/FilterType.dart';
 import 'package:houser/enums/SleepType.dart';
 import 'package:houser/models/Filter.dart';
 import 'package:json_annotation/json_annotation.dart';
@@ -5,8 +6,8 @@ part 'UserFilter.g.dart';
 
 @JsonSerializable()
 class UserFilter extends Filter{
-  UserFilter(int id, String userId, int? elo, this.ageFrom, this.ageTo, this.sex, this.animalCount, this.isStudying, this.isWorking, this.isSmoking, this.guestCount, this.partyCount, this.sleepType)
-      : super(id, userId, elo);
+  UserFilter(int id, String userId, this.ageFrom, this.ageTo, this.sex, this.animalCount, this.isStudying, this.isWorking, this.isSmoking, this.guestCount, this.partyCount, this.sleepType)
+      : super(id, userId, FilterType.user);
 
   int ageFrom;
   int ageTo;

@@ -9,11 +9,17 @@ part of 'Filter.dart';
 Filter _$FilterFromJson(Map<String, dynamic> json) => Filter(
       json['id'] as int,
       json['userId'] as String,
-      json['elo'] as int?,
+      $enumDecode(_$FilterTypeEnumMap, json['filterType']),
     );
 
 Map<String, dynamic> _$FilterToJson(Filter instance) => <String, dynamic>{
       'id': instance.id,
       'userId': instance.userId,
-      'elo': instance.elo,
+      'filterType': _$FilterTypeEnumMap[instance.filterType],
     };
+
+const _$FilterTypeEnumMap = {
+  FilterType.room: 0,
+  FilterType.user: 1,
+  FilterType.none: 2,
+};

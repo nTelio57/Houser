@@ -1,13 +1,14 @@
+import 'package:houser/enums/FilterType.dart';
 import 'package:json_annotation/json_annotation.dart';
 part 'Filter.g.dart';
 
 @JsonSerializable()
 class Filter {
-  Filter(this.id, this.userId, this.elo);
+  Filter(this.id, this.userId, this.filterType);
 
   int id;
   String userId;
-  int? elo;
+  FilterType filterType = FilterType.none;
 
   factory Filter.fromJson(Map<String, dynamic> json) => _$FilterFromJson(json);
 
