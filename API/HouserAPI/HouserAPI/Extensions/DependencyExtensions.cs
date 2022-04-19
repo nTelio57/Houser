@@ -12,6 +12,8 @@ namespace HouserAPI.Extensions
             return services
                 .AddScoped<IRepository<Image>, ImageRepository>()
                 .AddScoped<IRepository<Room>, RoomRepository>()
+                .AddScoped<IRepository<Filter>, FilterRepository>()
+                .AddScoped<IRepository<UserFilter>, UserFilterRepository>()
                 .AddScoped<IRepository<RoomFilter>, RoomFilterRepository>();
         }
 

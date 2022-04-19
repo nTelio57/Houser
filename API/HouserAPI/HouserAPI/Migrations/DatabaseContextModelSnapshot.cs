@@ -23,10 +23,6 @@ namespace HouserAPI.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    b.Property<string>("Discriminator")
-                        .IsRequired()
-                        .HasColumnType("text");
-
                     b.Property<int>("Elo")
                         .HasColumnType("int");
 
@@ -41,9 +37,9 @@ namespace HouserAPI.Migrations
                     b.HasIndex("UserId")
                         .IsUnique();
 
-                    b.ToTable("Filter");
+                    b.ToTable("Filters");
 
-                    b.HasDiscriminator<string>("Discriminator").HasValue("Filter");
+                    b.HasDiscriminator<int>("FilterType").HasValue(2);
                 });
 
             modelBuilder.Entity("HouserAPI.Models.Image", b =>
@@ -441,44 +437,44 @@ namespace HouserAPI.Migrations
                     b.Property<bool?>("RuleSmoking")
                         .HasColumnType("tinyint(1)");
 
-                    b.HasDiscriminator().HasValue("RoomFilter");
+                    b.HasDiscriminator().HasValue(0);
                 });
 
             modelBuilder.Entity("HouserAPI.Models.UserFilter", b =>
                 {
                     b.HasBaseType("HouserAPI.Models.Filter");
 
-                    b.Property<int>("AgeFrom")
+                    b.Property<int?>("AgeFrom")
                         .HasColumnType("int");
 
-                    b.Property<int>("AgeTo")
+                    b.Property<int?>("AgeTo")
                         .HasColumnType("int");
 
-                    b.Property<int>("AnimalCount")
+                    b.Property<int?>("AnimalCount")
                         .HasColumnType("int");
 
-                    b.Property<int>("GuestCount")
+                    b.Property<int?>("GuestCount")
                         .HasColumnType("int");
 
-                    b.Property<bool>("IsSmoking")
+                    b.Property<bool?>("IsSmoking")
                         .HasColumnType("tinyint(1)");
 
-                    b.Property<bool>("IsStudying")
+                    b.Property<bool?>("IsStudying")
                         .HasColumnType("tinyint(1)");
 
-                    b.Property<bool>("IsWorking")
+                    b.Property<bool?>("IsWorking")
                         .HasColumnType("tinyint(1)");
 
-                    b.Property<int>("PartyCount")
+                    b.Property<int?>("PartyCount")
                         .HasColumnType("int");
 
-                    b.Property<int>("Sex")
+                    b.Property<int?>("Sex")
                         .HasColumnType("int");
 
-                    b.Property<int>("SleepType")
+                    b.Property<int?>("SleepType")
                         .HasColumnType("int");
 
-                    b.HasDiscriminator().HasValue("UserFilter");
+                    b.HasDiscriminator().HasValue(1);
                 });
 
             modelBuilder.Entity("HouserAPI.Models.Filter", b =>

@@ -169,7 +169,7 @@ namespace HouserAPI.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Filter",
+                name: "Filters",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
@@ -177,7 +177,6 @@ namespace HouserAPI.Migrations
                     UserId = table.Column<string>(type: "varchar(255)", nullable: true),
                     Elo = table.Column<int>(type: "int", nullable: false),
                     FilterType = table.Column<int>(type: "int", nullable: false),
-                    Discriminator = table.Column<string>(type: "text", nullable: false),
                     Area = table.Column<float>(type: "float", nullable: true),
                     MonthlyPrice = table.Column<float>(type: "float", nullable: true),
                     City = table.Column<string>(type: "text", nullable: true),
@@ -206,9 +205,9 @@ namespace HouserAPI.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Filter", x => x.Id);
+                    table.PrimaryKey("PK_Filters", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_Filter_AspNetUsers_UserId",
+                        name: "FK_Filters_AspNetUsers_UserId",
                         column: x => x.UserId,
                         principalTable: "AspNetUsers",
                         principalColumn: "Id",
@@ -322,8 +321,8 @@ namespace HouserAPI.Migrations
                 unique: true);
 
             migrationBuilder.CreateIndex(
-                name: "IX_Filter_UserId",
-                table: "Filter",
+                name: "IX_Filters_UserId",
+                table: "Filters",
                 column: "UserId",
                 unique: true);
 
@@ -361,7 +360,7 @@ namespace HouserAPI.Migrations
                 name: "AspNetUserTokens");
 
             migrationBuilder.DropTable(
-                name: "Filter");
+                name: "Filters");
 
             migrationBuilder.DropTable(
                 name: "Images");
