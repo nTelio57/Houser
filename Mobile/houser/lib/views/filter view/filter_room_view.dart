@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:houser/models/Filter.dart';
+import 'package:houser/models/RoomFilter.dart';
+import 'package:houser/utils/current_login.dart';
 import 'package:houser/widgets/WG_snackbars.dart';
 import 'package:houser/widgets/WG_toggle_icon_button.dart';
 import 'package:intl/intl.dart';
@@ -29,6 +32,29 @@ class FilterRoomView extends StatefulWidget {
 
   @override
   _FilterUserViewState createState() => _FilterUserViewState();
+
+  Filter getFilterByForm()
+  {
+    return RoomFilter(
+        0,
+        CurrentLogin().user!.id,
+        double.tryParse(_areaText.text),
+        double.tryParse(_priceText.text),
+        _cityText.text,
+        _dateFrom,
+        _dateTo,
+        int.tryParse(_freeRoomText.text),
+        int.tryParse(_bedCountText.text),
+        smokingRuleButton.isEnabled,
+        animalRuleButton.isEnabled,
+        accommodationTv.isEnabled,
+        accommodationWifi.isEnabled,
+        accommodationAc.isEnabled,
+        accommodationParking.isEnabled,
+        accommodationBalcony.isEnabled,
+        accommodationDisability.isEnabled
+    );
+  }
 }
 
 class _FilterUserViewState extends State<FilterRoomView> {
@@ -147,8 +173,8 @@ class _FilterUserViewState extends State<FilterRoomView> {
 
   Widget dateField(DateTime? value, TextEditingController controller, Function(String?) validator, String label, IconData icon)
   {
-    var firstDate = DateTime.now();
-    var lastDate = DateTime(firstDate.year + 100);
+    var firstDate = DateTime(1900);
+    var lastDate = DateTime(2200);
 
     return Flexible(
       child: Container(

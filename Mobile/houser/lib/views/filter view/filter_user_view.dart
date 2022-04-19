@@ -15,10 +15,10 @@ class FilterUserView extends StatefulWidget {
   WGSlider partyCountSlider = WGSlider(min: 0, max: 5, canBeMoreThanMax: true);
 
   final List<MultiButtonSelection> _sexSelections = [MultiButtonSelection('Vyras', const Icon(Icons.male)), MultiButtonSelection('Moteris', const Icon(Icons.female)), MultiButtonSelection('Kita', const Icon(Icons.transgender))];
-  final List<MultiButtonSelection> _sleepTimeSelections = [MultiButtonSelection('Vyturys', const Icon(Icons.wb_sunny)), MultiButtonSelection('Nei vienas', const Icon(Icons.compare_arrows)), MultiButtonSelection('Pelėda', const Icon(Icons.nights_stay))];
-  final List<MultiButtonSelection> _studySelections = [ MultiButtonSelection('Nestudijuoju', const Icon(Icons.home)), MultiButtonSelection('Studijuoju', const Icon(Icons.school))];
-  final List<MultiButtonSelection> _workSelections = [MultiButtonSelection('Nedirbu', const Icon(Icons.work_off)), MultiButtonSelection('Dirbu', const Icon(Icons.work))];
-  final List<MultiButtonSelection> _smokeSelections = [MultiButtonSelection('Nerūkau', const Icon(Icons.smoke_free)), MultiButtonSelection('Rūkau', const Icon(Icons.smoking_rooms))];
+  final List<MultiButtonSelection> _sleepTimeSelections = [MultiButtonSelection('Vyturys', const Icon(Icons.wb_sunny)), MultiButtonSelection('Pelėda', const Icon(Icons.nights_stay))];
+  final List<MultiButtonSelection> _studySelections = [ MultiButtonSelection('Nestudijuoja', const Icon(Icons.home)), MultiButtonSelection('Studijuoja', const Icon(Icons.school))];
+  final List<MultiButtonSelection> _workSelections = [MultiButtonSelection('Nedirba', const Icon(Icons.work_off)), MultiButtonSelection('Dirba', const Icon(Icons.work))];
+  final List<MultiButtonSelection> _smokeSelections = [MultiButtonSelection('Nerūko', const Icon(Icons.smoke_free)), MultiButtonSelection('Rūko', const Icon(Icons.smoking_rooms))];
 
   WGMultiButton? sexSelectionButtons;
   WGMultiButton? sleepButtons;
@@ -73,9 +73,9 @@ class _FilterUserViewState extends State<FilterUserView> {
             widget.sexSelectionButtons!,
             sliderValueRow('Gyvūnų skaičius:',Icons.pets, widget.animalCountSlider),
             widget.animalCountSlider,
-            sliderValueRow('Svečių dažnumas:',Icons.pets, widget.guestCountSlider),
+            sliderValueRow('Svečių dažnumas:',Icons.groups, widget.guestCountSlider),
             widget.guestCountSlider,
-            sliderValueRow('Vakarėlių dažnumas:',Icons.pets, widget.partyCountSlider),
+            sliderValueRow('Vakarėlių dažnumas:',Icons.celebration, widget.partyCountSlider),
             widget.partyCountSlider,
             widget.studyButtons!,
             widget.workButtons!,

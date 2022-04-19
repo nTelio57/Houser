@@ -1,10 +1,15 @@
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
+import 'package:houser/enums/FilterType.dart';
+import 'package:houser/models/Filter.dart';
 import 'package:houser/views/filter%20view/filter_room_view.dart';
 import 'package:houser/views/filter%20view/filter_user_view.dart';
 
+// ignore: must_be_immutable
 class FilterBaseView extends StatefulWidget {
-  const FilterBaseView({Key? key}) : super(key: key);
+  FilterBaseView(this.onFilterChanged, {Key? key}) : super(key: key);
+
+  Function(Filter) onFilterChanged;
 
   @override
   _FilterBaseViewState createState() => _FilterBaseViewState();
@@ -15,6 +20,8 @@ class _FilterBaseViewState extends State<FilterBaseView> with SingleTickerProvid
   late TabController _tabController;
   final _formKey = GlobalKey<FormState>();
   bool _isLoginButtonEnabled = true;
+  var filterUserForm = FilterUserView();
+  var filterRoomForm = FilterRoomView();
 
   @override
   void initState() {
@@ -46,8 +53,8 @@ class _FilterBaseViewState extends State<FilterBaseView> with SingleTickerProvid
                   child: TabBarView(
                     controller: _tabController,
                     children: [
-                      FilterRoomView(),
-                      FilterUserView(),
+                      filterRoomForm,
+                      filterUserForm,
                     ],
                   ),
                 ),
@@ -168,7 +175,15 @@ class _FilterBaseViewState extends State<FilterBaseView> with SingleTickerProvid
     );
   }
 
+  Filter getFilterByForm()
+  {
+    if(_tabController.index == 0) {
+      return filterRoomForm.getFilterByForm();
+    }
+    return Filter(1, '', FilterType.none);
+  }
+
   Future onButtonClick() async {
-    return;
+    await widget.onFilterChanged(getFilterByForm());
   }
 }
