@@ -19,7 +19,7 @@ def GetRoomQuery(filter):
         query = query.filter(Room.AvailableFrom <= filter.AvailableFrom)
     if(filter.AvailableTo != None):
         query = query.filter(Room.AvailableTo >= filter.AvailableTo)
-    if(filter.City != None):
+    if(filter.City != None and filter.City):
         query = query.filter(Room.City == filter.City)
 
     return query
