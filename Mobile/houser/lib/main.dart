@@ -40,7 +40,7 @@ Future ensureLoggedIn() async
       CurrentLogin().clear();
       return;
     }
-    _defaultHome = const OfferView();
+    _defaultHome = OfferView();
   }
 }
 
