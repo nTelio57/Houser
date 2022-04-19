@@ -177,8 +177,11 @@ class _FilterBaseViewState extends State<FilterBaseView> with SingleTickerProvid
 
   Filter getFilterByForm()
   {
-    if(_tabController.index == 0) {
-      return filterRoomForm.getFilterByForm();
+    switch(_tabController.index){
+      case 0:
+        return filterRoomForm.getFilterByForm();
+      case 1:
+        return filterUserForm.getFilterByForm();
     }
     return Filter(1, '', FilterType.none);
   }

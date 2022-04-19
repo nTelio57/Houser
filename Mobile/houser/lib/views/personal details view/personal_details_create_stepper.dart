@@ -209,8 +209,8 @@ class _PersonalDetailsCreateStepperState extends State<PersonalDetailsCreateStep
       case FilterType.none:
     }
     await CurrentLogin().loadUserDataFromSharedPreferences();
-    await provider.loadRoomsAsync(3, 0, newFilter);
-    provider.loadRoomsSync(7, 3, newFilter);
+    await provider.loadOffersAsync(3, 0);
+    provider.loadOffersSync(7, 3);
 
     Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (context) => OfferView()), (Route<dynamic> route) => false);
   }
