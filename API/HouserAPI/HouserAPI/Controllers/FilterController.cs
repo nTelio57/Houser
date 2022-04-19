@@ -64,7 +64,7 @@ namespace HouserAPI.Controllers
             try
             {
                 var filterReadDto = await _filterService.Create(userFilterCreateDto, userId);
-                return CreatedAtAction(nameof(CreateRoomFilter), filterReadDto);
+                return CreatedAtAction(nameof(CreateUserFilter), filterReadDto);
             }
             catch (Exception e)
             {
