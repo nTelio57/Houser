@@ -59,19 +59,25 @@ def GetRoomRecommendation(filter):
 
     return predictions
 
+def GetUserQuery(filter):
+    today = datetime.date.today()
+
+    query = db.session.query(User).filter(User.IsVisible).filter(User.Id != filter.UserId)
+
+    if(filter.Sex != None):
+        query = query.filter(User.Sex == filter.Sex)
+    if(filter.AgeFrom != None):
+        ageFromDate = today.replace(today.year - filter.AgeFrom)
+        query = query.filter(User.BirthDate <= ageFromDate)
+    if(filter.AgeTo != None):
+        ageToDate = today.replace(today.year - filter.AgeTo)
+        query = query.filter(User.BirthDate >= ageToDate)
+
+    return query
+
 def GetUserRecommendation(filter):
 
-    today = datetime.date.today()
-    ageFromDate = today.replace(today.year - filter.AgeFrom)
-    ageToDate = today.replace(today.year - filter.AgeTo)
-
-    userList = db.session.query(User).\
-        filter(User.IsVisible).\
-        filter(User.Sex == filter.Sex).\
-        filter(User.BirthDate <= ageFromDate).\
-        filter(User.BirthDate >= ageToDate).\
-        filter(User.Id != filter.UserId).\
-        all()
+    userList = GetUserQuery(filter).all()
     
     predictions = []
     for user in userList:
