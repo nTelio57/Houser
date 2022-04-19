@@ -7,7 +7,7 @@ import 'package:houser/services/api_client.dart';
 import 'package:houser/utils/current_login.dart';
 import 'package:houser/services/api_service.dart';
 import 'package:houser/utils/offer_card_manager.dart';
-import 'package:houser/views/profile%20view/my_offer_list_view.dart';
+import 'package:houser/views/profile%20view/my_room_list_view.dart';
 import 'package:houser/views/welcome_view.dart';
 import 'package:houser/widgets/WG_album_slider.dart';
 import 'package:houser/models/Image.dart' as apiImage;
@@ -37,13 +37,13 @@ class _ProfileViewState extends State<ProfileView> {
       appBar: AppBar(
         leading: Container(),
         actions: [
-          offersButton()
+          roomsButton()
         ],
       )
     );
   }
 
-  Widget offersButton()
+  Widget roomsButton()
   {
     return IconButton(
       icon: const Icon(Icons.list),
@@ -209,7 +209,7 @@ class _ProfileViewState extends State<ProfileView> {
   {
     return Column(
       children: [
-        menuButton('Mano pasiūlymai', Icons.format_list_bulleted, () => onOfferListClicked()),
+        menuButton('Mano pasiūlymai', Icons.format_list_bulleted, () => onRoomListClicked()),
         menuButton('Redaguoti profilį', Icons.edit,() => null),
         menuButton('Nustatymai', Icons.settings,() => null),
         menuButton('Atsijungti', Icons.logout, () => onLogoutClicked(), isLogout: true),
@@ -250,16 +250,16 @@ class _ProfileViewState extends State<ProfileView> {
     );
   }
 
-  void onOfferListClicked()
+  void onRoomListClicked()
   {
-    Navigator.push(context, MaterialPageRoute(builder: (context) => MyOfferListView()));
+    Navigator.push(context, MaterialPageRoute(builder: (context) => MyRoomListView()));
   }
 
   Future onLogoutClicked() async
   {
     await widget._currentLogin.clear();
     final provider = Provider.of<OfferCardManager>(context, listen: false);
-    provider.resetOffers();
+    provider.resetRooms();
 
     Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (context) => const WelcomeView()), (Route<dynamic> route) => false);
   }

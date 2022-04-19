@@ -3,42 +3,42 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:houser/utils/current_login.dart';
-import 'package:houser/models/Offer.dart';
+import 'package:houser/models/Room.dart';
 import 'package:houser/services/api_service.dart';
-import 'package:houser/views/profile%20view/my_offer_card.dart';
-import 'package:houser/views/profile%20view/offer_form_view.dart';
+import 'package:houser/views/profile%20view/my_room_card.dart';
+import 'package:houser/views/profile%20view/room_form_view.dart';
 import 'package:houser/widgets/WG_snackbars.dart';
 
-class MyOfferListView extends StatefulWidget {
-  MyOfferListView({Key? key}) : super(key: key);
+class MyRoomListView extends StatefulWidget {
+  MyRoomListView({Key? key}) : super(key: key);
 
   final ApiService _apiService = ApiService();
   final CurrentLogin _currentLogin = CurrentLogin();
 
   @override
-  _MyOfferListViewState createState() => _MyOfferListViewState();
+  _MyRoomListViewState createState() => _MyRoomListViewState();
 }
 
-class _MyOfferListViewState extends State<MyOfferListView> {
+class _MyRoomListViewState extends State<MyRoomListView> {
 
-  List<Offer> offers = [];
+  List<Room> rooms = [];
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      floatingActionButton: newOfferFab(),
+      floatingActionButton: newRoomFab(),
       body: body(),
       appBar: AppBar(),
       backgroundColor: Theme.of(context).backgroundColor,
     );
   }
 
-  Widget newOfferButton()
+  Widget newRoomButton()
   {
     return IconButton(
       onPressed: (){
         Navigator.push(context, MaterialPageRoute(
-            builder: (context) => OfferFormView())).then((value) => setState((){}));
+            builder: (context) => RoomFormView())).then((value) => setState((){}));
       },
       icon: const Icon(Icons.add)
     );
@@ -48,19 +48,19 @@ class _MyOfferListViewState extends State<MyOfferListView> {
   {
     return Container(
       margin: const EdgeInsets.all(10),
-      child: offerLoader(),
+      child: roomLoader(),
     );
   }
 
-  Widget offerLoader()
+  Widget roomLoader()
   {
     return FutureBuilder(
-      future: loadOffers().timeout(const Duration(seconds: 5)),
+      future: loadRooms().timeout(const Duration(seconds: 5)),
       builder: (BuildContext context, AsyncSnapshot<dynamic> snapshot)
       {
         if(snapshot.hasData)
           {
-            return offerList();
+            return roomList();
           }
         else if(snapshot.hasError)
           {
@@ -79,8 +79,8 @@ class _MyOfferListViewState extends State<MyOfferListView> {
           }
         else
           {
-            if(offers.isNotEmpty) {
-              return offerList();
+            if(rooms.isNotEmpty) {
+              return roomList();
             }
             else
               {
@@ -93,54 +93,54 @@ class _MyOfferListViewState extends State<MyOfferListView> {
     );
   }
 
-  Future loadOffers() async
+  Future loadRooms() async
   {
-    offers = await widget._apiService.GetOffersByUser(widget._currentLogin.user!.id);
+    rooms = await widget._apiService.GetRoomsByUser(widget._currentLogin.user!.id);
     return true;
   }
 
-  Widget offerList()
+  Widget roomList()
   {
     return RefreshIndicator(
       onRefresh: () async {
-        await loadOffers();
+        await loadRooms();
         setState(() {
 
         });
       },
       child: ListView.builder(
-        itemCount: offers.length,
+        itemCount: rooms.length,
         itemBuilder: (context, index)
             {
-              return MyOfferCard((){onEditClicked(offers[index]);}, (){onVisibilityClicked(offers[index]);}, (){onDeleteClicked(offers[index]);}, offer: offers[index]);
+              return MyRoomCard((){onEditClicked(rooms[index]);}, (){onVisibilityClicked(rooms[index]);}, (){onDeleteClicked(rooms[index]);}, room: rooms[index]);
             }
       ),
     );
   }
 
-  void onEditClicked(Offer offer)
+  void onEditClicked(Room room)
   {
     Navigator.push(context, MaterialPageRoute(
-        builder: (context) => OfferFormView(isEditingMode: true, offerToEdit: offer))).then((value) => setState((){}));
+        builder: (context) => RoomFormView(isEditingMode: true, roomToEdit: room))).then((value) => setState((){}));
   }
 
-  void onVisibilityClicked(Offer offer)
+  void onVisibilityClicked(Room room)
   {
     showDialog(
         context: context,
-        builder: (context) => visibilityDialog(offer)
+        builder: (context) => visibilityDialog(room)
     );
   }
 
-  void onDeleteClicked(Offer offer)
+  void onDeleteClicked(Room room)
   {
     showDialog(
       context: context,
-      builder: (context) => deleteDialog(offer)
+      builder: (context) => deleteDialog(room)
     );
   }
 
-  AlertDialog deleteDialog(Offer offer)
+  AlertDialog deleteDialog(Room room)
   {
     return AlertDialog(
       content: const Text('Ar tikrai norite ištrinti pasiūlymą?'),
@@ -156,7 +156,7 @@ class _MyOfferListViewState extends State<MyOfferListView> {
         ),
         TextButton(
             onPressed: () {
-              widget._apiService.DeleteOffer(offer.id).timeout(const Duration(seconds: 5)).then((value) {
+              widget._apiService.DeleteRoom(room.id).timeout(const Duration(seconds: 5)).then((value) {
                 setState(() {
 
                 });
@@ -175,7 +175,7 @@ class _MyOfferListViewState extends State<MyOfferListView> {
     );
   }
 
-  AlertDialog visibilityDialog(Offer offer)
+  AlertDialog visibilityDialog(Room room)
   {
     return AlertDialog(
       content: const Text('Ar tikrai norite pasiūlymo matomumą?'),
@@ -190,8 +190,8 @@ class _MyOfferListViewState extends State<MyOfferListView> {
         ),
         TextButton(
             onPressed: () {
-              offer.isVisible = !offer.isVisible;
-              widget._apiService.UpdateOfer(offer.id, offer).timeout(const Duration(seconds: 5)).then((value) {
+              room.isVisible = !room.isVisible;
+              widget._apiService.UpdateOfer(room.id, room).timeout(const Duration(seconds: 5)).then((value) {
                 setState(() {
 
                 });
@@ -212,14 +212,14 @@ class _MyOfferListViewState extends State<MyOfferListView> {
     );
   }
 
-  Widget newOfferFab()
+  Widget newRoomFab()
   {
     return FloatingActionButton(
       backgroundColor: Theme.of(context).primaryColorDark,
       child: const Icon(Icons.add),
       onPressed: () {
         Navigator.push(context, MaterialPageRoute(
-            builder: (context) => OfferFormView())).then((value) => setState((){}));
+            builder: (context) => RoomFormView())).then((value) => setState((){}));
       },
     );
   }

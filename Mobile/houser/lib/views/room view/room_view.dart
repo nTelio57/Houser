@@ -4,21 +4,21 @@ import 'package:houser/services/api_service.dart';
 import 'package:houser/utils/current_login.dart';
 import 'package:houser/views/filter%20view/filter_base.dart';
 import 'package:houser/views/profile%20view/profile_view.dart';
-import 'package:houser/widgets/WG_OfferCard.dart';
+import 'package:houser/widgets/WG_RoomCard.dart';
 import 'package:houser/utils/offer_card_manager.dart';
 import 'package:provider/provider.dart';
 
-class OfferView extends StatefulWidget {
-  OfferView({Key? key}) : super(key: key);
+class RoomView extends StatefulWidget {
+  RoomView({Key? key}) : super(key: key);
 
   final CurrentLogin _currentLogin = CurrentLogin();
   final ApiService _apiService = ApiService();
 
   @override
-  _OfferViewState createState() => _OfferViewState();
+  _RoomViewState createState() => _RoomViewState();
 }
 
-class _OfferViewState extends State<OfferView> {
+class _RoomViewState extends State<RoomView> {
 
   @override
   Widget build(BuildContext context) {
@@ -38,24 +38,24 @@ class _OfferViewState extends State<OfferView> {
   {
     return Stack(
       children: [
-        offerCardStack(),
+        roomCardStack(),
         topPanel(),
       ],
     );
   }
 
-  Widget offerCardStack()
+  Widget roomCardStack()
   {
     final provider = Provider.of<OfferCardManager>(context);
-    final offers = provider.offers;
+    final rooms = provider.rooms;
 
-    return offers.isEmpty ? noOffersResult() :
+    return rooms.isEmpty ? noRoomsResult() :
     Stack(
-      children: offers.reversed.map((offer) => WGOfferCard(offer: offer, isFront: offer == offers.first)).toList(),
+      children: rooms.reversed.map((room) => WGRoomCard(room: room, isFront: room == rooms.first)).toList(),
     );
   }
 
-  Widget noOffersResult()
+  Widget noRoomsResult()
   {
     return Container(
       padding: const EdgeInsets.all(30),
@@ -166,9 +166,9 @@ class _OfferViewState extends State<OfferView> {
     final provider = Provider.of<OfferCardManager>(context, listen: false);
 
     currentUser.filter = newFilter;
-    provider.resetOffers();
-    await provider.loadOffersAsync(3, 0, newFilter);
-    provider.loadOffersSync(7, 3, newFilter);
+    provider.resetRooms();
+    await provider.loadRoomsAsync(3, 0, newFilter);
+    provider.loadRoomsSync(7, 3, newFilter);
 
     Navigator.pop(context);
     return;

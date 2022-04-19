@@ -1,21 +1,21 @@
 import 'package:flutter/material.dart';
-import 'package:houser/models/Offer.dart';
-import 'package:houser/views/profile%20view/offer_form_view.dart';
+import 'package:houser/models/Room.dart';
+import 'package:houser/views/profile%20view/room_form_view.dart';
 
 // ignore: must_be_immutable
-class MyOfferCard extends StatefulWidget {
-  Offer offer;
+class MyRoomCard extends StatefulWidget {
+  Room room;
   Function() onEditClick;
   Function() onVisibilityClick;
   Function() onDeleteClick;
 
-  MyOfferCard(this.onEditClick, this.onVisibilityClick, this.onDeleteClick, {Key? key, required this.offer}) : super(key: key);
+  MyRoomCard(this.onEditClick, this.onVisibilityClick, this.onDeleteClick, {Key? key, required this.room}) : super(key: key);
 
   @override
-  _MyOfferCardState createState() => _MyOfferCardState();
+  _MyRoomCardState createState() => _MyRoomCardState();
 }
 
-class _MyOfferCardState extends State<MyOfferCard> {
+class _MyRoomCardState extends State<MyRoomCard> {
   @override
   Widget build(BuildContext context) {
     return body();
@@ -30,9 +30,9 @@ class _MyOfferCardState extends State<MyOfferCard> {
       ),
       child: ExpansionTile(
         trailing: trailing(),
-        title: header(widget.offer),
+        title: header(widget.room),
         children: [
-          expansion(widget.offer)
+          expansion(widget.room)
         ],
       ),
     );
@@ -43,27 +43,27 @@ class _MyOfferCardState extends State<MyOfferCard> {
     return Column(
       children: [
         const Icon(Icons.expand_more),
-        !widget.offer.isVisible ? const Icon(Icons.visibility_off) : const Spacer(),
+        !widget.room.isVisible ? const Icon(Icons.visibility_off) : const Spacer(),
       ],
     );
   }
 
-  Widget header(Offer offer)
+  Widget header(Room room)
   {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        title(offer),
-        address(offer),
-        roomCount(offer)
+        title(room),
+        address(room),
+        roomCount(room)
       ],
     );
   }
 
-  Widget title(Offer offer)
+  Widget title(Room room)
   {
     return Text(
-      offer.title.toUpperCase(),
+      room.title.toUpperCase(),
       style: const TextStyle(
         fontSize: 18,
         fontWeight: FontWeight.w700,
@@ -71,7 +71,7 @@ class _MyOfferCardState extends State<MyOfferCard> {
     );
   }
 
-  Widget address(Offer offer)
+  Widget address(Room room)
   {
     return Row(
       children: [
@@ -80,7 +80,7 @@ class _MyOfferCardState extends State<MyOfferCard> {
           color: Theme.of(context).primaryColor
         ),
         Text(
-          '${offer.city}, ${offer.address}',
+          '${room.city}, ${room.address}',
           style: const TextStyle(
               fontSize: 16
           ),
@@ -89,7 +89,7 @@ class _MyOfferCardState extends State<MyOfferCard> {
     );
   }
 
-  Widget roomCount(Offer offer)
+  Widget roomCount(Room room)
   {
     return Row(
       children: [
@@ -98,7 +98,7 @@ class _MyOfferCardState extends State<MyOfferCard> {
             color: Theme.of(context).primaryColor
         ),
         Text(
-          '${offer.freeRoomCount} / ${offer.totalRoomCount}',
+          '${room.freeRoomCount} / ${room.totalRoomCount}',
           style: const TextStyle(
               fontSize: 16
           ),
@@ -107,7 +107,7 @@ class _MyOfferCardState extends State<MyOfferCard> {
     );
   }
 
-  Widget expansion(Offer offer)
+  Widget expansion(Room room)
   {
     return Container(
       height: 50,
@@ -119,7 +119,7 @@ class _MyOfferCardState extends State<MyOfferCard> {
         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
         children: [
           expansionButton(Icons.edit, widget.onEditClick),
-          expansionButton(offer.isVisible ? Icons.visibility_off : Icons.visibility, widget.onVisibilityClick),
+          expansionButton(room.isVisible ? Icons.visibility_off : Icons.visibility, widget.onVisibilityClick),
           expansionButton(Icons.delete, widget.onDeleteClick, iconColor: Colors.red.shade300),
         ],
       ),

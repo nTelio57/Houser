@@ -1,5 +1,5 @@
 import 'package:flutter/foundation.dart';
-import 'package:houser/models/Offer.dart';
+import 'package:houser/models/Room.dart';
 import 'package:houser/models/User.dart';
 import 'package:houser/services/api_service.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -11,7 +11,7 @@ class CurrentLogin{
 
   String jwtToken = '';
   User? user;
-  List<Offer> recommendedOffers = [];
+  List<Room> recommendedRooms = [];
 
   static CurrentLogin _singleton = CurrentLogin._internal();
   CurrentLogin._internal();

@@ -6,7 +6,7 @@ import 'package:houser/enums/BedType.dart';
 import 'package:houser/extensions/int_extensions.dart';
 import 'package:houser/models/Image.dart' as apiImage;
 import 'package:houser/utils/current_login.dart';
-import 'package:houser/models/Offer.dart';
+import 'package:houser/models/Room.dart';
 import 'package:houser/models/widget_data/multi_button_selection.dart';
 import 'package:houser/services/api_client.dart';
 import 'package:houser/services/api_service.dart';
@@ -17,11 +17,11 @@ import 'package:houser/widgets/WG_toggle_icon_button.dart';
 import 'package:intl/intl.dart';
 
 // ignore: must_be_immutable
-class OfferFormView extends StatefulWidget {
+class RoomFormView extends StatefulWidget {
 
   final ApiService _apiService = ApiService();
 
-  List<apiImage.Image> offerImages = [];
+  List<apiImage.Image> roomImages = [];
   List<apiImage.Image> imagesToDelete = [];
 
   List<MultiButtonSelection> bedTypeSelections =
@@ -57,28 +57,28 @@ class OfferFormView extends StatefulWidget {
   WGToggleIconButton accommodationDisability = WGToggleIconButton(icon: Icons.accessible_outlined);
 
   bool isEditingMode = false;
-  Offer? offerToEdit;
+  Room? roomToEdit;
 
-  OfferFormView(
+  RoomFormView(
   {
     Key? key,
     this.isEditingMode = false,
-    this.offerToEdit
+    this.roomToEdit
   }
   ) : super(key: key)
   {
     bedTypeButton = WGMultiButton(selections: bedTypeSelections);
-    if(offerToEdit != null)
+    if(roomToEdit != null)
       {
-        offerImages = offerToEdit!.images;
+        roomImages = roomToEdit!.images;
       }
   }
 
   @override
-  _OfferFormViewState createState() => _OfferFormViewState();
+  _RoomFormViewState createState() => _RoomFormViewState();
 }
 
-class _OfferFormViewState extends State<OfferFormView> {
+class _RoomFormViewState extends State<RoomFormView> {
 
   final _formKey = GlobalKey<FormState>();
   bool editInitialized = false;
@@ -88,11 +88,11 @@ class _OfferFormViewState extends State<OfferFormView> {
   Widget build(BuildContext context) {
     if(widget.isEditingMode)
       {
-        if(widget.offerToEdit == null) {
-          throw Exception('If editing mode = true, offerToEdit can\'t be null');
+        if(widget.roomToEdit == null) {
+          throw Exception('If editing mode = true, roomToEdit can\'t be null');
         }
         if(!editInitialized){
-          setupForEditing(widget.offerToEdit!);
+          setupForEditing(widget.roomToEdit!);
           editInitialized = true;
         }
       }
@@ -156,32 +156,32 @@ class _OfferFormViewState extends State<OfferFormView> {
     );
   }
 
-  void setupForEditing(Offer offer)
+  void setupForEditing(Room room)
   {
-    widget._dateTo = offer.availableTo;
-    widget._dateToText.text = dateToString(offer.availableTo);
-    widget._dateFrom = offer.availableFrom;
-    widget._dateFromText.text = dateToString(offer.availableFrom);
+    widget._dateTo = room.availableTo;
+    widget._dateToText.text = dateToString(room.availableTo);
+    widget._dateFrom = room.availableFrom;
+    widget._dateFromText.text = dateToString(room.availableFrom);
 
-    widget._titleText.text = offer.title;
-    widget._cityText.text  = offer.city;
-    widget._addressText.text  = offer.address;
-    widget._priceText.text  = offer.monthlyPrice.toString();
-    widget._areaText.text  = offer.area.toString();
-    widget._freeRoomText.text  = offer.freeRoomCount.toString();
-    widget._totalRoomText.text  = offer.totalRoomCount.toString();
-    widget._bedCountText.text  = offer.bedCount.toString();
+    widget._titleText.text = room.title;
+    widget._cityText.text  = room.city;
+    widget._addressText.text  = room.address;
+    widget._priceText.text  = room.monthlyPrice.toString();
+    widget._areaText.text  = room.area.toString();
+    widget._freeRoomText.text  = room.freeRoomCount.toString();
+    widget._totalRoomText.text  = room.totalRoomCount.toString();
+    widget._bedCountText.text  = room.bedCount.toString();
 
-    widget.smokingRuleButton.isEnabled = offer.ruleSmoking;
-    widget.animalRuleButton.isEnabled = offer.ruleAnimals;
-    widget.bedTypeButton!.isButtonSelected = BedType.values.map((e) => e.index == offer.bedType.index).toList();
+    widget.smokingRuleButton.isEnabled = room.ruleSmoking;
+    widget.animalRuleButton.isEnabled = room.ruleAnimals;
+    widget.bedTypeButton!.isButtonSelected = BedType.values.map((e) => e.index == room.bedType.index).toList();
 
-    widget.accommodationTv.isEnabled = offer.accommodationTv;
-    widget.accommodationAc.isEnabled = offer.accommodationAc;
-    widget.accommodationWifi.isEnabled = offer.accommodationWifi;
-    widget.accommodationParking.isEnabled = offer.accommodationParking;
-    widget.accommodationBalcony.isEnabled = offer.accommodationBalcony;
-    widget.accommodationDisability.isEnabled = offer.accommodationDisability;
+    widget.accommodationTv.isEnabled = room.accommodationTv;
+    widget.accommodationAc.isEnabled = room.accommodationAc;
+    widget.accommodationWifi.isEnabled = room.accommodationWifi;
+    widget.accommodationParking.isEnabled = room.accommodationParking;
+    widget.accommodationBalcony.isEnabled = room.accommodationBalcony;
+    widget.accommodationDisability.isEnabled = room.accommodationDisability;
   }
 
   Widget label(String label)
@@ -370,17 +370,17 @@ class _OfferFormViewState extends State<OfferFormView> {
               _isLoginButtonEnabled = true;
               return;
             }
-            if(widget.offerImages.isEmpty)
+            if(widget.roomImages.isEmpty)
               {
-                ScaffoldMessenger.of(context).showSnackBar(offerHasToHaveImages);
+                ScaffoldMessenger.of(context).showSnackBar(roomHasToHaveImages);
                 _isLoginButtonEnabled = true;
                 return;
               }
 
             if(widget.isEditingMode) {
-              await updateOffer();
+              await updateRoom();
             } else {
-              await uploadOffer();
+              await uploadRoom();
             }
 
             setState(() {
@@ -402,21 +402,21 @@ class _OfferFormViewState extends State<OfferFormView> {
     );
   }
 
-  Future updateOffer() async
+  Future updateRoom() async
   {
-    var newOffer = getOfferByForm();
-    newOffer.images = widget.offerToEdit!.images;
+    var newRoom = getRoomByForm();
+    newRoom.images = widget.roomToEdit!.images;
 
-    var result = await widget._apiService.UpdateOfer(widget.offerToEdit!.id, newOffer);
+    var result = await widget._apiService.UpdateOfer(widget.roomToEdit!.id, newRoom);
     if(!result)
     {
       return false;
     }
 
-    for (var image in widget.offerImages) {
+    for (var image in widget.roomImages) {
       if(image.id == 0) {
-        image.offerId = widget.offerToEdit!.id;
-        await widget._apiService.PostOfferImage(image.path, widget.offerToEdit!.id);
+        image.roomId = widget.roomToEdit!.id;
+        await widget._apiService.PostRoomImage(image.path, widget.roomToEdit!.id);
       }
     }
 
@@ -426,27 +426,27 @@ class _OfferFormViewState extends State<OfferFormView> {
       }
     }
 
-    var mainImage = widget.offerImages.firstWhere((image) => image.isMain);
+    var mainImage = widget.roomImages.firstWhere((image) => image.isMain);
     await widget._apiService.UpdateImage(mainImage.id, mainImage);
 
     Navigator.pop(context);
   }
 
-  Future uploadOffer() async
+  Future uploadRoom() async
   {
-    var newOffer = getOfferByForm();
+    var newRoom = getRoomByForm();
 
-    ApiResponse offerPostResult = await widget._apiService.PostOffer(newOffer);
-    if(!offerPostResult.statusCode.isSuccessStatusCode)
+    ApiResponse roomPostResult = await widget._apiService.PostRoom(newRoom);
+    if(!roomPostResult.statusCode.isSuccessStatusCode)
       {
         return false;
       }
-    var offerResult = Offer.fromJson(offerPostResult.body);
+    var roomResult = Room.fromJson(roomPostResult.body);
 
-    var mainImage = widget.offerImages.firstWhere((image) => image.isMain);
-    for (var image in widget.offerImages) {
-      image.offerId = offerResult.id;
-      var imageUploadResponse = await widget._apiService.PostOfferImage(image.path, offerResult.id);
+    var mainImage = widget.roomImages.firstWhere((image) => image.isMain);
+    for (var image in widget.roomImages) {
+      image.roomId = roomResult.id;
+      var imageUploadResponse = await widget._apiService.PostRoomImage(image.path, roomResult.id);
       var uploadedImage = apiImage.Image.fromJson(imageUploadResponse.body);
       if(image.isMain)
         {
@@ -459,35 +459,35 @@ class _OfferFormViewState extends State<OfferFormView> {
     Navigator.pop(context);
   }
 
-  Offer getOfferByForm()
+  Room getRoomByForm()
   {
-    Offer newOffer = Offer(title: widget._titleText.text);
-    newOffer.ownerId = CurrentLogin().user!.id;
-    newOffer.city = widget._cityText.text;
-    newOffer.address = widget._addressText.text;
-    newOffer.monthlyPrice = double.parse(widget._priceText.text);
-    newOffer.area = double.tryParse(widget._areaText.text);
-    newOffer.availableFrom =DateFormat('MM/dd/yyyy').parse(widget._dateFromText.text);
-    newOffer.availableTo = DateFormat('MM/dd/yyyy').parse(widget._dateToText.text);
-    newOffer.ruleSmoking = widget.smokingRuleButton.isEnabled;
-    newOffer.ruleAnimals = widget.animalRuleButton.isEnabled;
-    newOffer.freeRoomCount = int.parse(widget._freeRoomText.text);
-    newOffer.totalRoomCount = int.parse(widget._totalRoomText.text);
-    newOffer.bedCount = int.tryParse(widget._bedCountText.text);
-    newOffer.bedType = BedType.values[widget.bedTypeButton!.isButtonSelected.indexOf(true)];
+    Room newRoom = Room(title: widget._titleText.text);
+    newRoom.ownerId = CurrentLogin().user!.id;
+    newRoom.city = widget._cityText.text;
+    newRoom.address = widget._addressText.text;
+    newRoom.monthlyPrice = double.parse(widget._priceText.text);
+    newRoom.area = double.tryParse(widget._areaText.text);
+    newRoom.availableFrom =DateFormat('MM/dd/yyyy').parse(widget._dateFromText.text);
+    newRoom.availableTo = DateFormat('MM/dd/yyyy').parse(widget._dateToText.text);
+    newRoom.ruleSmoking = widget.smokingRuleButton.isEnabled;
+    newRoom.ruleAnimals = widget.animalRuleButton.isEnabled;
+    newRoom.freeRoomCount = int.parse(widget._freeRoomText.text);
+    newRoom.totalRoomCount = int.parse(widget._totalRoomText.text);
+    newRoom.bedCount = int.tryParse(widget._bedCountText.text);
+    newRoom.bedType = BedType.values[widget.bedTypeButton!.isButtonSelected.indexOf(true)];
 
-    newOffer.accommodationTv = widget.accommodationTv.isEnabled;
-    newOffer.accommodationAc = widget.accommodationAc.isEnabled;
-    newOffer.accommodationWifi = widget.accommodationWifi.isEnabled;
-    newOffer.accommodationParking = widget.accommodationParking.isEnabled;
-    newOffer.accommodationBalcony = widget.accommodationBalcony.isEnabled;
-    newOffer.accommodationDisability = widget.accommodationDisability.isEnabled;
+    newRoom.accommodationTv = widget.accommodationTv.isEnabled;
+    newRoom.accommodationAc = widget.accommodationAc.isEnabled;
+    newRoom.accommodationWifi = widget.accommodationWifi.isEnabled;
+    newRoom.accommodationParking = widget.accommodationParking.isEnabled;
+    newRoom.accommodationBalcony = widget.accommodationBalcony.isEnabled;
+    newRoom.accommodationDisability = widget.accommodationDisability.isEnabled;
 
     //empty values
-    newOffer.area ??= 0;
-    newOffer.bedCount ??= 0;
+    newRoom.area ??= 0;
+    newRoom.bedCount ??= 0;
 
-    return newOffer;
+    return newRoom;
   }
 
   String dateToString(DateTime dateTime)
@@ -589,17 +589,17 @@ class _OfferFormViewState extends State<OfferFormView> {
 
   Widget imagePicker()
   {
-    return WGAlbumSlider(widget.offerImages.reversed.toList(), onImageUpload, onImageDelete, onImageSetAsMain);
+    return WGAlbumSlider(widget.roomImages.reversed.toList(), onImageUpload, onImageDelete, onImageSetAsMain);
   }
 
   Future onImageUpload(File file) async
   {
     var image = apiImage.Image(0, file.path, CurrentLogin().user!.id, null, false);
-    if(widget.offerImages.isEmpty) {
+    if(widget.roomImages.isEmpty) {
       image.isMain = true;
     }
 
-    widget.offerImages.add(image);
+    widget.roomImages.add(image);
     setState(() {
 
     });
@@ -608,7 +608,7 @@ class _OfferFormViewState extends State<OfferFormView> {
 
   Future onImageSetAsMain(apiImage.Image image) async
   {
-    for(apiImage.Image i in widget.offerImages)
+    for(apiImage.Image i in widget.roomImages)
     {
       i.isMain = false;
       if(i == image)
@@ -624,10 +624,10 @@ class _OfferFormViewState extends State<OfferFormView> {
   Future onImageDelete(apiImage.Image image) async
   {
     widget.imagesToDelete.add(image);
-    widget.offerImages.remove(image);
-    if(image.isMain && widget.offerImages.isNotEmpty)
+    widget.roomImages.remove(image);
+    if(image.isMain && widget.roomImages.isNotEmpty)
       {
-        widget.offerImages.last.isMain = true;
+        widget.roomImages.last.isMain = true;
       }
     setState(() {
     });

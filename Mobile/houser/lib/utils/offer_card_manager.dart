@@ -4,14 +4,14 @@ import 'package:houser/enums/FilterType.dart';
 import 'package:houser/models/Filter.dart';
 import 'package:houser/utils/RoomOfferManager.dart';
 import 'package:houser/utils/current_login.dart';
-import 'package:houser/models/Offer.dart';
+import 'package:houser/models/Room.dart';
 
 class OfferCardManager extends ChangeNotifier {
   final CurrentLogin _currentLogin = CurrentLogin();
 
-  late RoomOfferManager _roomOfferManager;
+  late RoomOfferManager _roomRoomManager;
 
-  List<Offer> offers = [];
+  List<Room> rooms = [];
   Offset position = Offset.zero;
   Size screenSize = Size.zero;
   bool isDragging = false;
@@ -19,9 +19,9 @@ class OfferCardManager extends ChangeNotifier {
   double maxRotationAngle = 25;
 
   OfferCardManager(){
-    _roomOfferManager = RoomOfferManager(this);
-    resetOffers();
-    loadOffersSync(3, 0, _currentLogin.user!.filter!);
+    _roomRoomManager = RoomOfferManager(this);
+    resetRooms();
+    loadRoomsSync(3, 0, _currentLogin.user!.filter!);
   }
 
   void startPosition(DragStartDetails details)
@@ -84,7 +84,7 @@ class OfferCardManager extends ChangeNotifier {
     angle = 20;
     position += Offset(2 * screenSize.width, 0);
     nextCard().then((value) => notifyListeners());
-    addSingleOffer();
+    addSingleRoom();
 
     notifyListeners();
   }
@@ -94,48 +94,48 @@ class OfferCardManager extends ChangeNotifier {
     angle = -20;
     position -= Offset(2 * screenSize.width, 0);
     nextCard().then((value) => notifyListeners());
-    addSingleOffer();
+    addSingleRoom();
 
     notifyListeners();
   }
 
   Future nextCard() async {
-    if(CurrentLogin().recommendedOffers.isEmpty) return;
+    if(CurrentLogin().recommendedRooms.isEmpty) return;
 
     await Future.delayed(const Duration(milliseconds: 200));
-    offers.removeAt(0);
+    rooms.removeAt(0);
     resetPosition();
   }
 
-  void addSingleOffer(){
-    loadSingleOffer();
+  void addSingleRoom(){
+    loadSingleRoom();
   }
 
-  void resetOffers()
+  void resetRooms()
   {
-    _currentLogin.recommendedOffers = [];
-    offers = _currentLogin.recommendedOffers;
+    _currentLogin.recommendedRooms = [];
+    rooms = _currentLogin.recommendedRooms;
     notifyListeners();
   }
 
-  Future loadSingleOffer() async{
+  Future loadSingleRoom() async{
     if(_currentLogin.user!.filter!.filterType == FilterType.room) {
-      _roomOfferManager.loadSingleOffer(offers.length);
+      _roomRoomManager.loadSingleOffer(rooms.length);
     }
     return;
   }
 
-  Future loadOffersAsync(int count, int offset, Filter filter) async{
+  Future loadRoomsAsync(int count, int offset, Filter filter) async{
     if(_currentLogin.user!.filter!.filterType == FilterType.room) {
-      await _roomOfferManager.loadOffersAsync(count, offset, filter);
+      await _roomRoomManager.loadOffersAsync(count, offset, filter);
       notifyListeners();
     }
     return;
   }
 
-  void loadOffersSync(int count, int offset, Filter filter){
+  void loadRoomsSync(int count, int offset, Filter filter){
     if(_currentLogin.user!.filter!.filterType == FilterType.room) {
-      _roomOfferManager.loadOffersAsync(count, offset, filter).then((value) {
+      _roomRoomManager.loadOffersAsync(count, offset, filter).then((value) {
         notifyListeners();
       });
     }
@@ -144,8 +144,8 @@ class OfferCardManager extends ChangeNotifier {
 
   void deleteRange(int start)
   {
-    _currentLogin.recommendedOffers.removeRange(start, _currentLogin.recommendedOffers.length-1);
-    offers = _currentLogin.recommendedOffers;
+    _currentLogin.recommendedRooms.removeRange(start, _currentLogin.recommendedRooms.length-1);
+    rooms = _currentLogin.recommendedRooms;
     notifyListeners();
   }
 }
