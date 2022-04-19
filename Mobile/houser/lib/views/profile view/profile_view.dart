@@ -259,7 +259,7 @@ class _ProfileViewState extends State<ProfileView> {
   {
     await widget._currentLogin.clear();
     final provider = Provider.of<OfferCardManager>(context, listen: false);
-    provider.resetRooms();
+    provider.resetOffers();
 
     Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (context) => const WelcomeView()), (Route<dynamic> route) => false);
   }

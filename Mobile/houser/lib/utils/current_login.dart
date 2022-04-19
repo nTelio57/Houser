@@ -11,7 +11,6 @@ class CurrentLogin{
 
   String jwtToken = '';
   User? user;
-  List<Room> recommendedRooms = [];
 
   static CurrentLogin _singleton = CurrentLogin._internal();
   CurrentLogin._internal();
