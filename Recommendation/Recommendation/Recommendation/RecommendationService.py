@@ -2,7 +2,7 @@ from CalculationUtils import *
 from Models.UserPrediction import *
 from Models.RoomPrediction import *
 from Models.User import *
-from Models.Offer import *
+from Models.Room import *
 import datetime
 from datetime import timedelta
 from DatabaseContext import db
@@ -13,33 +13,33 @@ _priceWeight = 0.35;
 _eloWeight = 4;
 
 def GetRoomQuery(filter):
-    query = db.session.query(Offer, User.Elo).join(User).filter(Offer.IsVisible).filter(Offer.UserId != filter.UserId)
+    query = db.session.query(Room, User.Elo).join(User).filter(Room.IsVisible).filter(Room.UserId != filter.UserId)
 
     if(filter.AvailableFrom != None):
-        query = query.filter(Offer.AvailableFrom <= filter.AvailableFrom)
+        query = query.filter(Room.AvailableFrom <= filter.AvailableFrom)
     if(filter.AvailableTo != None):
-        query = query.filter(Offer.AvailableTo >= filter.AvailableTo)
+        query = query.filter(Room.AvailableTo >= filter.AvailableTo)
     if(filter.City != None):
-        query = query.filter(Offer.City == filter.City)
+        query = query.filter(Room.City == filter.City)
 
     return query
 
 def GetRoomRecommendation(filter):
 
-    offerList = GetRoomQuery(filter).all()
+    roomList = GetRoomQuery(filter).all()
     
     predictions = []
-    for offer, elo in offerList:
-        priceSimilarity = (EuclideanDistance(offer.MonthlyPrice, filter.MonthlyPrice))
+    for room, elo in roomList:
+        priceSimilarity = (EuclideanDistance(room.MonthlyPrice, filter.MonthlyPrice))
         binarySimilarity = (CosineSimilarityBool((
-            offer.RuleSmoking, 
-            offer.RuleAnimals,
-            offer.AccommodationTv,
-            offer.AccommodationWifi,
-            offer.AccommodationAc,
-            offer.AccommodationParking,
-            offer.AccommodationBalcony,
-            offer.AccommodationDisability,
+            room.RuleSmoking, 
+            room.RuleAnimals,
+            room.AccommodationTv,
+            room.AccommodationWifi,
+            room.AccommodationAc,
+            room.AccommodationParking,
+            room.AccommodationBalcony,
+            room.AccommodationDisability,
             ), (
             filter.RuleSmoking, 
             filter.RuleAnimals,
@@ -50,11 +50,11 @@ def GetRoomRecommendation(filter):
             filter.AccommodationBalcony,
             filter.AccommodationDisability
             )))
-        floatSimilarity = (CosineSimilarity((offer.Area, offer.FreeRoomCount), (filter.Area, filter.FreeRoomCount)))
+        floatSimilarity = (CosineSimilarity((room.Area, room.FreeRoomCount), (filter.Area, filter.FreeRoomCount)))
         eloSimilarity = (EuclideanDistance(elo, filter.Elo))
 
         prediction = priceSimilarity * _priceWeight + binarySimilarity * _binaryWeight + floatSimilarity * _floatWeight + eloSimilarity * _eloWeight
-        predictions.append(RoomPrediction(offer.Id, prediction))
+        predictions.append(RoomPrediction(room.Id, prediction))
         predictions.sort(key=lambda x: x.prediction, reverse=True)
 
     return predictions
