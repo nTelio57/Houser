@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:houser/extensions/dateTime_extensions.dart';
 import 'package:houser/models/Filter.dart';
 import 'package:houser/models/RoomFilter.dart';
 import 'package:houser/utils/current_login.dart';
@@ -32,6 +33,29 @@ class FilterRoomView extends StatefulWidget {
 
   @override
   _FilterUserViewState createState() => _FilterUserViewState();
+
+  void setFormByFilter(RoomFilter filter)
+  {
+    _dateFrom = filter.availableFrom;
+    _dateTo = filter.availableTo;
+    _dateFromText.text = _dateFrom.dateToString();
+    _dateToText.text = _dateTo.dateToString();
+    _cityText.text = filter.city == null ? '' : filter.city!;
+    _priceText.text = filter.monthlyPrice == null ? '' : filter.monthlyPrice!.toString();
+    _areaText.text = filter.area == null ? '' : filter.area!.toString();
+    _freeRoomText.text = filter.freeRoomCount == null ? '' : filter.freeRoomCount!.toString();
+    _bedCountText.text = filter.bedCount == null ? '' : filter.bedCount!.toString();
+
+    smokingRuleButton.isEnabled = filter.ruleSmoking == null ? false : filter.ruleSmoking!;
+    animalRuleButton.isEnabled = filter.ruleAnimals == null ? false : filter.ruleAnimals!;
+
+    accommodationTv.isEnabled = filter.accommodationTv == null ? false : filter.accommodationTv!;
+    accommodationAc.isEnabled = filter.accommodationAc == null ? false : filter.accommodationAc!;
+    accommodationWifi.isEnabled = filter.accommodationWifi == null ? false : filter.accommodationWifi!;
+    accommodationParking.isEnabled = filter.accommodationParking == null ? false : filter.accommodationParking!;
+    accommodationBalcony.isEnabled = filter.accommodationBalcony == null ? false : filter.accommodationBalcony!;
+    accommodationDisability.isEnabled = filter.accommodationDisability == null ? false : filter.accommodationDisability!;
+  }
 
   Filter getFilterByForm()
   {
