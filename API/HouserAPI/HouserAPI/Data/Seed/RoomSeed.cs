@@ -5,11 +5,11 @@ using HouserAPI.Models;
 
 namespace HouserAPI.Data.Seed
 {
-    public static class OfferSeed
+    public static class RoomSeed
     {
         public static void Seed(DatabaseContext context)
         {
-            var offer1 = new Offer
+            var room1 = new Room
             {
                 UserId = UserSeed.IdAdmin,
                 IsVisible = true,
@@ -33,7 +33,7 @@ namespace HouserAPI.Data.Seed
                 AccommodationAc = false,
             };
 
-            var offer2 = new Offer
+            var room2 = new Room
             {
                 UserId = UserSeed.IdAdmin,
                 IsVisible = true,
@@ -57,7 +57,7 @@ namespace HouserAPI.Data.Seed
                 AccommodationAc = true
             };
 
-            var offer3 = new Offer
+            var room3 = new Room
             {
                 UserId = UserSeed.IdBasic,
                 IsVisible = true,
@@ -81,10 +81,10 @@ namespace HouserAPI.Data.Seed
                 AccommodationAc = true
             };
 
-            foreach (var offer in new[] {offer1, offer2, offer3})
+            foreach (var room in new[] {room1, room2, room3})
             {
-                var result = context.Offers.FirstOrDefault(x => x.Id == offer.Id);
-                if (result is null) context.Offers.AddAsync(offer);
+                var result = context.Rooms.FirstOrDefault(x => x.Id == room.Id);
+                if (result is null) context.Rooms.AddAsync(room);
             }
         }
     }

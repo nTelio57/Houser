@@ -1,12 +1,12 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 
-part of 'Offer.dart';
+part of 'Room.dart';
 
 // **************************************************************************
 // JsonSerializableGenerator
 // **************************************************************************
 
-Offer _$OfferFromJson(Map<String, dynamic> json) => Offer(
+Room _$RoomFromJson(Map<String, dynamic> json) => Room(
       title: json['title'] as String,
     )
       ..isActive = json['isActive'] as bool? ?? true
@@ -38,7 +38,7 @@ Offer _$OfferFromJson(Map<String, dynamic> json) => Offer(
       ..accommodationDisability =
           json['accommodationDisability'] as bool? ?? false;
 
-Map<String, dynamic> _$OfferToJson(Offer instance) => <String, dynamic>{
+Map<String, dynamic> _$RoomToJson(Room instance) => <String, dynamic>{
       'isActive': instance.isActive,
       'isVisible': instance.isVisible,
       'uploadDate': instance.uploadDate.toIso8601String(),

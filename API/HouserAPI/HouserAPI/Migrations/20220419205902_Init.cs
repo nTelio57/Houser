@@ -169,7 +169,7 @@ namespace HouserAPI.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Filter",
+                name: "Filters",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
@@ -177,7 +177,6 @@ namespace HouserAPI.Migrations
                     UserId = table.Column<string>(type: "varchar(255)", nullable: true),
                     Elo = table.Column<int>(type: "int", nullable: false),
                     FilterType = table.Column<int>(type: "int", nullable: false),
-                    Discriminator = table.Column<string>(type: "text", nullable: false),
                     Area = table.Column<float>(type: "float", nullable: true),
                     MonthlyPrice = table.Column<float>(type: "float", nullable: true),
                     City = table.Column<string>(type: "text", nullable: true),
@@ -206,9 +205,9 @@ namespace HouserAPI.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Filter", x => x.Id);
+                    table.PrimaryKey("PK_Filters", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_Filter_AspNetUsers_UserId",
+                        name: "FK_Filters_AspNetUsers_UserId",
                         column: x => x.UserId,
                         principalTable: "AspNetUsers",
                         principalColumn: "Id",
@@ -216,7 +215,7 @@ namespace HouserAPI.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Offers",
+                name: "Rooms",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
@@ -247,9 +246,9 @@ namespace HouserAPI.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Offers", x => x.Id);
+                    table.PrimaryKey("PK_Rooms", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_Offers_AspNetUsers_UserId",
+                        name: "FK_Rooms_AspNetUsers_UserId",
                         column: x => x.UserId,
                         principalTable: "AspNetUsers",
                         principalColumn: "Id",
@@ -265,7 +264,7 @@ namespace HouserAPI.Migrations
                     Path = table.Column<string>(type: "text", nullable: true),
                     IsMain = table.Column<bool>(type: "tinyint(1)", nullable: false),
                     UserId = table.Column<string>(type: "varchar(255)", nullable: true),
-                    OfferId = table.Column<int>(type: "int", nullable: true)
+                    RoomId = table.Column<int>(type: "int", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -277,9 +276,9 @@ namespace HouserAPI.Migrations
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
-                        name: "FK_Images_Offers_OfferId",
-                        column: x => x.OfferId,
-                        principalTable: "Offers",
+                        name: "FK_Images_Rooms_RoomId",
+                        column: x => x.RoomId,
+                        principalTable: "Rooms",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
                 });
@@ -322,15 +321,15 @@ namespace HouserAPI.Migrations
                 unique: true);
 
             migrationBuilder.CreateIndex(
-                name: "IX_Filter_UserId",
-                table: "Filter",
+                name: "IX_Filters_UserId",
+                table: "Filters",
                 column: "UserId",
                 unique: true);
 
             migrationBuilder.CreateIndex(
-                name: "IX_Images_OfferId",
+                name: "IX_Images_RoomId",
                 table: "Images",
-                column: "OfferId");
+                column: "RoomId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Images_UserId",
@@ -338,8 +337,8 @@ namespace HouserAPI.Migrations
                 column: "UserId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Offers_UserId",
-                table: "Offers",
+                name: "IX_Rooms_UserId",
+                table: "Rooms",
                 column: "UserId");
         }
 
@@ -361,7 +360,7 @@ namespace HouserAPI.Migrations
                 name: "AspNetUserTokens");
 
             migrationBuilder.DropTable(
-                name: "Filter");
+                name: "Filters");
 
             migrationBuilder.DropTable(
                 name: "Images");
@@ -370,7 +369,7 @@ namespace HouserAPI.Migrations
                 name: "AspNetRoles");
 
             migrationBuilder.DropTable(
-                name: "Offers");
+                name: "Rooms");
 
             migrationBuilder.DropTable(
                 name: "AspNetUsers");

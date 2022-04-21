@@ -6,20 +6,20 @@ using Microsoft.EntityFrameworkCore;
 
 namespace HouserAPI.Data.Repositories
 {
-    public class OfferRepository : Repository<Offer>
+    public class RoomRepository : Repository<Room>
     {
-        protected override DbSet<Offer> Entities { get; }
-        public OfferRepository(DatabaseContext context) : base(context)
+        protected override DbSet<Room> Entities { get; }
+        public RoomRepository(DatabaseContext context) : base(context)
         {
-            Entities = context.Offers;
+            Entities = context.Rooms;
         }
 
-        protected override IQueryable<Offer> IncludeDependencies(IQueryable<Offer> queryable)
+        protected override IQueryable<Room> IncludeDependencies(IQueryable<Room> queryable)
         {
             return queryable.Include(x => x.Images);
         }
 
-        public async Task<IEnumerable<Offer>> GetAllByUser(string userId)
+        public async Task<IEnumerable<Room>> GetAllByUser(string userId)
         {
             return await IncludeDependencies(Entities).Where(x => x.UserId == userId).ToListAsync();
         }

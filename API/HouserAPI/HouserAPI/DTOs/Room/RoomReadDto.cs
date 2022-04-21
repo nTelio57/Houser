@@ -2,9 +2,9 @@
 using System.Collections.Generic;
 using HouserAPI.Enums;
 
-namespace HouserAPI.DTOs.Offer
+namespace HouserAPI.DTOs.Room
 {
-    public class OfferReadDto
+    public class RoomReadDto
     {
         public bool IsVisible { get; set; }
         public DateTime UploadDate { get; set; }

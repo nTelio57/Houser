@@ -4,7 +4,7 @@ import datetime
 from Models.User import *
 
 @dataclass
-class Offer(db.Model):
+class Room(db.Model):
     Id: int
     Title: str
     IsVisible: bool
@@ -29,7 +29,7 @@ class Offer(db.Model):
     AccommodationDisability: bool
     UserId: str
 
-    __tablename__ = 'Offers'
+    __tablename__ = 'Rooms'
     Id = db.Column(db.Integer, primary_key=True)
     IsVisible = db.Column(db.Boolean)
     UploadDate = db.Column(db.DateTime)

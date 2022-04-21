@@ -1,11 +1,13 @@
 import 'package:flutter/material.dart';
+import 'package:houser/enums/FilterType.dart';
 import 'package:houser/models/Filter.dart';
 import 'package:houser/services/api_service.dart';
 import 'package:houser/utils/current_login.dart';
 import 'package:houser/views/filter%20view/filter_base.dart';
 import 'package:houser/views/profile%20view/profile_view.dart';
-import 'package:houser/widgets/WG_OfferCard.dart';
+import 'package:houser/widgets/WG_RoomCard.dart';
 import 'package:houser/utils/offer_card_manager.dart';
+import 'package:houser/widgets/WG_UserCard.dart';
 import 'package:provider/provider.dart';
 
 class OfferView extends StatefulWidget {
@@ -38,20 +40,36 @@ class _OfferViewState extends State<OfferView> {
   {
     return Stack(
       children: [
-        offerCardStack(),
+        roomCardStack(),
         topPanel(),
       ],
     );
   }
 
-  Widget offerCardStack()
+  Widget roomCardStack()
   {
     final provider = Provider.of<OfferCardManager>(context);
-    final offers = provider.offers;
 
-    return offers.isEmpty ? noOffersResult() :
+    switch(widget._currentLogin.user!.filter!.filterType)
+    {
+      case FilterType.room:
+        final rooms = provider.rooms;
+        return rooms.isEmpty ? noOffersResult() :
+        Stack(
+          children: rooms.reversed.map((room) => WGRoomCard(room: room, isFront: room == rooms.first)).toList(),
+        );
+      case FilterType.user:
+        final users = provider.users;
+        return users.isEmpty ? noOffersResult() :
+        Stack(
+          children: users.reversed.map((user) => WGUserCard(user: user, isFront: user == users.first)).toList(),
+        );
+    }
+
+    final rooms = provider.rooms;
+    return rooms.isEmpty ? noOffersResult() :
     Stack(
-      children: offers.reversed.map((offer) => WGOfferCard(offer: offer, isFront: offer == offers.first)).toList(),
+      children: rooms.reversed.map((room) => WGRoomCard(room: room, isFront: room == rooms.first)).toList(),
     );
   }
 
@@ -148,7 +166,8 @@ class _OfferViewState extends State<OfferView> {
   Widget filterFab()
   {
     return FloatingActionButton(
-      child: const Icon(Icons.filter_list),
+      child: const Icon(Icons.search),
+      backgroundColor: Colors.redAccent,
       onPressed: (){
         Navigator.of(context).push(
             PageRouteBuilder(
@@ -167,8 +186,8 @@ class _OfferViewState extends State<OfferView> {
 
     currentUser.filter = newFilter;
     provider.resetOffers();
-    await provider.loadOffersAsync(3, 0, newFilter);
-    provider.loadOffersSync(7, 3, newFilter);
+    await provider.loadOffersAsync(3, 0);
+    provider.loadOffersSync(7, 3);
 
     Navigator.pop(context);
     return;

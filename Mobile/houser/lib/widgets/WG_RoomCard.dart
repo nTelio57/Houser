@@ -2,7 +2,7 @@ import 'dart:math';
 
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
-import 'package:houser/models/Offer.dart';
+import 'package:houser/models/Room.dart';
 import 'package:houser/services/api_service.dart';
 import 'package:houser/utils/current_login.dart';
 import 'package:houser/utils/offer_card_manager.dart';
@@ -10,21 +10,21 @@ import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import 'package:sliding_up_panel/sliding_up_panel.dart';
 
-class WGOfferCard extends StatefulWidget {
-  final Offer offer;
+class WGRoomCard extends StatefulWidget {
+  final Room room;
   final bool isFront;
 
-  const WGOfferCard({
+  const WGRoomCard({
     Key? key,
-    required this.offer,
+    required this.room,
     required this.isFront
   }) : super(key: key);
 
   @override
-  _WGOfferCardState createState() => _WGOfferCardState();
+  _WGRoomCardState createState() => _WGRoomCardState();
 }
 
-class _WGOfferCardState extends State<WGOfferCard> {
+class _WGRoomCardState extends State<WGRoomCard> {
 
   @override
   void initState() {
@@ -91,13 +91,13 @@ class _WGOfferCardState extends State<WGOfferCard> {
 
   Widget buildCard()
   {
-    return slidingUpPanel(widget.offer);
+    return slidingUpPanel(widget.room);
   }
 
-  Widget slidingUpPanel(Offer offer)
+  Widget slidingUpPanel(Room room)
   {
     var deviceHeight = MediaQuery.of(context).size.height;
-    var imageId = widget.offer.images.firstWhere((i) => i.isMain).id;
+    var imageId = widget.room.images.firstWhere((i) => i.isMain).id;
 
     return SlidingUpPanel(
       panel: slidePanel(),//Tas kas slidina
@@ -133,9 +133,9 @@ class _WGOfferCardState extends State<WGOfferCard> {
     );
   }
 
-  Widget offerDetailsList()
+  Widget roomDetailsList()
   {
-    Offer offer = widget.offer;
+    Room room = widget.room;
 
     Column column =
     Column(
@@ -145,20 +145,20 @@ class _WGOfferCardState extends State<WGOfferCard> {
         durationDate(),
         price(),
         const SizedBox(height: 47),
-        basicTextField(Icons.location_city, offer.city),
-        basicTextField(Icons.location_on, offer.address),
-        basicTextField(Icons.square_foot, ('${offer.area}m\u00B2')),
-        basicTextField(Icons.meeting_room, '${offer.freeRoomCount} laisvas kambarys iš ${offer.totalRoomCount}'),
+        basicTextField(Icons.location_city, room.city),
+        basicTextField(Icons.location_on, room.address),
+        basicTextField(Icons.square_foot, ('${room.area}m\u00B2')),
+        basicTextField(Icons.meeting_room, '${room.freeRoomCount} laisvas kambarys iš ${room.totalRoomCount}'),
         const SizedBox(height: 20),
       ],
     );
 
-    offer.accommodationTv ? column.children.add(basicTextField(Icons.tv, 'TV')) : null;
-    offer.accommodationWifi ? column.children.add(basicTextField(Icons.wifi, 'Wifi')): null;
-    offer.accommodationBalcony ? column.children.add(basicTextField(Icons.balcony, 'Balkonas')): null;
-    offer.accommodationAc ? column.children.add(basicTextField(Icons.air, 'Oro kondicionierius')) : null;
-    offer.accommodationDisability ? column.children.add(basicTextField(Icons.accessible, 'Pritaikyta neįgaliesiems')): null;
-    offer.accommodationParking ? column.children.add(basicTextField(Icons.local_parking, 'Parkingas')): null;
+    room.accommodationTv ? column.children.add(basicTextField(Icons.tv, 'TV')) : null;
+    room.accommodationWifi ? column.children.add(basicTextField(Icons.wifi, 'Wifi')): null;
+    room.accommodationBalcony ? column.children.add(basicTextField(Icons.balcony, 'Balkonas')): null;
+    room.accommodationAc ? column.children.add(basicTextField(Icons.air, 'Oro kondicionierius')) : null;
+    room.accommodationDisability ? column.children.add(basicTextField(Icons.accessible, 'Pritaikyta neįgaliesiems')): null;
+    room.accommodationParking ? column.children.add(basicTextField(Icons.local_parking, 'Parkingas')): null;
 
     return column;
   }
@@ -179,7 +179,7 @@ class _WGOfferCardState extends State<WGOfferCard> {
         ),
         margin: const EdgeInsets.fromLTRB(12.0, 0, 12.0, 12),
         padding: const EdgeInsets.fromLTRB(20, 20, 20, 20),
-        child: offerDetailsList(),
+        child: roomDetailsList(),
       ),
     );
   }
@@ -219,7 +219,7 @@ class _WGOfferCardState extends State<WGOfferCard> {
     );
   }
 
-  Widget offerDetails()
+  Widget roomDetails()
   {
     return Padding(
       padding: const EdgeInsets.only(left: 8, right: 8, top: 8, bottom: 8),
@@ -234,11 +234,11 @@ class _WGOfferCardState extends State<WGOfferCard> {
 
   Widget title()
   {
-    Offer offer = widget.offer;
+    Room room = widget.room;
     return SizedBox(
       height: 95,
       child: Text(
-        offer.title.toUpperCase(),
+        room.title.toUpperCase(),
         textAlign: TextAlign.left,
         maxLines: 3,
         overflow: TextOverflow.ellipsis,
@@ -253,9 +253,9 @@ class _WGOfferCardState extends State<WGOfferCard> {
 
   Widget durationDate()
   {
-    Offer offer = widget.offer;
+    Room room = widget.room;
     return Text(
-      '${dateToString(offer.availableFrom)} - ${dateToString(offer.availableTo)}',
+      '${dateToString(room.availableFrom)} - ${dateToString(room.availableTo)}',
       style: const TextStyle(
           color: Colors.white,
           fontSize: 16,
@@ -266,9 +266,9 @@ class _WGOfferCardState extends State<WGOfferCard> {
 
   Widget price()
   {
-    Offer offer = widget.offer;
+    Room room = widget.room;
     return Text(
-      '${offer.monthlyPrice}\$',
+      '${room.monthlyPrice}\$',
       style: const TextStyle(
           color: Colors.white,
           fontSize: 23,

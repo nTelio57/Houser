@@ -1,8 +1,8 @@
 ﻿using HouserAPI.Enums;
 
-namespace HouserAPI.Models
+namespace HouserAPI.DTOs.Filter
 {
-    public class UserFilter : Filter
+    public class UserFilterCreateDto : FilterCreateDto
     {
         public int? AgeFrom { get; set; }
         public int? AgeTo { get; set; }

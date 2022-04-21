@@ -1,17 +1,20 @@
 import 'package:flutter/material.dart';
 import 'package:houser/enums/CardResponseType.dart';
 import 'package:houser/enums/FilterType.dart';
-import 'package:houser/models/Filter.dart';
+import 'package:houser/models/User.dart';
 import 'package:houser/utils/RoomOfferManager.dart';
+import 'package:houser/utils/UserOfferManager.dart';
 import 'package:houser/utils/current_login.dart';
-import 'package:houser/models/Offer.dart';
+import 'package:houser/models/Room.dart';
 
 class OfferCardManager extends ChangeNotifier {
   final CurrentLogin _currentLogin = CurrentLogin();
 
   late RoomOfferManager _roomOfferManager;
+  late UserOfferManager _userOfferManager;
 
-  List<Offer> offers = [];
+  List<Room> rooms = [];
+  List<User> users = [];
   Offset position = Offset.zero;
   Size screenSize = Size.zero;
   bool isDragging = false;
@@ -20,8 +23,9 @@ class OfferCardManager extends ChangeNotifier {
 
   OfferCardManager(){
     _roomOfferManager = RoomOfferManager(this);
+    _userOfferManager = UserOfferManager(this);
     resetOffers();
-    loadOffersSync(3, 0, _currentLogin.user!.filter!);
+    loadOffersSync(3, 0);
   }
 
   void startPosition(DragStartDetails details)
@@ -100,10 +104,21 @@ class OfferCardManager extends ChangeNotifier {
   }
 
   Future nextCard() async {
-    if(CurrentLogin().recommendedOffers.isEmpty) return;
+    if(rooms.isEmpty && users.isEmpty) return;
 
     await Future.delayed(const Duration(milliseconds: 200));
-    offers.removeAt(0);
+
+    switch(_currentLogin.user!.filter!.filterType){
+      case FilterType.room:
+        rooms.removeAt(0);
+        break;
+      case FilterType.user:
+        users.removeAt(0);
+        break;
+      case FilterType.none:
+        return;
+    }
+
     resetPosition();
   }
 
@@ -113,39 +128,52 @@ class OfferCardManager extends ChangeNotifier {
 
   void resetOffers()
   {
-    _currentLogin.recommendedOffers = [];
-    offers = _currentLogin.recommendedOffers;
+    rooms = [];
+    users = [];
     notifyListeners();
   }
 
   Future loadSingleOffer() async{
-    if(_currentLogin.user!.filter!.filterType == FilterType.room) {
-      _roomOfferManager.loadSingleOffer(offers.length);
+    switch(_currentLogin.user!.filter!.filterType){
+      case FilterType.room:
+        _roomOfferManager.loadOffersAsync(1, rooms.length);
+        break;
+      case FilterType.user:
+        _userOfferManager.loadOffersAsync(1, rooms.length);
+        break;
+      case FilterType.none:
+        return;
     }
-    return;
   }
 
-  Future loadOffersAsync(int count, int offset, Filter filter) async{
-    if(_currentLogin.user!.filter!.filterType == FilterType.room) {
-      await _roomOfferManager.loadOffersAsync(count, offset, filter);
-      notifyListeners();
+  Future loadOffersAsync(int count, int offset) async{
+    switch(_currentLogin.user!.filter!.filterType){
+      case FilterType.room:
+        await _roomOfferManager.loadOffersAsync(count, offset);
+        break;
+      case FilterType.user:
+        await _userOfferManager.loadOffersAsync(count, offset);
+        break;
+      case FilterType.none:
+        return;
     }
-    return;
-  }
-
-  void loadOffersSync(int count, int offset, Filter filter){
-    if(_currentLogin.user!.filter!.filterType == FilterType.room) {
-      _roomOfferManager.loadOffersAsync(count, offset, filter).then((value) {
-        notifyListeners();
-      });
-    }
-    return;
-  }
-
-  void deleteRange(int start)
-  {
-    _currentLogin.recommendedOffers.removeRange(start, _currentLogin.recommendedOffers.length-1);
-    offers = _currentLogin.recommendedOffers;
     notifyListeners();
+  }
+
+  void loadOffersSync(int count, int offset){
+    switch(_currentLogin.user!.filter!.filterType){
+      case FilterType.room:
+        _roomOfferManager.loadOffersAsync(count, offset).then((value) {
+          notifyListeners();
+        });
+        break;
+      case FilterType.user:
+        _userOfferManager.loadOffersAsync(count, offset).then((value) {
+          notifyListeners();
+        });
+        break;
+      case FilterType.none:
+        return;
+    }
   }
 }

@@ -2,10 +2,10 @@ import 'package:houser/enums/BedType.dart';
 import 'package:houser/models/Image.dart' as apiImage;
 import 'package:json_annotation/json_annotation.dart';
 
-part 'Offer.g.dart';
+part 'Room.g.dart';
 
 @JsonSerializable()
-class Offer{
+class Room{
   @JsonKey(defaultValue: true)
   bool isActive = true;
   bool isVisible = true;
@@ -55,12 +55,12 @@ class Offer{
   @JsonKey(defaultValue: false)
   bool accommodationDisability = true;
 
-  Offer({required this.title});
+  Room({required this.title});
 
-  Offer.placeholder(this.isVisible);
+  Room.placeholder(this.isVisible);
 
-  factory Offer.fromJson(Map<String, dynamic> json) => _$OfferFromJson(json);
+  factory Room.fromJson(Map<String, dynamic> json) => _$RoomFromJson(json);
 
-  Map<String, dynamic> toJson() => _$OfferToJson(this);
+  Map<String, dynamic> toJson() => _$RoomToJson(this);
 
 }

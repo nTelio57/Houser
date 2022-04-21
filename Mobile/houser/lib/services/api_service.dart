@@ -5,7 +5,7 @@ import 'package:houser/models/AuthRequest.dart';
 import 'package:houser/models/AuthResult.dart';
 import 'package:houser/models/Filter.dart';
 import 'package:houser/models/Image.dart';
-import 'package:houser/models/Offer.dart';
+import 'package:houser/models/Room.dart';
 import 'package:houser/models/RoomFilter.dart';
 import 'package:houser/models/User.dart';
 import 'package:houser/models/UserFilter.dart';
@@ -31,18 +31,18 @@ class ApiService {
     return User.fromJson(response.body);
   }
 
-  Future<Offer> GetOfferById(int id) async{
-    ApiResponse response = await _apiClient.Get('/api/Offer/$id');
-    return Offer.fromJson(response.body);
+  Future<Room> GetRoomById(int id) async{
+    ApiResponse response = await _apiClient.Get('/api/Room/$id');
+    return Room.fromJson(response.body);
   }
 
-  Future<List<Offer>> GetOffersByUser(String id) async{
-    ApiResponse response = await _apiClient.Get('/api/Offer/user/$id');
+  Future<List<Room>> GetRoomsByUser(String id) async{
+    ApiResponse response = await _apiClient.Get('/api/Room/user/$id');
 
     List<dynamic> jsonData = response.body;
     final parsed = jsonData.cast<Map<String, dynamic>>();
 
-    return parsed.map<Offer>((e) => Offer.fromJson(e)).toList();
+    return parsed.map<Room>((e) => Room.fromJson(e)).toList();
   }
 
   Future<AuthResult> Login(AuthRequest authRequest) async{
@@ -61,9 +61,9 @@ class ApiService {
     return response.statusCode.isSuccessStatusCode;
   }
 
-  Future<ApiResponse> PostOffer(Offer offer) async
+  Future<ApiResponse> PostRoom(Room room) async
   {
-    ApiResponse response = await _apiClient.Post('/api/Offer', offer.toJson());
+    ApiResponse response = await _apiClient.Post('/api/Room', room.toJson());
     return response;
   }
 
@@ -82,9 +82,9 @@ class ApiService {
     return response;
   }
 
-  Future<ApiResponse> PostOfferImage(String path, int offerId) async
+  Future<ApiResponse> PostRoomImage(String path, int roomId) async
   {
-    ApiResponse response = await _apiClient.PostImage('/api/Image/offer/$offerId', path);
+    ApiResponse response = await _apiClient.PostImage('/api/Image/room/$roomId', path);
     return response;
   }
 
@@ -100,24 +100,32 @@ class ApiService {
     return response.statusCode.isSuccessStatusCode;
   }
 
-  Future<bool> UpdateOfer(int id, Offer offer) async
+  Future<bool> UpdateOfer(int id, Room room) async
   {
-    ApiResponse response = await _apiClient.Put('/api/Offer/$id', offer);
+    ApiResponse response = await _apiClient.Put('/api/Room/$id', room);
     return response.statusCode.isSuccessStatusCode;
   }
 
-  Future<bool> DeleteOffer(int id) async
+  Future<bool> DeleteRoom(int id) async
   {
-    ApiResponse response = await _apiClient.Delete('/api/Offer/$id');
+    ApiResponse response = await _apiClient.Delete('/api/Room/$id');
     return response.statusCode.isSuccessStatusCode;
   }
 
-  Future<List<Offer>> GetRoomRecommendationByFilter(int count, int offset, RoomFilter filter) async
+  Future<List<Room>> GetRoomRecommendationByFilter(int count, int offset, RoomFilter filter) async
   {
     ApiResponse response = await _apiClient.Post('/api/Recommendation/room/$count/$offset', filter);
     List<dynamic> jsonData = response.body;
     final parsed = jsonData.cast<Map<String, dynamic>>();
-    return parsed.map<Offer>((e) => Offer.fromJson(e)).toList();
+    return parsed.map<Room>((e) => Room.fromJson(e)).toList();
+  }
+
+  Future<List<User>> GetUserRecommendationByFilter(int count, int offset, UserFilter filter) async
+  {
+    ApiResponse response = await _apiClient.Post('/api/Recommendation/user/$count/$offset', filter);
+    List<dynamic> jsonData = response.body;
+    final parsed = jsonData.cast<Map<String, dynamic>>();
+    return parsed.map<User>((e) => User.fromJson(e)).toList();
   }
 
   Future<Filter?> GetUsersFilter(String id) async{

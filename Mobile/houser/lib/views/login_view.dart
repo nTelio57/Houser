@@ -342,8 +342,8 @@ class _LoginViewState extends State<LoginView> {
         break;
       case FilterType.none:
     }
-    await provider.loadOffersAsync(3, 0, newFilter);
-    provider.loadOffersSync(7, 3, newFilter);
+    await provider.loadOffersAsync(3, 0);
+    provider.loadOffersSync(7, 3);
 
     Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (context) => OfferView()), (Route<dynamic> route) => false);
   }

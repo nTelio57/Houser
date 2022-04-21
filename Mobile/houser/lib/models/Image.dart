@@ -3,12 +3,12 @@ part 'Image.g.dart';
 
 @JsonSerializable()
 class Image {
-  Image(this.id, this.path, this.userId, this.offerId, this.isMain);
+  Image(this.id, this.path, this.userId, this.roomId, this.isMain);
 
   int id;
   String path;
   String userId;
-  int? offerId;
+  int? roomId;
   bool isMain;
 
   factory Image.fromJson(Map<String, dynamic> json) => _$ImageFromJson(json);

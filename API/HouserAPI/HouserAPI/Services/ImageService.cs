@@ -9,21 +9,21 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
-using HouserAPI.DTOs.Offer;
+using HouserAPI.DTOs.Room;
 
 namespace HouserAPI.Services
 {
     public class ImageService : IImageService
     {
         private readonly ImageRepository _repository;
-        private readonly IOfferService _offerService;
+        private readonly IRoomService _roomService;
         private readonly IMapper _mapper;
         private readonly IHostEnvironment _hostEnvironment;
 
-        public ImageService(IRepository<Image> repository, IOfferService offerService, IMapper mapper, IHostEnvironment hostEnvironment)
+        public ImageService(IRepository<Image> repository, IRoomService roomService, IMapper mapper, IHostEnvironment hostEnvironment)
         {
             _repository = repository as ImageRepository;
-            _offerService = offerService;
+            _roomService = roomService;
             _mapper = mapper;
             _hostEnvironment = hostEnvironment;
         }
@@ -33,12 +33,12 @@ namespace HouserAPI.Services
             return await Create(userId, 0, $"Images/User/{userId}", image);
         }
 
-        public async Task<ImageReadDto> CreateOfferImage(string userId, OfferReadDto offer, IFormFile image)
+        public async Task<ImageReadDto> CreateRoomImage(string userId, RoomReadDto room, IFormFile image)
         {
-            return await Create(userId, offer.Id, $"Images/Offer/{offer.Id}", image);
+            return await Create(userId, room.Id, $"Images/Room/{room.Id}", image);
         }
 
-        private async Task<ImageReadDto> Create(string userId, int offerId, string imageDirectory, IFormFile image)
+        private async Task<ImageReadDto> Create(string userId, int roomId, string imageDirectory, IFormFile image)
         {
             string extension = Path.GetExtension(image.FileName);
             string fileName = DateTime.Now.ToString("yyyyMMddHHmmssff") + extension;
@@ -55,7 +55,7 @@ namespace HouserAPI.Services
             {
                 Path = fullPath,
                 UserId = userId,
-                OfferId = offerId != 0 ? offerId : null
+                RoomId = roomId != 0 ? roomId : null
             };
 
             await _repository.Create(newImage);
@@ -73,7 +73,7 @@ namespace HouserAPI.Services
         public async Task<IEnumerable<ImageReadDto>> GetAllByUser(string id)
         {
             var images = await _repository.GetAllByUser(id);
-            images = images.Where(x => x.OfferId == null);
+            images = images.Where(x => x.RoomId == null);
             return _mapper.Map<IEnumerable<ImageReadDto>>(images);
         }
 
@@ -91,10 +91,10 @@ namespace HouserAPI.Services
 
             if (image.IsMain)
             {
-                if (image.OfferId != null)// in offer
+                if (image.RoomId != null)// in room
                 {
-                    var offer = await _offerService.GetById((int)image.OfferId);
-                    var defaultImageDto = offer.Images.FirstOrDefault();
+                    var room = await _roomService.GetById((int)image.RoomId);
+                    var defaultImageDto = room.Images.FirstOrDefault();
                     if (defaultImageDto != null)
                     {
                         var defaultImage = await _repository.GetById(defaultImageDto.Id);
@@ -105,7 +105,7 @@ namespace HouserAPI.Services
                 else // in user
                 {
                     var userImages = await _repository.GetAllByUser(image.UserId);
-                    userImages = userImages.Where(x => x.OfferId == null);
+                    userImages = userImages.Where(x => x.RoomId == null);
                     var defaultImage = userImages.FirstOrDefault();
                     if (defaultImage != null)
                     {
@@ -135,10 +135,10 @@ namespace HouserAPI.Services
             //is set as main image
             if (imageUpdateDto.IsMain)
             {
-                if (image.OfferId != null)// in offer
+                if (image.RoomId != null)// in room
                 {
-                    var offer = await _offerService.GetById((int)image.OfferId);
-                    var currentlyMainImage = offer.Images.FirstOrDefault(x => x.IsMain);
+                    var room = await _roomService.GetById((int)image.RoomId);
+                    var currentlyMainImage = room.Images.FirstOrDefault(x => x.IsMain);
                     if (currentlyMainImage != null)
                     {
                         currentlyMainImage.IsMain = false;
@@ -148,7 +148,7 @@ namespace HouserAPI.Services
                 else // in user
                 {
                     var userImages = await _repository.GetAllByUser(imageUpdateDto.UserId);
-                    userImages = userImages.Where(x => x.OfferId == null);
+                    userImages = userImages.Where(x => x.RoomId == null);
                     var currentlyMainImage = userImages.FirstOrDefault(x => x.IsMain);
                     if (currentlyMainImage != null)
                     {

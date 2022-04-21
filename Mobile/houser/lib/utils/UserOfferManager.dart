@@ -1,20 +1,20 @@
-import 'package:houser/models/RoomFilter.dart';
+import 'package:houser/models/UserFilter.dart';
 import 'package:houser/services/api_service.dart';
 import 'package:houser/utils/IOfferManager.dart';
 import 'package:houser/utils/current_login.dart';
 import 'package:houser/utils/offer_card_manager.dart';
 
-class RoomOfferManager implements IOfferManager
+class UserOfferManager implements IOfferManager
 {
   final CurrentLogin _currentLogin = CurrentLogin();
   final ApiService _apiService = ApiService();
   OfferCardManager offerCardManager;
 
-  RoomOfferManager(this.offerCardManager);
+  UserOfferManager(this.offerCardManager);
 
   @override
   Future loadOffersAsync(int count, int offset) async{
-    var roomList = await _apiService.GetRoomRecommendationByFilter(count, offset, _currentLogin.user!.filter as RoomFilter);
-    offerCardManager.rooms.addAll(roomList.where((newRoom) => !offerCardManager.rooms.contains(newRoom)));
+    var roomList = await _apiService.GetUserRecommendationByFilter(count, offset, _currentLogin.user!.filter as UserFilter);
+    offerCardManager.users.addAll(roomList.where((newUser) => !offerCardManager.users.contains(newUser)));
   }
 }

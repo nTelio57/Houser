@@ -71,14 +71,9 @@ class MyApp extends StatelessWidget {
           primarySwatch: AppColors.primaryPalette,
           primaryColor: AppColors.primaryColor,
           backgroundColor: AppColors.backgroundColor,
-
           fontFamily: 'OpenSans',
           textTheme: const TextTheme(
-
           ),
-
-
-
         ),
         home: _defaultHome,
       ),

@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using HouserAPI.Auth;
+﻿using HouserAPI.Auth;
 using Microsoft.AspNetCore.Identity;
 
 namespace HouserAPI.Data.Seed

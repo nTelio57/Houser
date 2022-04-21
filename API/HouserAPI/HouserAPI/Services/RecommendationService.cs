@@ -4,7 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using AutoMapper;
 using HouserAPI.Data.Repositories;
-using HouserAPI.DTOs.Offer;
+using HouserAPI.DTOs.Room;
 using HouserAPI.DTOs.User;
 using HouserAPI.Models;
 using Microsoft.AspNetCore.Identity;
@@ -13,36 +13,36 @@ namespace HouserAPI.Services
 {
     public class RecommendationService : IRecommendationService
     {
-        private readonly OfferRepository _offerRepository;
+        private readonly RoomRepository _roomRepository;
         private readonly IMapper _mapper;
         private readonly ApiClient _recommendationApiClient;
         private readonly UserManager<User> _userManager;
 
-        public RecommendationService(IRepository<Offer> repository, IMapper mapper, ApiClient apiClient, UserManager<User> userManager)
+        public RecommendationService(IRepository<Room> repository, IMapper mapper, ApiClient apiClient, UserManager<User> userManager)
         {
-            _offerRepository = repository as OfferRepository;
+            _roomRepository = repository as RoomRepository;
             _mapper = mapper;
             _recommendationApiClient = apiClient;
             _userManager = userManager;
         }
 
-        public async Task<IEnumerable<OfferReadDto>> GetRoomRecommendationByFilter(int count, int offset, RoomFilter roomFilter, string userId)
+        public async Task<IEnumerable<RoomReadDto>> GetRoomRecommendationByFilter(int count, int offset, RoomFilter roomFilter, string userId)
         {
             var user = await _userManager.FindByIdAsync(userId);
             roomFilter.Elo = user.Elo;
 
-            var offerList = new List<Offer>();
-            var recommendationPredictions = await _recommendationApiClient.Post<IEnumerable<OfferRecommendationResponse>>("/room", roomFilter);
-            var offerRecommendationResponses = recommendationPredictions.ToList();
-            if(offset >= offerRecommendationResponses.Count)
-                return _mapper.Map<IEnumerable<OfferReadDto>>(offerList);
+            var roomList = new List<Room>();
+            var recommendationPredictions = await _recommendationApiClient.Post<IEnumerable<RoomRecommendationResponse>>("/room", roomFilter);
+            var roomRecommendationResponses = recommendationPredictions.ToList();
+            if(offset >= roomRecommendationResponses.Count)
+                return _mapper.Map<IEnumerable<RoomReadDto>>(roomList);
 
-            for (int i = 0; i < Math.Min(count, (offerRecommendationResponses.Count - offset)); i++)
+            for (int i = 0; i < Math.Min(count, (roomRecommendationResponses.Count - offset)); i++)
             {
-                offerList.Add(await _offerRepository.GetById(offerRecommendationResponses[i + offset].Id));
+                roomList.Add(await _roomRepository.GetById(roomRecommendationResponses[i + offset].Id));
             }
 
-            return _mapper.Map<IEnumerable<OfferReadDto>>(offerList);
+            return _mapper.Map<IEnumerable<RoomReadDto>>(roomList);
         }
 
         public async Task<IEnumerable<UserReadDto>> GetUserRecommendationByFilter(int count, int offset, UserFilter userFilter, string userId)

@@ -51,5 +51,25 @@ namespace HouserAPI.Controllers
                 return BadRequest($"Failed to create room filter. {e.Message}");
             }
         }
+
+        [HttpPost("user")]
+        [Roles(UserRoles.Basic)]
+        public async Task<IActionResult> CreateUserFilter(UserFilterCreateDto userFilterCreateDto)
+        {
+            if (userFilterCreateDto is null)
+                return BadRequest("Value cannot be null.");
+
+            var userId = User.FindFirst(CustomClaims.UserId)?.Value;
+
+            try
+            {
+                var filterReadDto = await _filterService.Create(userFilterCreateDto, userId);
+                return CreatedAtAction(nameof(CreateUserFilter), filterReadDto);
+            }
+            catch (Exception e)
+            {
+                return BadRequest($"Failed to create user filter. {e.Message}");
+            }
+        }
     }
 }

@@ -10,7 +10,7 @@ Image _$ImageFromJson(Map<String, dynamic> json) => Image(
       json['id'] as int,
       json['path'] as String,
       json['userId'] as String,
-      json['offerId'] as int?,
+      json['roomId'] as int?,
       json['isMain'] as bool,
     );
 
@@ -18,6 +18,6 @@ Map<String, dynamic> _$ImageToJson(Image instance) => <String, dynamic>{
       'id': instance.id,
       'path': instance.path,
       'userId': instance.userId,
-      'offerId': instance.offerId,
+      'roomId': instance.roomId,
       'isMain': instance.isMain,
     };

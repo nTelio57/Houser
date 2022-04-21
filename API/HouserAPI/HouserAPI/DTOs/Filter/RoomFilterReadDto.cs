@@ -3,7 +3,6 @@
 namespace HouserAPI.DTOs.Filter
 {
     public class RoomFilterReadDto : FilterReadDto
-
     {
     public float? Area { get; set; }
     public float? MonthlyPrice { get; set; }

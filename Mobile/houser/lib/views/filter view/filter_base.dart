@@ -2,6 +2,9 @@ import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
 import 'package:houser/enums/FilterType.dart';
 import 'package:houser/models/Filter.dart';
+import 'package:houser/models/RoomFilter.dart';
+import 'package:houser/models/UserFilter.dart';
+import 'package:houser/utils/current_login.dart';
 import 'package:houser/views/filter%20view/filter_room_view.dart';
 import 'package:houser/views/filter%20view/filter_user_view.dart';
 
@@ -26,7 +29,7 @@ class _FilterBaseViewState extends State<FilterBaseView> with SingleTickerProvid
   @override
   void initState() {
     super.initState();
-    _tabController = TabController(length: 2, vsync: this);
+    _tabController = TabController(length: 2, vsync: this, initialIndex: loadFormByFilter());
   }
 
   @override
@@ -177,10 +180,32 @@ class _FilterBaseViewState extends State<FilterBaseView> with SingleTickerProvid
 
   Filter getFilterByForm()
   {
-    if(_tabController.index == 0) {
-      return filterRoomForm.getFilterByForm();
+    switch(_tabController.index){
+      case 0:
+        return filterRoomForm.getFilterByForm();
+      case 1:
+        return filterUserForm.getFilterByForm();
     }
     return Filter(1, '', FilterType.none);
+  }
+
+  int loadFormByFilter()
+  {
+    if(CurrentLogin().user!.filter == null) {
+      return 0;
+    }
+
+    switch(CurrentLogin().user!.filter!.filterType)
+    {
+      case FilterType.room:
+        filterRoomForm.setFormByFilter(CurrentLogin().user!.filter! as RoomFilter);
+        return 0;
+      case FilterType.user:
+        filterUserForm.setFormByFilter(CurrentLogin().user!.filter! as UserFilter);
+        return 1;
+      default:
+        return 0;
+    }
   }
 
   Future onButtonClick() async {

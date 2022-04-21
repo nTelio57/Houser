@@ -1,7 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using HouserAPI.Auth;
 using HouserAPI.Models;
 using Microsoft.AspNetCore.Identity;
@@ -26,7 +24,8 @@ namespace HouserAPI.Data.Seed
                 UserName = "Admin",
                 City = "Kaunas",
                 Salt = "zoOCL2CFBCqEtTK5Ua197SwyVv2rckZoJEe+Ko8bUCU=",
-                Elo = 500
+                Elo = 500,
+                IsVisible = true
             };
 
             var basic = new User
@@ -39,7 +38,8 @@ namespace HouserAPI.Data.Seed
                 UserName = "Basic",
                 City = "Vilnius",
                 Salt = "kFcWCtYosDUdeiK0Gf+WcY0LcxdvcH3UtQQrvwf9fh8=",
-                Elo = 500
+                Elo = 500,
+                IsVisible = true
             };
 
             var basic2 = new User
@@ -52,7 +52,8 @@ namespace HouserAPI.Data.Seed
                 UserName = "basic2",
                 City = "Klaipeda",
                 Salt = "VoW7Vl2PL4g9erbq1ncE6cpQbVmHMR3dDhLGx9EYhbM=",
-                Elo = 500
+                Elo = 500,
+                IsVisible = true
             };
 
             CreateUser(userManager, admin, "test1234", UserRoles.All);

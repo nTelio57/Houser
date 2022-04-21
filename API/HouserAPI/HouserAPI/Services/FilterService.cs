@@ -10,25 +10,27 @@ namespace HouserAPI.Services
 {
     public class FilterService : IFilterService
     {
-        private readonly RoomFilterRepository _roomFilterRepository;
+        private readonly FilterRepository _filterRepository;
         private readonly IMapper _mapper;
 
-        public FilterService(IRepository<RoomFilter> roomFilterRepository, IMapper mapper)
+        public FilterService(IRepository<Filter> filterRepository, IMapper mapper)
         {
-            _roomFilterRepository = roomFilterRepository as RoomFilterRepository;
+            _filterRepository = filterRepository as FilterRepository;
             _mapper = mapper;
         }
 
         public async Task<FilterReadDto> GetByUserId(string userId)
         {
-            var filter = await _roomFilterRepository.GetByUserId(userId);
+            var filter = await _filterRepository.GetByUserId(userId);
             if (filter == null)
                 return null;
 
             switch (filter.FilterType)
             {
                 case FilterType.Room:
-                    return _mapper.Map<RoomFilterReadDto>(filter);
+                    return _mapper.Map<RoomFilterReadDto>(filter as RoomFilter);
+                case FilterType.User:
+                    return _mapper.Map<UserFilterReadDto>(filter as UserFilter);
             }
             return _mapper.Map<FilterReadDto>(filter);
         }
@@ -40,35 +42,38 @@ namespace HouserAPI.Services
             var filter = await GetByUserId(userId);
             if (filter != null)
             {
-                switch (filterCreateDto.FilterType)
-                {
-                    case FilterType.Room:
-                        await DeleteRoomFilter(filter.Id);
-                        break;
-                }
+                await DeleteFilter(filter.Id);
             }
 
-            switch (filterCreateDto.FilterType)
+            Filter filterModel = filterCreateDto.FilterType switch
             {
-                case FilterType.Room:
-                    var filterModel = _mapper.Map<RoomFilter>(filterCreateDto as RoomFilterCreateDto);
-                    filterModel.UserId = userId;
-                    await _roomFilterRepository.Create(filterModel);
-                    await _roomFilterRepository.SaveChanges();
-                    return _mapper.Map<RoomFilterReadDto>(filterModel);
-                default:
-                    throw new ArgumentException((nameof(filterCreateDto)));
-            }
+                FilterType.Room => _mapper.Map<RoomFilter>(filterCreateDto as RoomFilterCreateDto),
+                FilterType.User => _mapper.Map<UserFilter>(filterCreateDto as UserFilterCreateDto),
+                FilterType.None => throw new ArgumentException((nameof(filterCreateDto))),
+                _ => throw new ArgumentException((nameof(filterCreateDto)))
+            };
+
+            filterModel.UserId = userId;
+            await _filterRepository.Create(filterModel);
+            await _filterRepository.SaveChanges();
+
+            return filterCreateDto.FilterType switch
+            {
+                FilterType.Room => _mapper.Map<RoomFilterReadDto>(filterModel),
+                FilterType.User => _mapper.Map<UserFilterReadDto>(filterModel),
+                FilterType.None => throw new ArgumentException((nameof(filterCreateDto))),
+                _ => throw new ArgumentException((nameof(filterCreateDto)))
+            };
         }
 
-        public async Task<bool> DeleteRoomFilter(int id)
+        public async Task<bool> DeleteFilter(int id)
         {
-            var filter = await _roomFilterRepository.GetById(id);
+            var filter = await _filterRepository.GetById(id);
             if (filter is null)
                 return false;
 
-            await _roomFilterRepository.Delete(filter);
-            return await _roomFilterRepository.SaveChanges();
+            await _filterRepository.Delete(filter);
+            return await _filterRepository.SaveChanges();
         }
     }
 }

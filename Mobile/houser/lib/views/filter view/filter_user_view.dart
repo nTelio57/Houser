@@ -1,8 +1,14 @@
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
+import 'package:houser/enums/FilterType.dart';
+import 'package:houser/enums/SleepType.dart';
+import 'package:houser/models/Filter.dart';
+import 'package:houser/models/UserFilter.dart';
 import 'package:houser/models/widget_data/multi_button_selection.dart';
+import 'package:houser/utils/current_login.dart';
 import 'package:houser/widgets/WG_multi_button.dart';
 import 'package:houser/widgets/WG_slider.dart';
+import 'package:collection/collection.dart';
 
 // ignore: must_be_immutable
 class FilterUserView extends StatefulWidget {
@@ -36,6 +42,46 @@ class FilterUserView extends StatefulWidget {
 
   @override
   _FilterUserViewState createState() => _FilterUserViewState();
+
+  void setFormByFilter(UserFilter filter)
+  {
+    _ageFromText.text = filter.ageFrom == null ? '' : filter.ageFrom.toString();
+    _ageToText.text = filter.ageTo == null ? '' : filter.ageTo.toString();
+    sexSelectionButtons!.isButtonSelected = _sexSelections.mapIndexed((index, element) => index == filter.sex).toList();
+    animalCountSlider.selectedValue = filter.animalCount == null ? 0 : filter.animalCount!.toDouble();
+    guestCountSlider.selectedValue = filter.guestCount == null ? 0 : filter.guestCount!.toDouble();
+    partyCountSlider.selectedValue = filter.partyCount == null ? 0 : filter.partyCount!.toDouble();
+    animalCountSlider.label = animalCountSlider.selectedValue.toInt().toString();
+    guestCountSlider.label = guestCountSlider.selectedValue.toInt().toString();
+    partyCountSlider.label = partyCountSlider.selectedValue.toInt().toString();
+    studyButtons!.isButtonSelected = filter.isStudying == null ? _studySelections.map((e) => false).toList()
+        : _studySelections.mapIndexed((index, element) => index == (filter.isStudying! ? 1 : 0)).toList();
+    workButtons!.isButtonSelected = filter.isWorking == null ? _workSelections.map((e) => false).toList()
+        : _workSelections.mapIndexed((index, element) => index == (filter.isWorking! ? 1 : 0)).toList();
+    smokeButtons!.isButtonSelected = filter.isSmoking == null ? _smokeSelections.map((e) => false).toList()
+        : _smokeSelections.mapIndexed((index, element) => index == (filter.isSmoking! ? 1 : 0)).toList();
+    sleepButtons!.isButtonSelected = filter.sleepType == null ? _sleepTimeSelections.map((e) => false).toList()
+        : [filter.sleepType == SleepType.morning, filter.sleepType == SleepType.evening];
+
+  }
+
+  Filter getFilterByForm()
+  {
+    return UserFilter(
+      0,
+      CurrentLogin().user!.id,
+      int.tryParse(_ageFromText.text),
+      int.tryParse(_ageToText.text),
+      sexSelectionButtons!.isButtonSelected.indexOf(true),
+      animalCountSlider.selectedValue.toInt(),
+      studyButtons!.isButtonSelected.indexOf(true)== 0 ? false : true,
+      workButtons!.isButtonSelected.indexOf(true)== 0 ? false : true,
+      smokeButtons!.isButtonSelected.indexOf(true)== 0 ? false : true,
+      guestCountSlider.selectedValue.toInt(),
+      partyCountSlider.selectedValue.toInt(),
+      sleepButtons!.isButtonSelected.indexOf(true) == 1 ? SleepType.evening : SleepType.morning
+    );
+  }
 }
 
 class _FilterUserViewState extends State<FilterUserView> {

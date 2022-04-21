@@ -32,6 +32,6 @@ const visibilityChangeFailed = SnackBar(
     content: Text('Nepavyko pakeisti matomumo.')
 );
 
-const offerHasToHaveImages = SnackBar(
+const roomHasToHaveImages = SnackBar(
     content: Text('Privalote įkelti bent 1 nuotrauką.')
 );
