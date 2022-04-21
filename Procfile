@@ -1,1 +1,1 @@
-web: python ././Main.py
+web: python Recommendation/Recommendation/Recommendation/Main.py
