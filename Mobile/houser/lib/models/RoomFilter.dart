@@ -11,7 +11,7 @@ class RoomFilter extends Filter{
 
   double? area;
   double? monthlyPrice;
-  String city;
+  String? city;
   DateTime? availableFrom;
   DateTime? availableTo;
   int? freeRoomCount;

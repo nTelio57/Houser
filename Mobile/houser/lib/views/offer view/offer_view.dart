@@ -166,7 +166,8 @@ class _OfferViewState extends State<OfferView> {
   Widget filterFab()
   {
     return FloatingActionButton(
-      child: const Icon(Icons.filter_list),
+      child: const Icon(Icons.search),
+      backgroundColor: Colors.redAccent,
       onPressed: (){
         Navigator.of(context).push(
             PageRouteBuilder(

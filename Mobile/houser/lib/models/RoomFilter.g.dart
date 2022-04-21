@@ -11,7 +11,7 @@ RoomFilter _$RoomFilterFromJson(Map<String, dynamic> json) => RoomFilter(
       json['userId'] as String,
       (json['area'] as num?)?.toDouble(),
       (json['monthlyPrice'] as num?)?.toDouble(),
-      json['city'] as String,
+      json['city'] as String?,
       json['availableFrom'] == null
           ? null
           : DateTime.parse(json['availableFrom'] as String),
