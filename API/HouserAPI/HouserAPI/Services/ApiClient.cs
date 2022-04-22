@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Net.Http;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Hosting;
+using Microsoft.Extensions.Hosting;
 
 namespace HouserAPI.Services
 {
@@ -8,9 +10,12 @@ namespace HouserAPI.Services
     {
         private readonly HttpClient _httpClient;
 
-        public ApiClient()
+        public ApiClient(IWebHostEnvironment env)
         {
-            _httpClient = new HttpClient { BaseAddress = new Uri("http://localhost:5002") };
+            string url = env.IsDevelopment()
+                ? "http://localhost:5002"
+                : "https://houser-app-ktu-recommendation.herokuapp.com";
+            _httpClient = new HttpClient { BaseAddress = new Uri(url) };
         }
 
         public async Task<T> Get<T>(string path)

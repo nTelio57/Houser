@@ -180,11 +180,10 @@ class _OfferViewState extends State<OfferView> {
   }
 
   Future onFilterChanged(Filter newFilter) async{
+    widget._currentLogin.user!.filter = newFilter;
     widget._apiService.PostFilter(newFilter);
-    var currentUser = widget._currentLogin.user!;
     final provider = Provider.of<OfferCardManager>(context, listen: false);
 
-    currentUser.filter = newFilter;
     provider.resetOffers();
     await provider.loadOffersAsync(3, 0);
     provider.loadOffersSync(7, 3);

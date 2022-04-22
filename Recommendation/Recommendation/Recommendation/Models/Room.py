@@ -5,51 +5,27 @@ from Models.User import *
 
 @dataclass
 class Room(db.Model):
-    Id: int
-    Title: str
-    IsVisible: bool
-    UploadDate: datetime.datetime
-    City: str
-    Address: str
-    MonthlyPrice: float
-    UtilityBillsRequired: bool
-    Area: float
-    AvailableFrom: datetime.datetime
-    AvailableTo: datetime.datetime
-    FreeRoomCount: int
-    TotalRoomCount: int
-    BedCount: int
-    RuleSmoking: bool
-    RuleAnimals: bool
-    AccommodationTv: bool
-    AccommodationWifi: bool
-    AccommodationAc: bool
-    AccommodationParking: bool
-    AccommodationBalcony: bool
-    AccommodationDisability: bool
-    UserId: str
-
     __tablename__ = 'Rooms'
-    Id = db.Column(db.Integer, primary_key=True)
-    IsVisible = db.Column(db.Boolean)
-    UploadDate = db.Column(db.DateTime)
-    Title = db.Column(db.String)
-    City = db.Column(db.String)
-    Address = db.Column(db.String)
-    MonthlyPrice = db.Column(db.Float)
-    UtilityBillsRequired = db.Column(db.Boolean)
-    Area = db.Column(db.Float)
-    AvailableFrom = db.Column(db.DateTime)
-    AvailableTo = db.Column(db.DateTime)
-    FreeRoomCount = db.Column(db.Integer)
-    TotalRoomCount = db.Column(db.Integer)
-    BedCount = db.Column(db.Integer)
-    RuleSmoking = db.Column(db.Boolean)
-    RuleAnimals = db.Column(db.Boolean)
-    AccommodationTv = db.Column(db.Boolean)
-    AccommodationWifi = db.Column(db.Boolean)
-    AccommodationAc = db.Column(db.Boolean)
-    AccommodationParking = db.Column(db.Boolean)
-    AccommodationBalcony = db.Column(db.Boolean)
-    AccommodationDisability = db.Column(db.Boolean)
-    UserId = db.Column(db.String, db.ForeignKey(User.Id))
+    Id: int = db.Column(db.Integer, primary_key=True)
+    Title: str = db.Column(db.String)
+    IsVisible: bool = db.Column(db.Boolean)
+    UploadDate: datetime.datetime = db.Column(db.DateTime)
+    City: str = db.Column(db.String)
+    Address: str = db.Column(db.String)
+    MonthlyPrice: float = db.Column(db.Float)
+    UtilityBillsRequired: bool = db.Column(db.Boolean)
+    Area: float = db.Column(db.Float)
+    AvailableFrom: datetime.datetime = db.Column(db.DateTime)
+    AvailableTo: datetime.datetime = db.Column(db.DateTime)
+    FreeRoomCount: int = db.Column(db.Integer)
+    TotalRoomCount: int = db.Column(db.Integer)
+    BedCount: int = db.Column(db.Integer)
+    RuleSmoking: bool = db.Column(db.Boolean)
+    RuleAnimals: bool = db.Column(db.Boolean)
+    AccommodationTv: bool = db.Column(db.Boolean)
+    AccommodationWifi: bool = db.Column(db.Boolean)
+    AccommodationAc: bool = db.Column(db.Boolean)
+    AccommodationParking: bool = db.Column(db.Boolean)
+    AccommodationBalcony: bool = db.Column(db.Boolean)
+    AccommodationDisability: bool = db.Column(db.Boolean)
+    UserId: str = db.Column(db.String, db.ForeignKey(User.Id))
