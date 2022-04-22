@@ -195,10 +195,9 @@ class _PersonalDetailsCreateStepperState extends State<PersonalDetailsCreateStep
   }
 
   Future onFilterChanged(Filter newFilter) async {
-    var currentUser = CurrentLogin().user!;
+    CurrentLogin().user!.filter = newFilter;
     final provider = Provider.of<OfferCardManager>(context, listen: false);
 
-    currentUser.filter = newFilter;
     switch(newFilter.filterType){
       case FilterType.room:
         widget._apiService.PostFilter(newFilter as RoomFilter);
