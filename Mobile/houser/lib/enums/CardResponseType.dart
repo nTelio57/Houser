@@ -1,4 +1,4 @@
-enum CardResponseType {
+enum SwipeType {
   like,
   dislike
 }

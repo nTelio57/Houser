@@ -51,10 +51,10 @@ class OfferCardManager extends ChangeNotifier {
 
     switch(status)
     {
-      case CardResponseType.like:
+      case SwipeType.like:
         like();
         break;
-      case CardResponseType.dislike:
+      case SwipeType.dislike:
         dislike();
         break;
       default:
@@ -71,15 +71,15 @@ class OfferCardManager extends ChangeNotifier {
     notifyListeners();
   }
 
-  CardResponseType? getStatus()
+  SwipeType? getStatus()
   {
     final x = position.dx;
     const threshold = 100;
 
     if(x >= threshold) {
-      return CardResponseType.like;
+      return SwipeType.like;
     }else if(x <= -threshold){
-      return CardResponseType.dislike;
+      return SwipeType.dislike;
     }
   }
 
