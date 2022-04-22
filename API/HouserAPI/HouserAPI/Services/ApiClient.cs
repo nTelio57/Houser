@@ -12,7 +12,7 @@ namespace HouserAPI.Services
 
         public ApiClient(IWebHostEnvironment env)
         {
-            string url = !env.IsDevelopment()
+            string url = env.IsDevelopment()
                 ? "http://localhost:5002"
                 : "https://houser-app-ktu-recommendation.herokuapp.com";
             _httpClient = new HttpClient { BaseAddress = new Uri(url) };
