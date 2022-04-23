@@ -14,7 +14,8 @@ namespace HouserAPI.Extensions
                 .AddScoped<IRepository<Room>, RoomRepository>()
                 .AddScoped<IRepository<Filter>, FilterRepository>()
                 .AddScoped<IRepository<UserFilter>, UserFilterRepository>()
-                .AddScoped<IRepository<RoomFilter>, RoomFilterRepository>();
+                .AddScoped<IRepository<RoomFilter>, RoomFilterRepository>()
+                .AddScoped<IRepository<Swipe>, SwipeRepository>();
         }
 
         public static IServiceCollection AddServiceDependencies(this IServiceCollection services)
@@ -24,7 +25,8 @@ namespace HouserAPI.Extensions
                 .AddScoped<IImageService, ImageService>()
                 .AddScoped<IRoomService, RoomService>()
                 .AddScoped<IRecommendationService, RecommendationService>()
-                .AddScoped<IFilterService, FilterService>();
+                .AddScoped<IFilterService, FilterService>()
+                .AddScoped<IMatchService, MatchService>();
         }
     }
 }

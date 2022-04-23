@@ -283,6 +283,40 @@ namespace HouserAPI.Migrations
                         onDelete: ReferentialAction.Restrict);
                 });
 
+            migrationBuilder.CreateTable(
+                name: "Swipes",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("MySQL:ValueGenerationStrategy", MySQLValueGenerationStrategy.IdentityColumn),
+                    SwipeType = table.Column<int>(type: "int", nullable: false),
+                    SwiperId = table.Column<string>(type: "varchar(255)", nullable: true),
+                    UserTargetId = table.Column<string>(type: "varchar(255)", nullable: true),
+                    RoomId = table.Column<int>(type: "int", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Swipes", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Swipes_AspNetUsers_SwiperId",
+                        column: x => x.SwiperId,
+                        principalTable: "AspNetUsers",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_Swipes_AspNetUsers_UserTargetId",
+                        column: x => x.UserTargetId,
+                        principalTable: "AspNetUsers",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_Swipes_Rooms_RoomId",
+                        column: x => x.RoomId,
+                        principalTable: "Rooms",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
             migrationBuilder.CreateIndex(
                 name: "IX_AspNetRoleClaims_RoleId",
                 table: "AspNetRoleClaims",
@@ -340,6 +374,21 @@ namespace HouserAPI.Migrations
                 name: "IX_Rooms_UserId",
                 table: "Rooms",
                 column: "UserId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Swipes_RoomId",
+                table: "Swipes",
+                column: "RoomId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Swipes_SwiperId",
+                table: "Swipes",
+                column: "SwiperId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Swipes_UserTargetId",
+                table: "Swipes",
+                column: "UserTargetId");
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)
@@ -364,6 +413,9 @@ namespace HouserAPI.Migrations
 
             migrationBuilder.DropTable(
                 name: "Images");
+
+            migrationBuilder.DropTable(
+                name: "Swipes");
 
             migrationBuilder.DropTable(
                 name: "AspNetRoles");
