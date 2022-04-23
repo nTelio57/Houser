@@ -33,6 +33,9 @@
     <Compile Include="Models\RoomPrediction.py">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="Models\Swipe.py">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="Models\UserFilter.py">
       <SubType>Code</SubType>
     </Compile>
