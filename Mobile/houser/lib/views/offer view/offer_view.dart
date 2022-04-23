@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:houser/enums/FilterType.dart';
 import 'package:houser/models/Filter.dart';
 import 'package:houser/services/api_service.dart';
@@ -21,6 +22,26 @@ class OfferView extends StatefulWidget {
 }
 
 class _OfferViewState extends State<OfferView> {
+
+  @override
+  void didChangeDependencies() {
+    setupLoader();
+    super.didChangeDependencies();
+  }
+
+  void setupLoader()
+  {
+    EasyLoading.instance
+      ..loadingStyle = EasyLoadingStyle.custom
+      ..maskType = EasyLoadingMaskType.custom
+      ..backgroundColor = Theme.of(context).primaryColor
+      ..textColor = Colors.white
+      ..indicatorColor = Colors.white
+      ..indicatorType = EasyLoadingIndicatorType.ring
+      ..fontSize = 16
+      ..contentPadding = const EdgeInsets.symmetric(vertical: 25.0, horizontal: 20.0)
+      ..maskColor = Colors.black.withOpacity(0.2);
+  }
 
   @override
   Widget build(BuildContext context) {

@@ -3,6 +3,7 @@ import 'dart:io';
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:houser/utils/current_login.dart';
 import 'package:houser/resources/app_colors.dart';
 import 'package:houser/views/offer%20view/offer_view.dart';
@@ -75,6 +76,7 @@ class MyApp extends StatelessWidget {
           textTheme: const TextTheme(
           ),
         ),
+        builder: EasyLoading.init(),
         home: _defaultHome,
       ),
     );
