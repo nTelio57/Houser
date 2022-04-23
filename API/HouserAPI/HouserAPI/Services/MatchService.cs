@@ -37,7 +37,7 @@ namespace HouserAPI.Services
         {
             var swipe = _mapper.Map<Swipe>(swipeCreateDto);
             var otherSide =
-                await _swipeRepository.GetByBothSidesId(swipeCreateDto.UserTargetId, swipeCreateDto.SwiperId);
+                await _swipeRepository.GetByBothSidesId(swipeCreateDto.UserTargetId, swipeCreateDto.SwiperId, swipeCreateDto.RoomId);
             var swipeReadDto = _mapper.Map<SwipeReadDto>(swipe);
             swipeReadDto.SwipeResult = SwipeResult.Swiped;
 

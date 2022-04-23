@@ -12,9 +12,9 @@ namespace HouserAPI.Data.Repositories
             Entities = context.Swipes;
         }
 
-        public async Task<Swipe> GetByBothSidesId(string swiperId, string targetId)
+        public async Task<Swipe> GetByBothSidesId(string swiperId, string targetId, int? roomId)
         {
-            return await IncludeDependencies(Entities).FirstOrDefaultAsync(x => x.SwiperId == swiperId && x.UserTargetId == targetId);
+            return await IncludeDependencies(Entities).FirstOrDefaultAsync(x => x.SwiperId == swiperId && x.UserTargetId == targetId && x.RoomId == roomId);
         }
     }
 }
