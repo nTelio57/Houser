@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:houser/enums/CardResponseType.dart';
+import 'package:houser/enums/SwipeType.dart';
 import 'package:houser/enums/FilterType.dart';
+import 'package:houser/models/Swipe.dart';
 import 'package:houser/models/User.dart';
+import 'package:houser/services/api_service.dart';
 import 'package:houser/utils/RoomOfferManager.dart';
 import 'package:houser/utils/UserOfferManager.dart';
 import 'package:houser/utils/current_login.dart';
@@ -9,6 +11,7 @@ import 'package:houser/models/Room.dart';
 
 class OfferCardManager extends ChangeNotifier {
   final CurrentLogin _currentLogin = CurrentLogin();
+  final ApiService _apiService = ApiService();
 
   late RoomOfferManager _roomOfferManager;
   late UserOfferManager _userOfferManager;
@@ -51,10 +54,10 @@ class OfferCardManager extends ChangeNotifier {
 
     switch(status)
     {
-      case CardResponseType.like:
+      case SwipeType.like:
         like();
         break;
-      case CardResponseType.dislike:
+      case SwipeType.dislike:
         dislike();
         break;
       default:
@@ -71,22 +74,34 @@ class OfferCardManager extends ChangeNotifier {
     notifyListeners();
   }
 
-  CardResponseType? getStatus()
+  SwipeType? getStatus()
   {
     final x = position.dx;
     const threshold = 100;
 
     if(x >= threshold) {
-      return CardResponseType.like;
+      return SwipeType.like;
     }else if(x <= -threshold){
-      return CardResponseType.dislike;
+      return SwipeType.dislike;
     }
+  }
+
+  Swipe getSwipeData(SwipeType swipeType)
+  {
+    var filterType = _currentLogin.user!.filter!.filterType;
+    var swiperId = _currentLogin.user!.id;
+    var userTargetId = filterType == FilterType.user ? users[0].id : rooms[0].userId;
+    var roomId = filterType == FilterType.room ? rooms[0].id : null;
+
+    return Swipe(0, swipeType, filterType, swiperId, userTargetId, roomId);
   }
 
   void like()
   {
     angle = 20;
     position += Offset(2 * screenSize.width, 0);
+
+    postSwipe(getSwipeData(SwipeType.like));
     nextCard().then((value) => notifyListeners());
     addSingleOffer();
 
@@ -97,10 +112,17 @@ class OfferCardManager extends ChangeNotifier {
   {
     angle = -20;
     position -= Offset(2 * screenSize.width, 0);
+
+    postSwipe(getSwipeData(SwipeType.dislike));
     nextCard().then((value) => notifyListeners());
     addSingleOffer();
 
     notifyListeners();
+  }
+
+  Future postSwipe(Swipe swipe) async
+  {
+    await _apiService.PostSwipe(swipe);
   }
 
   Future nextCard() async {

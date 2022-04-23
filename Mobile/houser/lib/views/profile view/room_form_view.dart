@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:houser/enums/BedType.dart';
 import 'package:houser/extensions/int_extensions.dart';
 import 'package:houser/models/Image.dart' as apiImage;
@@ -377,11 +378,13 @@ class _RoomFormViewState extends State<RoomFormView> {
                 return;
               }
 
+            EasyLoading.show();
             if(widget.isEditingMode) {
               await updateRoom();
             } else {
               await uploadRoom();
             }
+            EasyLoading.dismiss();
 
             setState(() {
               _isLoginButtonEnabled = true;
@@ -462,7 +465,7 @@ class _RoomFormViewState extends State<RoomFormView> {
   Room getRoomByForm()
   {
     Room newRoom = Room(title: widget._titleText.text);
-    newRoom.ownerId = CurrentLogin().user!.id;
+    newRoom.userId = CurrentLogin().user!.id;
     newRoom.city = widget._cityText.text;
     newRoom.address = widget._addressText.text;
     newRoom.monthlyPrice = double.parse(widget._priceText.text);

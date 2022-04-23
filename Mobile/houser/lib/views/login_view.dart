@@ -3,6 +3,7 @@ import 'dart:io';
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:houser/enums/FilterType.dart';
 import 'package:houser/extensions/string_extensions.dart';
 import 'package:houser/models/AuthRequest.dart';
@@ -263,6 +264,7 @@ class _LoginViewState extends State<LoginView> {
             {
               AuthRequest authRequest = AuthRequest(_emailTextController.text, _passwordTextController.text);
               try{
+                EasyLoading.show();
                 var authResult = await widget._apiService.Login(authRequest).timeout(const Duration(seconds: 5));
                 if(authResult.success!)
                 {
@@ -271,7 +273,7 @@ class _LoginViewState extends State<LoginView> {
                   currentLogin.saveUserDataToSharedPreferences();
 
                   currentLogin.user!.filter = await widget._apiService.GetUsersFilter(currentLogin.user!.id);
-
+                  EasyLoading.dismiss();
                   if(CurrentLogin().user!.name == null) {
                     Navigator.push(context, MaterialPageRoute(builder: (context) => PersonalDetailsCreateStepper()));
                   } else {
@@ -293,6 +295,7 @@ class _LoginViewState extends State<LoginView> {
                 ScaffoldMessenger.of(context).showSnackBar(failedLogin);
               }
             }
+          EasyLoading.dismiss();
           setState(() {
             _isLoginButtonEnabled = true;
           });

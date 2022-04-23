@@ -12,7 +12,7 @@ Room _$RoomFromJson(Map<String, dynamic> json) => Room(
       ..isActive = json['isActive'] as bool? ?? true
       ..isVisible = json['isVisible'] as bool
       ..uploadDate = DateTime.parse(json['uploadDate'] as String)
-      ..ownerId = json['userId'] as String
+      ..userId = json['userId'] as String
       ..id = json['id'] as int
       ..city = json['city'] as String
       ..address = json['address'] as String
@@ -42,7 +42,7 @@ Map<String, dynamic> _$RoomToJson(Room instance) => <String, dynamic>{
       'isActive': instance.isActive,
       'isVisible': instance.isVisible,
       'uploadDate': instance.uploadDate.toIso8601String(),
-      'userId': instance.ownerId,
+      'userId': instance.userId,
       'id': instance.id,
       'title': instance.title,
       'city': instance.city,

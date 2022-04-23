@@ -9,8 +9,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace HouserAPI.Migrations
 {
     [DbContext(typeof(DatabaseContext))]
-    [Migration("20220419205902_Init")]
-    partial class Init
+    [Migration("20220423005519_match")]
+    partial class match
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -69,6 +69,35 @@ namespace HouserAPI.Migrations
                     b.HasIndex("UserId");
 
                     b.ToTable("Images");
+                });
+
+            modelBuilder.Entity("HouserAPI.Models.Match", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    b.Property<int>("FilterType")
+                        .HasColumnType("int");
+
+                    b.Property<string>("FirstUserId")
+                        .HasColumnType("varchar(767)");
+
+                    b.Property<int?>("RoomId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("SecondUserId")
+                        .HasColumnType("varchar(767)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("FirstUserId");
+
+                    b.HasIndex("RoomId");
+
+                    b.HasIndex("SecondUserId");
+
+                    b.ToTable("Matches");
                 });
 
             modelBuilder.Entity("HouserAPI.Models.Room", b =>
@@ -151,6 +180,38 @@ namespace HouserAPI.Migrations
                     b.HasIndex("UserId");
 
                     b.ToTable("Rooms");
+                });
+
+            modelBuilder.Entity("HouserAPI.Models.Swipe", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    b.Property<int>("FilterType")
+                        .HasColumnType("int");
+
+                    b.Property<int?>("RoomId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("SwipeType")
+                        .HasColumnType("int");
+
+                    b.Property<string>("SwiperId")
+                        .HasColumnType("varchar(767)");
+
+                    b.Property<string>("UserTargetId")
+                        .HasColumnType("varchar(767)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("RoomId");
+
+                    b.HasIndex("SwiperId");
+
+                    b.HasIndex("UserTargetId");
+
+                    b.ToTable("Swipes");
                 });
 
             modelBuilder.Entity("HouserAPI.Models.User", b =>
@@ -501,6 +562,27 @@ namespace HouserAPI.Migrations
                     b.Navigation("User");
                 });
 
+            modelBuilder.Entity("HouserAPI.Models.Match", b =>
+                {
+                    b.HasOne("HouserAPI.Models.User", "FirstUser")
+                        .WithMany()
+                        .HasForeignKey("FirstUserId");
+
+                    b.HasOne("HouserAPI.Models.Room", "Room")
+                        .WithMany()
+                        .HasForeignKey("RoomId");
+
+                    b.HasOne("HouserAPI.Models.User", "SecondUser")
+                        .WithMany()
+                        .HasForeignKey("SecondUserId");
+
+                    b.Navigation("FirstUser");
+
+                    b.Navigation("Room");
+
+                    b.Navigation("SecondUser");
+                });
+
             modelBuilder.Entity("HouserAPI.Models.Room", b =>
                 {
                     b.HasOne("HouserAPI.Models.User", "User")
@@ -508,6 +590,27 @@ namespace HouserAPI.Migrations
                         .HasForeignKey("UserId");
 
                     b.Navigation("User");
+                });
+
+            modelBuilder.Entity("HouserAPI.Models.Swipe", b =>
+                {
+                    b.HasOne("HouserAPI.Models.Room", "Room")
+                        .WithMany()
+                        .HasForeignKey("RoomId");
+
+                    b.HasOne("HouserAPI.Models.User", "Swiper")
+                        .WithMany()
+                        .HasForeignKey("SwiperId");
+
+                    b.HasOne("HouserAPI.Models.User", "UserTarget")
+                        .WithMany()
+                        .HasForeignKey("UserTargetId");
+
+                    b.Navigation("Room");
+
+                    b.Navigation("Swiper");
+
+                    b.Navigation("UserTarget");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
