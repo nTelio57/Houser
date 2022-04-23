@@ -102,32 +102,9 @@ class _WGUserCardState extends State<WGUserCard> {
     return SlidingUpPanel(
       panel: slidePanel(),//Tas kas slidina
       body: networkImage(1),//pagr vaizdas
-      collapsed: slidePanelCollapsed(),
       renderPanelSheet: false,
       minHeight: deviceHeight * 0.24,
       maxHeight: 600,
-    );
-  }
-
-  Widget slidePanelCollapsed()
-  {
-    return Wrap(
-      children: [
-        Container(
-          decoration: const BoxDecoration(
-            color: Colors.transparent,
-            borderRadius: BorderRadius.only(topLeft: Radius.circular(16.0), topRight: Radius.circular(16.0)),
-          ),
-          margin: const EdgeInsets.fromLTRB(12.0, 0, 12.0, 12),
-          padding: const EdgeInsets.fromLTRB(20, 20, 20, 20),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              title(),
-            ],
-          ),
-        ),
-      ],
     );
   }
 
