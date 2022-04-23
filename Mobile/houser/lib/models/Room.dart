@@ -11,7 +11,7 @@ class Room{
   bool isVisible = true;
   DateTime uploadDate = DateTime.now();
   @JsonKey(name: 'userId')
-  String ownerId = '';
+  String userId = '';
   int id = 0;
 
   String title = 'Ieškomas vienas kambariokas dviem mėnesiams';

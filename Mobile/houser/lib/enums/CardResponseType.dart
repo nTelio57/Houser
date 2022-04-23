@@ -1,4 +1,0 @@
-enum SwipeType {
-  dislike,
-  like
-}

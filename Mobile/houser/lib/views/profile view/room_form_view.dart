@@ -465,7 +465,7 @@ class _RoomFormViewState extends State<RoomFormView> {
   Room getRoomByForm()
   {
     Room newRoom = Room(title: widget._titleText.text);
-    newRoom.ownerId = CurrentLogin().user!.id;
+    newRoom.userId = CurrentLogin().user!.id;
     newRoom.city = widget._cityText.text;
     newRoom.address = widget._addressText.text;
     newRoom.monthlyPrice = double.parse(widget._priceText.text);
