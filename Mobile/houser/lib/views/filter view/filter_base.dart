@@ -1,5 +1,6 @@
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:houser/enums/FilterType.dart';
 import 'package:houser/models/Filter.dart';
 import 'package:houser/models/RoomFilter.dart';
@@ -22,7 +23,7 @@ class _FilterBaseViewState extends State<FilterBaseView> with SingleTickerProvid
 
   late TabController _tabController;
   final _formKey = GlobalKey<FormState>();
-  bool _isLoginButtonEnabled = true;
+  bool _isButtonEnabled = true;
   var filterUserForm = FilterUserView();
   var filterRoomForm = FilterRoomView();
 
@@ -147,20 +148,23 @@ class _FilterBaseViewState extends State<FilterBaseView> with SingleTickerProvid
       height: 90,
       width: double.infinity,
       child: TextButton(
-        onPressed: ! _isLoginButtonEnabled ? null : () async {
+        onPressed: ! _isButtonEnabled ? null : () async {
           setState(() {
-            _isLoginButtonEnabled = false;
+            _isButtonEnabled = false;
           });
           if(!_formKey.currentState!.validate()) {
             setState(() {
-              _isLoginButtonEnabled = true;
+              _isButtonEnabled = true;
             });
             return;
           }
+
+          EasyLoading.show();
           await onButtonClick();
+          EasyLoading.dismiss();
 
           setState(() {
-            _isLoginButtonEnabled = true;
+            _isButtonEnabled = true;
           });
         },
         style: TextButton.styleFrom(

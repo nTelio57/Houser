@@ -1,5 +1,6 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:houser/enums/FilterType.dart';
 import 'package:houser/enums/SleepType.dart';
 import 'package:houser/models/Filter.dart';
@@ -186,9 +187,11 @@ class _PersonalDetailsCreateStepperState extends State<PersonalDetailsCreateStep
     userUpdate.guestCount = guestCount;
     userUpdate.partyCount = partyCount;
 
+    EasyLoading.show();
     bool result = await widget._apiService.UpdateUserDetails(CurrentLogin().user!.id, userUpdate);
     if(result)
       {
+        EasyLoading.dismiss();
         Navigator.push(context, MaterialPageRoute(builder: (context) => FilterBaseView(onFilterChanged)));
       }
     return;

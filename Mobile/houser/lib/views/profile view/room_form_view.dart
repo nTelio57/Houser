@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:houser/enums/BedType.dart';
 import 'package:houser/extensions/int_extensions.dart';
 import 'package:houser/models/Image.dart' as apiImage;
@@ -377,11 +378,13 @@ class _RoomFormViewState extends State<RoomFormView> {
                 return;
               }
 
+            EasyLoading.show();
             if(widget.isEditingMode) {
               await updateRoom();
             } else {
               await uploadRoom();
             }
+            EasyLoading.dismiss();
 
             setState(() {
               _isLoginButtonEnabled = true;
