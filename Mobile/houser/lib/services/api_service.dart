@@ -7,6 +7,7 @@ import 'package:houser/models/Filter.dart';
 import 'package:houser/models/Image.dart';
 import 'package:houser/models/Room.dart';
 import 'package:houser/models/RoomFilter.dart';
+import 'package:houser/models/Swipe.dart';
 import 'package:houser/models/User.dart';
 import 'package:houser/models/UserFilter.dart';
 import 'package:houser/services/api_client.dart';
@@ -160,5 +161,11 @@ class ApiService {
         ApiResponse response = await _apiClient.Post('/api/Filter/room', filter.toJson());
         return response;
     }
+  }
+
+  Future<ApiResponse> PostSwipe(Swipe swipe) async
+  {
+    ApiResponse response = await _apiClient.Post('/api/Match/swipe', swipe.toJson());
+    return response;
   }
 }
