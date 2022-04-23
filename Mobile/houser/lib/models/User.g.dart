@@ -26,7 +26,9 @@ User _$UserFromJson(Map<String, dynamic> json) => User(
       filter: json['filter'] == null
           ? null
           : Filter.fromJson(json['filter'] as Map<String, dynamic>),
-    );
+    )..images = (json['images'] as List<dynamic>)
+        .map((e) => Image.fromJson(e as Map<String, dynamic>))
+        .toList();
 
 Map<String, dynamic> _$UserToJson(User instance) => <String, dynamic>{
       'id': instance.id,
@@ -43,6 +45,7 @@ Map<String, dynamic> _$UserToJson(User instance) => <String, dynamic>{
       'sleepType': _$SleepTypeEnumMap[instance.sleepType],
       'guestCount': instance.guestCount,
       'partyCount': instance.partyCount,
+      'images': instance.images,
       'filter': instance.filter,
     };
 
