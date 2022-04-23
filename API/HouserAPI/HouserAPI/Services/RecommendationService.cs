@@ -8,6 +8,7 @@ using HouserAPI.DTOs.Room;
 using HouserAPI.DTOs.User;
 using HouserAPI.Models;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 
 namespace HouserAPI.Services
 {
@@ -58,9 +59,8 @@ namespace HouserAPI.Services
 
             for (int i = 0; i < Math.Min(count, (userRecommendationResponses.Count - offset)); i++)
             {
-                userList.Add(await _userManager.FindByIdAsync(userRecommendationResponses[i + offset].Id));
+                userList.Add(await _userManager.Users.Include(x => x.Images.Where(y => y.RoomId == null)).FirstOrDefaultAsync(x => x.Id == userRecommendationResponses[i + offset].Id));
             }
-
             return _mapper.Map<IEnumerable<UserReadDto>>(userList);
         }
     }
