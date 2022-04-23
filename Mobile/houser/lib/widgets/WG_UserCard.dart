@@ -97,11 +97,12 @@ class _WGUserCardState extends State<WGUserCard> {
   Widget slidingUpPanel(User user)
   {
     var deviceHeight = MediaQuery.of(context).size.height;
-    //var imageId = widget.user.images.firstWhere((i) => i.isMain).id;
+    var mainImage = widget.user.getMainImage();
+    var imageWidget = mainImage != null? networkImage(mainImage.id) : image();
 
     return SlidingUpPanel(
       panel: slidePanel(),//Tas kas slidina
-      body: networkImage(1),//pagr vaizdas
+      body: imageWidget,//pagr vaizdas
       renderPanelSheet: false,
       minHeight: deviceHeight * 0.24,
       maxHeight: 600,
