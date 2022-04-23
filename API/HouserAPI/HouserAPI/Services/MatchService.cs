@@ -14,12 +14,14 @@ namespace HouserAPI.Services
     public class MatchService : IMatchService
     {
         private readonly IMapper _mapper;
+        private readonly IRepository<Match> _matchRepository;
         private readonly SwipeRepository _swipeRepository;
         private readonly UserManager<User> _userManager;
 
-        public MatchService(IMapper mapper, IRepository<Swipe> swipeRepository, UserManager<User> userManager)
+        public MatchService(IMapper mapper, IRepository<Swipe> swipeRepository, IRepository<Match> matchRepository, UserManager<User> userManager)
         {
             _mapper = mapper;
+            _matchRepository = matchRepository;
             _swipeRepository = swipeRepository as SwipeRepository;
             _userManager = userManager;
         }
@@ -33,12 +35,6 @@ namespace HouserAPI.Services
 
         private async Task<SwipeReadDto> Like(SwipeCreateDto swipeCreateDto)
         {
-            //paziureti ar jau like swipe kai sitas useris yra kaip targetas ir targetas yra kaip 
-            //jeigu nera - palikti duombazei sita swipe
-            //jeigu yra istrinti is db ta sena swipe ir sukurti matcha
-            //jeigu yra dislike db nedaryti nieko
-            //duoti target useriui elo
-
             var swipe = _mapper.Map<Swipe>(swipeCreateDto);
             var otherSide =
                 await _swipeRepository.GetByBothSidesId(swipeCreateDto.UserTargetId, swipeCreateDto.SwiperId);
@@ -54,7 +50,15 @@ namespace HouserAPI.Services
                 if (otherSide.SwipeType == SwipeType.Like)
                 {
                     await _swipeRepository.Delete(otherSide);
-                    //sukurti matcha----------------
+                    var match = new Match
+                    {
+                        FilterType = swipeCreateDto.FilterType,
+                        FirstUserId = swipeCreateDto.UserTargetId,
+                        SecondUserId = swipeCreateDto.SwiperId,
+                        RoomId = swipeCreateDto.RoomId
+                    };
+                    await _matchRepository.Create(match);
+
                     swipeReadDto.SwipeResult = SwipeResult.Matched;
                 }
             }

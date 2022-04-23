@@ -13,6 +13,7 @@ namespace HouserAPI.Data
         public DbSet<UserFilter> UserFilters { get; set; }
         public DbSet<RoomFilter> RoomFilters { get; set; }
         public DbSet<Swipe> Swipes { get; set; }
+        public DbSet<Match> Matches { get; set; }
         public DatabaseContext(DbContextOptions<DatabaseContext> opt) : base(opt)
         {
             
