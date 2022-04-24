@@ -5,6 +5,7 @@ import 'package:houser/models/Filter.dart';
 import 'package:houser/services/api_service.dart';
 import 'package:houser/utils/current_login.dart';
 import 'package:houser/views/filter%20view/filter_base.dart';
+import 'package:houser/views/match%20view/match_list_view.dart';
 import 'package:houser/views/profile%20view/profile_view.dart';
 import 'package:houser/widgets/WG_RoomCard.dart';
 import 'package:houser/utils/offer_card_manager.dart';
@@ -51,7 +52,9 @@ class _OfferViewState extends State<OfferView> {
   Widget scaffold()
   {
     return Scaffold(
+      extendBodyBehindAppBar: true,
       backgroundColor: Theme.of(context).backgroundColor,
+      appBar: appBar(),
       body: body(),
       floatingActionButton: filterFab(),
     );
@@ -62,7 +65,6 @@ class _OfferViewState extends State<OfferView> {
     return Stack(
       children: [
         roomCardStack(),
-        topPanel(),
       ],
     );
   }
@@ -112,35 +114,15 @@ class _OfferViewState extends State<OfferView> {
     );
   }
 
-  Widget topPanel()
+  AppBar appBar()
   {
-    var deviceHeight = MediaQuery.of(context).size.height;
-
-    return Container(
-      height: deviceHeight * 0.09,
-      decoration: const BoxDecoration(
-        gradient: LinearGradient(
-          begin: Alignment.topCenter,
-          end: Alignment.bottomCenter,
-          colors: [
-            Color.fromRGBO(0, 0, 0, 0.8),
-            Color.fromRGBO(0, 0, 0, 0.6),
-            Color.fromRGBO(0, 0, 0, 0.4),
-            Color.fromRGBO(0, 0, 0, 0.2),
-          ]
-        ),
-        borderRadius: BorderRadius.only(bottomLeft: Radius.circular(32), bottomRight: Radius.circular(32))
-      ),
-      child: SafeArea(
-        child: Row(
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: [
-            profileButton(),
-            topPanelSeparator(),
-            messagesButton(),
-          ],
-        ),
-      ),
+    return AppBar(
+      backgroundColor: Theme.of(context).primaryColor.withOpacity(0.7),
+      elevation: 0,
+      leading: profileButton(),
+      actions: [
+        matchesButton()
+      ],
     );
   }
 
@@ -169,7 +151,7 @@ class _OfferViewState extends State<OfferView> {
     );
   }
 
-  Widget messagesButton()
+  Widget matchesButton()
   {
     return Container(
       padding: const EdgeInsets.only(right: 8),
@@ -179,7 +161,9 @@ class _OfferViewState extends State<OfferView> {
           color: Colors.white,
           size: 24,
         ),
-        onPressed: () {},
+        onPressed: () {
+          Navigator.push(context, MaterialPageRoute(builder: (context) => MatchListView()));
+        },
       ),
     );
   }

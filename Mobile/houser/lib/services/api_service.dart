@@ -8,6 +8,7 @@ import 'package:houser/models/Image.dart';
 import 'package:houser/models/Room.dart';
 import 'package:houser/models/RoomFilter.dart';
 import 'package:houser/models/Swipe.dart';
+import 'package:houser/models/Match.dart';
 import 'package:houser/models/User.dart';
 import 'package:houser/models/UserFilter.dart';
 import 'package:houser/services/api_client.dart';
@@ -167,5 +168,14 @@ class ApiService {
   {
     ApiResponse response = await _apiClient.Post('/api/Match/swipe', swipe.toJson());
     return response;
+  }
+
+  Future<List<Match>> GetMatchesByUser(String id) async{
+    ApiResponse response = await _apiClient.Get('/api/Match/user/$id');
+
+    List<dynamic> jsonData = response.body;
+    final parsed = jsonData.cast<Map<String, dynamic>>();
+
+    return parsed.map<Match>((e) => Match.fromJson(e)).toList();
   }
 }

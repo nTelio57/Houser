@@ -20,7 +20,7 @@ Room _$RoomFromJson(Map<String, dynamic> json) => Room(
       ..utilityBillsRequired = json['utilityBillsRequired'] as bool? ?? true
       ..area = (json['area'] as num?)?.toDouble() ?? 0
       ..images = (json['images'] as List<dynamic>)
-          .map((e) => apiImage.Image.fromJson(e as Map<String, dynamic>))
+          .map((e) => Image.fromJson(e as Map<String, dynamic>))
           .toList()
       ..availableFrom = DateTime.parse(json['availableFrom'] as String)
       ..availableTo = DateTime.parse(json['availableTo'] as String)

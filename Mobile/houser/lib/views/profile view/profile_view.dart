@@ -27,8 +27,6 @@ class ProfileView extends StatefulWidget {
 
 class _ProfileViewState extends State<ProfileView> {
 
-  List<apiImage.Image> images = [];
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -81,7 +79,7 @@ class _ProfileViewState extends State<ProfileView> {
 
           if(snapshot.hasData)
           {
-            return WGAlbumSlider(images, onImageUpload, onImageDelete, onImageSetAsMain);
+            return WGAlbumSlider(widget._currentLogin.user!.images, onImageUpload, onImageDelete, onImageSetAsMain);
           }
           else if(snapshot.hasError)
           {
@@ -91,7 +89,7 @@ class _ProfileViewState extends State<ProfileView> {
           }
           else
           {
-            return WGAlbumSlider(images, onImageUpload, onImageDelete, onImageSetAsMain);
+            return WGAlbumSlider(widget._currentLogin.user!.images, onImageUpload, onImageDelete, onImageSetAsMain);
           }
         }
     );
@@ -161,8 +159,9 @@ class _ProfileViewState extends State<ProfileView> {
 
   Future loadImages() async
   {
-    images = await widget._apiService.GetAllImagesByUserId(widget._currentLogin.user!.id);
+    var images = await widget._apiService.GetAllImagesByUserId(widget._currentLogin.user!.id);
     images = images.reversed.toList();
+    widget._currentLogin.user!.images = images;
     return true;
   }
 

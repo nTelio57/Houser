@@ -1,6 +1,7 @@
 import 'package:houser/enums/BedType.dart';
-import 'package:houser/models/Image.dart' as apiImage;
+import 'package:houser/models/Image.dart';
 import 'package:json_annotation/json_annotation.dart';
+import 'package:collection/collection.dart';
 
 part 'Room.g.dart';
 
@@ -23,7 +24,7 @@ class Room{
   bool utilityBillsRequired = true;
   @JsonKey(defaultValue: 0)
   double? area = 75;
-  List<apiImage.Image> images = [];
+  List<Image> images = [];
 
   DateTime availableFrom = DateTime.now();
   DateTime availableTo = DateTime.now().add(const Duration(days: 90));
@@ -63,4 +64,8 @@ class Room{
 
   Map<String, dynamic> toJson() => _$RoomToJson(this);
 
+  Image? getMainImage()
+  {
+    return images.firstWhereOrNull((x) => x.isMain);
+  }
 }

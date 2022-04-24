@@ -38,5 +38,16 @@ namespace HouserAPI.Controllers
                 return BadRequest($"Failed to register a swipe. {e.Message}");
             }
         }
+
+        [HttpGet("user/{id}")]
+        public async Task<IActionResult> GetAllMatchesByUser(string id)
+        {
+            var userId = User.FindFirst(CustomClaims.UserId)?.Value;
+            if (userId != id)
+                return Forbid();
+
+            var rooms = await _matchService.GetAllByUser(id);
+            return Ok(rooms);
+        }
     }
 }

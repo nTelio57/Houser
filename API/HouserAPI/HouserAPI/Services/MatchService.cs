@@ -1,7 +1,10 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using AutoMapper;
 using HouserAPI.Data.Repositories;
+using HouserAPI.DTOs.Match;
+using HouserAPI.DTOs.Room;
 using HouserAPI.DTOs.Swipe;
 using HouserAPI.Enums;
 using HouserAPI.Models;
@@ -12,16 +15,22 @@ namespace HouserAPI.Services
     public class MatchService : IMatchService
     {
         private readonly IMapper _mapper;
-        private readonly IRepository<Match> _matchRepository;
+        private readonly MatchRepository _matchRepository;
         private readonly SwipeRepository _swipeRepository;
         private readonly UserManager<User> _userManager;
 
         public MatchService(IMapper mapper, IRepository<Swipe> swipeRepository, IRepository<Match> matchRepository, UserManager<User> userManager)
         {
             _mapper = mapper;
-            _matchRepository = matchRepository;
+            _matchRepository = matchRepository as MatchRepository;
             _swipeRepository = swipeRepository as SwipeRepository;
             _userManager = userManager;
+        }
+
+        public async Task<IEnumerable<MatchReadDto>> GetAllByUser(string id)
+        {
+            var rooms = await _matchRepository.GetAllByUser(id);
+            return _mapper.Map<IEnumerable<MatchReadDto>>(rooms);
         }
 
         public async Task<SwipeReadDto> Swipe(SwipeCreateDto swipeCreateDto)
