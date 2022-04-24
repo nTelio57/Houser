@@ -2,6 +2,9 @@ import 'dart:math';
 
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:houser/enums/SleepType.dart';
+import 'package:houser/extensions/bool_extensions.dart';
+import 'package:houser/extensions/int_extensions.dart';
 import 'package:houser/models/User.dart';
 import 'package:houser/services/api_service.dart';
 import 'package:houser/utils/current_login.dart';
@@ -111,15 +114,26 @@ class _WGUserCardState extends State<WGUserCard> {
 
   Widget userDetailsList()
   {
-    Column column =
-    Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        title(),
-        const SizedBox(height: 47),
-        const SizedBox(height: 20),
-      ],
-    );
+    User user = widget.user;
+    Column column = Column(crossAxisAlignment: CrossAxisAlignment.start, children: []);
+
+    column.children.add(title());
+    column.children.add(const SizedBox(height: 8));
+    column.children.add(basicTextField(Icons.cake, user.age.toString()));
+    column.children.add(basicTextField(Icons.location_city, user.city!));
+    column.children.add(basicTextField(user.sex!.iconBySex, user.sex!.sexToString));
+    column.children.add(const SizedBox(height: 20));
+    column.children.add(basicTextField(user.isStudying!.iconByStudying, user.isStudying! ? 'Studijuoju' : 'Nestudijuoju'));
+    column.children.add(basicTextField(user.isWorking!.iconByWorking, user.isWorking! ? 'Dirbu' : 'Nedirbu'));
+    column.children.add(basicTextField(user.isSmoking!.iconBySmoking, user.isSmoking! ? 'Rūkau' : 'Nerūkau'));
+    column.children.add(const SizedBox(height: 20));
+    if(user.animalCount != null && user.animalCount! > 0)
+    {
+      column.children.add(basicTextField(Icons.pets, user.animalCount!.animalCountToString));
+    }
+    column.children.add(basicTextField(Icons.groups, user.guestCount!.guestCountToString));
+    column.children.add(basicTextField(Icons.celebration, user.partyCount!.partyCountToString));
+    user.sleepType != SleepType.none ? column.children.add(basicTextField(user.sleepType!.index.iconBySleepType, user.sleepType!.index.sleepTypeToString)) : null;
 
     return column;
   }
@@ -197,7 +211,7 @@ class _WGUserCardState extends State<WGUserCard> {
   {
     User user = widget.user;
     return SizedBox(
-      height: 95,
+      height: 70,
       child: Text(
         user.name!.toUpperCase(),
         textAlign: TextAlign.left,
