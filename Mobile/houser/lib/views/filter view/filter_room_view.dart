@@ -59,14 +59,27 @@ class FilterRoomView extends StatefulWidget {
 
   Filter getFilterByForm()
   {
+    DateTime? dateFromTry, dateToTry;
+
+    try{
+      dateFromTry = DateFormat('MM/dd/yyyy').parse(_dateFromText.text);
+    }catch (e){
+      dateFromTry = null;
+    }
+    try{
+      dateToTry = DateFormat('MM/dd/yyyy').parse(_dateToText.text);
+    }catch (e){
+      dateToTry = null;
+    }
+
     return RoomFilter(
         0,
         CurrentLogin().user!.id,
         double.tryParse(_areaText.text),
         double.tryParse(_priceText.text),
         _cityText.text,
-        DateFormat('MM/dd/yyyy').parse(_dateFromText.text),
-        DateFormat('MM/dd/yyyy').parse(_dateToText.text),
+        dateFromTry,
+        dateToTry,
         int.tryParse(_freeRoomText.text),
         int.tryParse(_bedCountText.text),
         smokingRuleButton.isEnabled,

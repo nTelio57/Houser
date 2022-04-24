@@ -44,7 +44,7 @@ class _ProfileViewState extends State<ProfileView> {
   Widget roomsButton()
   {
     return IconButton(
-      icon: const Icon(Icons.list),
+      icon: const Icon(Icons.home),
       onPressed: () {
         Navigator.pop(context);
       }
