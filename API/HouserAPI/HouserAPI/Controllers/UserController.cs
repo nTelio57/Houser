@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using System;
+using Microsoft.AspNetCore.Mvc;
 using System.Threading.Tasks;
 using AutoMapper;
 using HouserAPI.Auth;
@@ -47,6 +48,22 @@ namespace HouserAPI.Controllers
                 return NotFound();
 
             _mapper.Map(userUpdateDto, user);
+            await _userManager.UpdateAsync(user);
+            return NoContent();
+        }
+
+        [HttpPut("visibility/{id}/{visibility}")]
+        public async Task<IActionResult> UpdateVisibility(string id, int visibility)
+        {
+            var userId = User.FindFirst(CustomClaims.UserId)?.Value;
+            if (userId != id)
+                return Forbid();
+
+            var user = await _userManager.FindByIdAsync(id);
+            if (user == null)
+                return NotFound();
+
+            user.IsVisible = Convert.ToBoolean(visibility);
             await _userManager.UpdateAsync(user);
             return NoContent();
         }
