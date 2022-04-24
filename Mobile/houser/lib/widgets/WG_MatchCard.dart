@@ -27,13 +27,13 @@ class _WGMatchCardState extends State<WGMatchCard> {
   Widget body()
   {
     return Container(
-      height: 80,
+      height: 100,
       color: Colors.transparent,
       child: Card(
          child: Padding(
            padding: const EdgeInsets.all(8.0),
            child: Row(
-             //crossAxisAlignment: CrossAxisAlignment.start,
+             crossAxisAlignment: CrossAxisAlignment.start,
              children: [
                image(),
                title()
@@ -48,7 +48,7 @@ class _WGMatchCardState extends State<WGMatchCard> {
   {
     var imageId = getImageId();
     return CircleAvatar(
-      radius: 30,
+      radius: 40,
       backgroundColor: Theme.of(context).primaryColorDark,
       foregroundImage: networkImage(imageId),
       child: initialsText(),
@@ -113,10 +113,10 @@ class _WGMatchCardState extends State<WGMatchCard> {
       padding: const EdgeInsets.only(left: 10),
       child: Text(
         getTitle(),
-        style: TextStyle(
+        style: const TextStyle(
           fontSize: 20,
-          fontWeight: FontWeight.w700,
-          color: Theme.of(context).primaryColor
+          fontWeight: FontWeight.w500,
+          color: Colors.black
         ),
       ),
     );
