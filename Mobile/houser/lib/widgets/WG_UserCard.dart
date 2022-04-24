@@ -29,6 +29,8 @@ class WGUserCard extends StatefulWidget {
 
 class _WGUserCardState extends State<WGUserCard> {
 
+  bool _isScrollable = false;
+
   @override
   void initState() {
     super.initState();
@@ -109,6 +111,8 @@ class _WGUserCardState extends State<WGUserCard> {
       renderPanelSheet: false,
       minHeight: deviceHeight * 0.24,
       maxHeight: 600,
+      onPanelOpened: onPanelOpened,
+      onPanelClosed: onPanelClosed,
     );
   }
 
@@ -138,23 +142,38 @@ class _WGUserCardState extends State<WGUserCard> {
     return column;
   }
 
+  void onPanelOpened()
+  {
+    setState(() {
+      _isScrollable = true;
+    });
+  }
+
+  void onPanelClosed()
+  {
+    setState(() {
+      _isScrollable = false;
+    });
+  }
+
   Widget slidePanel()
   {
-    return SingleChildScrollView(
-      child: Container(
-        decoration: BoxDecoration(
-            color: Theme.of(context).primaryColor.withOpacity(0.7),
-            borderRadius: const BorderRadius.all(Radius.circular(16.0)),
-            boxShadow: [
-              BoxShadow(
-                blurRadius: 10.0,
-                color: Theme.of(context).primaryColor.withOpacity(0.3),
-              ),
-            ]
-        ),
-        margin: const EdgeInsets.fromLTRB(12.0, 0, 12.0, 12),
-        padding: const EdgeInsets.fromLTRB(20, 20, 20, 20),
+    return Container(
+      decoration: BoxDecoration(
+          color: Theme.of(context).primaryColor.withOpacity(0.7),
+          borderRadius: const BorderRadius.all(Radius.circular(16.0)),
+          boxShadow: [
+            BoxShadow(
+              blurRadius: 10.0,
+              color: Theme.of(context).primaryColor.withOpacity(0.3),
+            ),
+          ]
+      ),
+      margin: const EdgeInsets.fromLTRB(12.0, 0, 12.0, 12),
+      padding: const EdgeInsets.fromLTRB(20, 20, 20, 20),
+      child: SingleChildScrollView(
         child: userDetailsList(),
+        physics: _isScrollable ? const AlwaysScrollableScrollPhysics() : const NeverScrollableScrollPhysics(),
       ),
     );
   }
