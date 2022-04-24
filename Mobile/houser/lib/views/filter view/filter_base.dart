@@ -11,6 +11,8 @@ import 'package:houser/views/filter%20view/filter_user_view.dart';
 
 // ignore: must_be_immutable
 class FilterBaseView extends StatefulWidget {
+  final CurrentLogin _currentLogin = CurrentLogin();
+
   FilterBaseView(this.onFilterChanged, {Key? key}) : super(key: key);
 
   Function(Filter) onFilterChanged;
@@ -159,6 +161,14 @@ class _FilterBaseViewState extends State<FilterBaseView> with SingleTickerProvid
             return;
           }
 
+          var currentFilter = widget._currentLogin.user!.filter;
+          currentFilter!.id = 0;
+          if(getFilterByForm() == currentFilter)
+            {
+              Navigator.pop(context);
+              return;
+            }
+
           EasyLoading.show();
           await onButtonClick();
           EasyLoading.dismiss();
@@ -195,17 +205,17 @@ class _FilterBaseViewState extends State<FilterBaseView> with SingleTickerProvid
 
   int loadFormByFilter()
   {
-    if(CurrentLogin().user!.filter == null) {
+    if(widget._currentLogin.user!.filter == null) {
       return 0;
     }
 
-    switch(CurrentLogin().user!.filter!.filterType)
+    switch(widget._currentLogin.user!.filter!.filterType)
     {
       case FilterType.room:
-        filterRoomForm.setFormByFilter(CurrentLogin().user!.filter! as RoomFilter);
+        filterRoomForm.setFormByFilter(widget._currentLogin.user!.filter! as RoomFilter);
         return 0;
       case FilterType.user:
-        filterUserForm.setFormByFilter(CurrentLogin().user!.filter! as UserFilter);
+        filterUserForm.setFormByFilter(widget._currentLogin.user!.filter! as UserFilter);
         return 1;
       default:
         return 0;
