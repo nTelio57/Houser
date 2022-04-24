@@ -9,8 +9,9 @@ part 'User.g.dart';
 
 @JsonSerializable()
 class User {
-  User(this.id, this.email,{ this.name, this.surname, this.city, this.birthDate, this.sex, this.animalCount, this.isStudying, this.isWorking, this.isSmoking, this.sleepType, this.guestCount, this.partyCount, this.filter});
+  User(this.id, this.email,{ this.isVisible = false, this.name, this.surname, this.city, this.birthDate, this.sex, this.animalCount, this.isStudying, this.isWorking, this.isSmoking, this.sleepType, this.guestCount, this.partyCount, this.filter});
 
+  bool isVisible;
   String id;
   String email;
   String? name;

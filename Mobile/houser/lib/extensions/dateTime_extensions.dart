@@ -4,8 +4,9 @@ extension DateTimeExtension on DateTime{
   int get age{
     var today = DateTime.now();
     var age = today.year - year;
+    var extraYear = DateTime(year, today.month, today.day+1);
 
-    if(today.isAfter(this)) {
+    if(extraYear.isBefore(this)) {
       age -= 1;
     }
     return age;

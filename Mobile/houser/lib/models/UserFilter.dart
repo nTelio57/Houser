@@ -24,4 +24,7 @@ class UserFilter extends Filter{
 
   @override
   Map<String, dynamic> toJson() => _$UserFilterToJson(this);
+
+  @override
+  List<Object?> get props => [id, userId, filterType, ageFrom, ageTo, sex, animalCount, isStudying, isWorking, isSmoking, guestCount, partyCount, sleepType];
 }

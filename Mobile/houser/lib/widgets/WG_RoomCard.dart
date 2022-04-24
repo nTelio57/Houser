@@ -26,6 +26,8 @@ class WGRoomCard extends StatefulWidget {
 
 class _WGRoomCardState extends State<WGRoomCard> {
 
+  bool _isScrollable = false;
+
   @override
   void initState() {
     super.initState();
@@ -94,6 +96,20 @@ class _WGRoomCardState extends State<WGRoomCard> {
     return slidingUpPanel(widget.room);
   }
 
+  void onPanelOpened()
+  {
+    setState(() {
+      _isScrollable = true;
+    });
+  }
+
+  void onPanelClosed()
+  {
+    setState(() {
+      _isScrollable = false;
+    });
+  }
+
   Widget slidingUpPanel(Room room)
   {
     var deviceHeight = MediaQuery.of(context).size.height;
@@ -105,29 +121,38 @@ class _WGRoomCardState extends State<WGRoomCard> {
       renderPanelSheet: false,
       minHeight: deviceHeight * 0.24,
       maxHeight: 600,
+      onPanelOpened: onPanelOpened,
+      onPanelClosed: onPanelClosed,
     );
   }
 
   Widget roomDetailsList()
   {
     Room room = widget.room;
+    Column column = Column(crossAxisAlignment: CrossAxisAlignment.start, children: []);
 
-    Column column =
-    Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        title(),
-        durationDate(),
-        price(),
-        const SizedBox(height: 47),
-        basicTextField(Icons.location_city, room.city),
-        basicTextField(Icons.location_on, room.address),
-        basicTextField(Icons.square_foot, ('${room.area}m\u00B2')),
-        basicTextField(Icons.meeting_room, '${room.freeRoomCount} laisvas kambarys iš ${room.totalRoomCount}'),
-        const SizedBox(height: 20),
-      ],
-    );
+    column.children.add(title());
+    column.children.add(durationDate());
+    column.children.add(price());
 
+    column.children.add(const SizedBox(height: 47));
+    column.children.add(labelField('Pagrindinė info'));
+    column.children.add(divider());
+    column.children.add(basicTextField(Icons.location_city, room.city));
+    column.children.add(basicTextField(Icons.location_on, room.address));
+    if(room.area != null && room.area != 0)
+    {
+      column.children.add(basicTextField(Icons.square_foot, ('${room.area}m\u00B2')));
+    }
+    column.children.add(basicTextField(Icons.meeting_room, '${room.freeRoomCount} laisvas kambarys iš ${room.totalRoomCount}'));
+    column.children.add(const SizedBox(height: 20));
+    column.children.add(labelField('Taisyklės'));
+    column.children.add(divider());
+    room.ruleAnimals ? column.children.add(basicTextField(Icons.add, 'Gyvūnai galimi')) : column.children.add(basicTextField(Icons.remove, 'Gyvūnai negalimi'));
+    room.ruleSmoking ? column.children.add(basicTextField(Icons.add, 'Rūkymas leidžiamas')) : column.children.add(basicTextField(Icons.remove, 'Rūkymas neleidžiamas'));
+    column.children.add(const SizedBox(height: 20));
+    column.children.add(labelField('Privalumai'));
+    column.children.add(divider());
     room.accommodationTv ? column.children.add(basicTextField(Icons.tv, 'TV')) : null;
     room.accommodationWifi ? column.children.add(basicTextField(Icons.wifi, 'Wifi')): null;
     room.accommodationBalcony ? column.children.add(basicTextField(Icons.balcony, 'Balkonas')): null;
@@ -138,23 +163,44 @@ class _WGRoomCardState extends State<WGRoomCard> {
     return column;
   }
 
+  Widget divider()
+  {
+    return const Divider(
+      color: Colors.white,
+      thickness: 2,
+    );
+  }
+
+  Widget labelField(String text)
+  {
+    return Text(
+      text,
+      style: const TextStyle(
+          color: Colors.white,
+          fontSize: 22,
+          fontWeight: FontWeight.w700
+      ),
+    );
+  }
+
   Widget slidePanel()
   {
-    return SingleChildScrollView(
-      child: Container(
-        decoration: BoxDecoration(
-            color: Theme.of(context).primaryColor.withOpacity(0.7),
-            borderRadius: const BorderRadius.all(Radius.circular(16.0)),
-            boxShadow: [
-              BoxShadow(
-                blurRadius: 10.0,
-                color: Theme.of(context).primaryColor.withOpacity(0.3),
-              ),
-            ]
-        ),
-        margin: const EdgeInsets.fromLTRB(12.0, 0, 12.0, 12),
-        padding: const EdgeInsets.fromLTRB(20, 20, 20, 20),
+    return Container(
+      decoration: BoxDecoration(
+          color: Theme.of(context).primaryColor.withOpacity(0.7),
+          borderRadius: const BorderRadius.all(Radius.circular(16.0)),
+          boxShadow: [
+            BoxShadow(
+              blurRadius: 10.0,
+              color: Theme.of(context).primaryColor.withOpacity(0.3),
+            ),
+          ]
+      ),
+      margin: const EdgeInsets.fromLTRB(12.0, 0, 12.0, 12),
+      padding: const EdgeInsets.fromLTRB(20, 20, 20, 20),
+      child: SingleChildScrollView(
         child: roomDetailsList(),
+        physics: _isScrollable ? const AlwaysScrollableScrollPhysics() : const NeverScrollableScrollPhysics(),
       ),
     );
   }

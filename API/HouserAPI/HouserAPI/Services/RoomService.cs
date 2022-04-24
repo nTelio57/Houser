@@ -24,6 +24,8 @@ namespace HouserAPI.Services
             if (roomCreateDto is null) throw new ArgumentNullException((nameof(roomCreateDto)));
 
             var roomModel = _mapper.Map<Room>(roomCreateDto);
+            roomModel.IsVisible = true;
+
             await _repository.Create(roomModel);
             await _repository.SaveChanges();
 

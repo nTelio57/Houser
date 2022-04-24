@@ -44,7 +44,7 @@ class _ProfileViewState extends State<ProfileView> {
   Widget roomsButton()
   {
     return IconButton(
-      icon: const Icon(Icons.list),
+      icon: const Icon(Icons.home),
       onPressed: () {
         Navigator.pop(context);
       }
@@ -208,6 +208,7 @@ class _ProfileViewState extends State<ProfileView> {
   {
     return Column(
       children: [
+        userVisibilitySwitch(),
         menuButton('Mano pasiūlymai', Icons.format_list_bulleted, () => onRoomListClicked()),
         menuButton('Redaguoti profilį', Icons.edit,() => null),
         menuButton('Nustatymai', Icons.settings,() => null),
@@ -247,6 +248,43 @@ class _ProfileViewState extends State<ProfileView> {
 
       ),
     );
+  }
+
+  Widget userVisibilitySwitch()
+  {
+    return SwitchListTile(
+      onChanged: (bool value) {
+        updateUserVisibility(!widget._currentLogin.user!.isVisible);
+        setState(() {
+          widget._currentLogin.user!.isVisible = !widget._currentLogin.user!.isVisible;
+        });
+      },
+      contentPadding: const EdgeInsets.only(left: 8),
+      value: widget._currentLogin.user!.isVisible,
+      title: Row(
+        children: [
+          Icon(
+            Icons.visibility,
+            size: 28,
+            color: Theme.of(context).primaryColorDark,
+          ),
+          const SizedBox(width: 4),
+          Text(
+            'Rodyti manę kitiems'.toUpperCase(),
+            textAlign: TextAlign.left,
+            style: TextStyle(
+                fontSize: 18,
+                fontWeight: FontWeight.w600,
+                color: Theme.of(context).primaryColor
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Future updateUserVisibility(bool visibility) async{
+    await widget._apiService.UpdateUserVisibility(widget._currentLogin.user!.id, visibility);
   }
 
   void onRoomListClicked()

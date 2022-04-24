@@ -178,4 +178,11 @@ class ApiService {
 
     return parsed.map<Match>((e) => Match.fromJson(e)).toList();
   }
+
+  Future<bool> UpdateUserVisibility(String id, bool visibility) async
+  {
+    int visibilityInt = visibility ? 1 : 0;
+    ApiResponse response = await _apiClient.Put('/api/User/visibility/$id/$visibilityInt', '');
+    return response.statusCode.isSuccessStatusCode;
+  }
 }

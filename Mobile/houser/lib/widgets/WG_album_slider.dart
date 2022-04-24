@@ -138,6 +138,13 @@ class _WGAlbumSliderState extends State<WGAlbumSlider> {
                     width: 5
                 )
             ),
+            child: const Align(
+              alignment: Alignment.topLeft,
+              child: Icon(
+                Icons.star,
+                color: Colors.yellow,
+              ),
+            ),
           ),
         ),
       ),
