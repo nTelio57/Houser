@@ -50,6 +50,11 @@ class _PersonalDetailsMainInfoState extends State<PersonalDetailsMainInfo> {
     if(widget.birthDate == null) {
       return 'Įveskite gimimo datą';
     }
+    var now = DateTime.now();
+    var adultDateTime = DateTime(now.year - 18, now.month, now.day);
+    if(widget.birthDate!.isAfter(adultDateTime)) {
+      return 'Turite turėti 18 metų.';
+    }
     if(widget.birthDate!.isAfter(DateTime.now()) || widget.birthDate!.isAtSameMomentAs(DateTime.now())) {
       return 'Įvesta netinkama data';
     }
