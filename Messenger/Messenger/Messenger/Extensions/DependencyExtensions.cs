@@ -10,8 +10,9 @@ namespace Messenger.Extensions
         public static IServiceCollection AddRepositoriesDependencies(this IServiceCollection services)
         {
             return services
+                    .AddScoped<IRepository<Match>, MatchRepository>()
                 .AddScoped<IRepository<Message>, MessageRepository>()
-                .AddScoped<IRepository<Match>, MatchRepository>();
+                ;
         }
 
         public static IServiceCollection AddServiceDependencies(this IServiceCollection services)
