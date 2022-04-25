@@ -12,13 +12,13 @@ namespace Messenger.Services
     public class MessageService : IMessageService
     {
         private readonly IMapper _mapper;
-        private readonly MatchRepository _matchRepository;
+        private readonly IRepository<Match> _matchRepository;
         private readonly MessageRepository _messageRepository;
 
         public MessageService(IMapper mapper, IRepository<Message> messageRepository, IRepository<Match> matchRepository)
         {
             _mapper = mapper;
-            _matchRepository = matchRepository as MatchRepository;
+            _matchRepository = matchRepository;
             _messageRepository = messageRepository as MessageRepository;
         }
 
@@ -42,10 +42,9 @@ namespace Messenger.Services
             return _mapper.Map <MessageReadDto>(messageModel);
         }
 
-        public async Task<MatchReadDto> GetMatchById(int id)
+        public async Task<Match> GetMatchById(int id)
         {
-            var match = await _matchRepository.GetById(id);
-            return _mapper.Map<MatchReadDto>(match);
+            return await _matchRepository.GetById(id);
         }
     }
 }

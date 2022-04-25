@@ -2,6 +2,7 @@
 using System.Threading.Tasks;
 using Messenger.DTOs.Match;
 using Messenger.DTOs.Message;
+using Messenger.Models;
 
 namespace Messenger.Services
 {
@@ -9,6 +10,6 @@ namespace Messenger.Services
     {
         Task<MessageReadDto> Create(MessageCreateDto messageCreateDto);
         Task<IEnumerable<MessageReadDto>> GetAllByMatchId(int matchId);
-        Task<MatchReadDto> GetMatchById(int id);
+        Task<Match> GetMatchById(int id);
     }
 }
