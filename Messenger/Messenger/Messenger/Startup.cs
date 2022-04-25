@@ -1,5 +1,4 @@
 using System;
-using System.Security.Claims;
 using Messenger.Data;
 using Messenger.Extensions;
 using Microsoft.AspNetCore.Builder;
@@ -9,14 +8,10 @@ using Microsoft.Extensions.Hosting;
 using Messenger.Hubs;
 using Messenger.Models;
 using Messenger.Utils;
-using Microsoft.AspNetCore.Authentication;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.SignalR;
 using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.DependencyInjection.Extensions;
-using Microsoft.Extensions.Options;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Serialization;
 
@@ -39,7 +34,7 @@ namespace Messenger
         {
             services.Configure<CookiePolicyOptions>(options =>
             {
-                options.CheckConsentNeeded = context => true;
+                options.CheckConsentNeeded = _ => true;
                 options.MinimumSameSitePolicy = SameSiteMode.None;
             });
             services.AddSwagger();

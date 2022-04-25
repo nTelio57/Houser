@@ -1,6 +1,5 @@
 ﻿using System.Collections.Generic;
 using System.Threading.Tasks;
-using Messenger.DTOs.Match;
 using Messenger.DTOs.Message;
 using Messenger.Models;
 

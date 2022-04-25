@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using AutoMapper;
 using Messenger.Data;
-using Messenger.DTOs.Match;
 using Messenger.DTOs.Message;
 using Messenger.Models;
 
