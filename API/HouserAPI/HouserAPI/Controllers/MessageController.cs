@@ -1,13 +1,12 @@
 ﻿using System;
 using System.Threading.Tasks;
-using Messenger.Auth;
-using Messenger.DTOs.Message;
-using Messenger.Services;
+using HouserAPI.DTOs.Message;
+using HouserAPI.Services;
 using Microsoft.AspNetCore.Mvc;
 
-namespace Messenger.Controllers
+namespace HouserAPI.Controllers
 {
-    [Route("[controller]")]
+    [Route("api/[controller]")]
     [ApiController]
     public class MessageController : ControllerBase
     {
