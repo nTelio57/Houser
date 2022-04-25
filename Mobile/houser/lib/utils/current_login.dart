@@ -1,4 +1,6 @@
 import 'package:flutter/foundation.dart';
+import 'package:houser/models/Match.dart';
+import 'package:houser/models/Message.dart';
 import 'package:houser/models/Room.dart';
 import 'package:houser/models/User.dart';
 import 'package:houser/services/api_service.dart';
@@ -11,6 +13,8 @@ class CurrentLogin{
 
   String jwtToken = '';
   User? user;
+
+  List<Match> matchList = [];
 
   static CurrentLogin _singleton = CurrentLogin._internal();
   CurrentLogin._internal();
@@ -56,6 +60,17 @@ class CurrentLogin{
       return false;
     }
     return true;
+  }
+
+  Future loadMessages() async{
+    var list = await _apiService.GetMatchesByUser(user!.id);
+    matchList = list;
+
+    for(var match in matchList)
+      {
+        var messageList = await _apiService.GetMessagesByMatch(match.id);
+        match.messages = messageList;
+      }
   }
 
   void clearSharedPreferences()

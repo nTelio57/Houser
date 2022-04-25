@@ -1,4 +1,5 @@
 import 'package:houser/enums/FilterType.dart';
+import 'package:houser/models/Message.dart';
 import 'package:houser/models/Room.dart';
 import 'package:houser/models/User.dart';
 import 'package:json_annotation/json_annotation.dart';
@@ -14,6 +15,8 @@ class Match{
   User firstUser;
   User secondUser;
   Room? room;
+
+  List<Message> messages = [];
 
   factory Match.fromJson(Map<String, dynamic> json) => _$MatchFromJson(json);
 

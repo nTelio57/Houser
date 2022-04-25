@@ -5,6 +5,7 @@ import 'package:houser/models/AuthRequest.dart';
 import 'package:houser/models/AuthResult.dart';
 import 'package:houser/models/Filter.dart';
 import 'package:houser/models/Image.dart';
+import 'package:houser/models/Message.dart';
 import 'package:houser/models/Room.dart';
 import 'package:houser/models/RoomFilter.dart';
 import 'package:houser/models/Swipe.dart';
@@ -184,5 +185,14 @@ class ApiService {
     int visibilityInt = visibility ? 1 : 0;
     ApiResponse response = await _apiClient.Put('/api/User/visibility/$id/$visibilityInt', '');
     return response.statusCode.isSuccessStatusCode;
+  }
+
+  Future<List<Message>> GetMessagesByMatch(int id) async{
+    ApiResponse response = await _apiClient.Get('/api/Message/match/$id');
+
+    List<dynamic> jsonData = response.body;
+    final parsed = jsonData.cast<Map<String, dynamic>>();
+
+    return parsed.map<Message>((e) => Message.fromJson(e)).toList();
   }
 }

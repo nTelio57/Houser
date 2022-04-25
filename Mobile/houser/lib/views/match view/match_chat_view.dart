@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:houser/services/api_service.dart';
 import 'package:houser/services/messenger_service.dart';
 import 'package:houser/utils/current_login.dart';
 import 'package:houser/models/Match.dart';
@@ -8,6 +9,7 @@ class MatchChatView extends StatefulWidget {
 
   final MessengerService _messengerService = MessengerService();
   final CurrentLogin _currentLogin = CurrentLogin();
+  final ApiService _apiService = ApiService();
   Match match;
 
   @override
@@ -28,14 +30,84 @@ class _MatchChatViewState extends State<MatchChatView> {
   {
     return Stack(
       children: [
-        messageList(),
+        messageLoader(),
         bottomPanel()
       ],
     );
   }
 
-  Widget messageList()
+  Widget messageLoader()
   {
+    return FutureBuilder(
+      future: loadMessages().timeout(const Duration(seconds: 5)),
+      builder: (BuildContext context, AsyncSnapshot<dynamic> snapshot)
+      {
+        if(snapshot.hasData)
+        {
+          return messageListView();
+        }
+        else if(snapshot.hasError)
+        {
+          return SizedBox(
+            width: double.infinity,
+            child: Text(
+              'Įvyko klaida bandant gauti žinutes.'.toUpperCase(),
+              textAlign: TextAlign.center,
+              style: const TextStyle(
+                  fontWeight: FontWeight.w700,
+                  fontSize: 14,
+                  color: Colors.red
+              ),
+            ),
+          );
+        }
+        else
+        {
+          if(widget.match.messages.isNotEmpty) {
+            return messageListView();
+          }
+          else
+          {
+            return const Center(
+              child: CircularProgressIndicator(),
+            );
+          }
+        }
+      }
+    );
+  }
+
+  Future loadMessages() async
+  {
+    var messages = await widget._apiService.GetMessagesByMatch(widget.match.id);
+    widget.match.messages = messages;
+    widget._currentLogin.matchList.firstWhere((x) => x.id == widget.match.id).messages = messages;
+  }
+
+  Widget messageListView()
+  {
+    var messages = widget.match.messages;
+    var userId = widget._currentLogin.user!.id;
+    return RefreshIndicator(
+      onRefresh: () async {
+        await loadMessages();
+        setState(() {
+
+        });
+      },
+      child: Container(
+        padding: const EdgeInsets.symmetric(horizontal: 8),
+        child: ListView.builder(
+            itemCount: messages.length,
+            itemBuilder: (context, index)
+            {
+              return messages[index].senderId == userId ? myBubble(messages[index].content) : otherBubble(messages[index].content);
+            }
+        ),
+      ),
+    );
+
+
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 8),
       width: double.infinity,
@@ -104,11 +176,14 @@ class _MatchChatViewState extends State<MatchChatView> {
   {
     return Align(
       alignment: Alignment.bottomCenter,
-      child: Row(
-        children: [
-          inputFieldContainer(),
-          enterButton()
-        ],
+      child: Container(
+        color: Theme.of(context).primaryColorLight,
+        child: Row(
+          children: [
+            inputFieldContainer(),
+            enterButton()
+          ],
+        ),
       ),
     );
   }
