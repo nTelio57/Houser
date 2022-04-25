@@ -50,7 +50,7 @@ class _WGMatchCardState extends State<WGMatchCard> {
 
   void onCardTap()
   {
-    Navigator.push(context, MaterialPageRoute(builder: (context) => MatchChatView()));
+    Navigator.push(context, MaterialPageRoute(builder: (context) => MatchChatView(widget.match)));
   }
 
   Widget image()

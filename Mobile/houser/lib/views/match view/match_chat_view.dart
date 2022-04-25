@@ -1,12 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:houser/services/messenger_service.dart';
 import 'package:houser/utils/current_login.dart';
+import 'package:houser/models/Match.dart';
 
 class MatchChatView extends StatefulWidget {
-  MatchChatView({Key? key}) : super(key: key);
+  MatchChatView(this.match, {Key? key}) : super(key: key);
 
   final MessengerService _messengerService = MessengerService();
   final CurrentLogin _currentLogin = CurrentLogin();
+  Match match;
 
   @override
   _MatchChatViewState createState() => _MatchChatViewState();
@@ -160,6 +162,7 @@ class _MatchChatViewState extends State<MatchChatView> {
 
   Future onSendPressed() async
   {
-    await widget._messengerService.sendMessage(widget._currentLogin.user!.id, 'Yooo');
+    await widget._messengerService.sendMessage(widget.match.id, widget._currentLogin.user!.id, _messageInputController.text);
+    _messageInputController.text = '';
   }
 }
