@@ -87,7 +87,7 @@ class _MatchListViewState extends State<MatchListView> {
 
   Widget matchListView()
   {
-    var provider = Provider.of<MessengerService>(context, listen: false);
+    var provider = Provider.of<MessengerService>(context, listen: true);
     var matchList = provider.matchList;
     return RefreshIndicator(
       onRefresh: () async {

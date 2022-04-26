@@ -127,6 +127,7 @@ class _MatchChatViewState extends State<MatchChatView> {
 
         child: Text(
           text,
+          textAlign: TextAlign.right,
           style: const TextStyle(
             fontSize: 15,
             fontWeight: FontWeight.w500,
