@@ -1,8 +1,11 @@
 import 'package:flutter/foundation.dart';
-import 'package:houser/models/Room.dart';
+import 'package:flutter/material.dart';
 import 'package:houser/models/User.dart';
 import 'package:houser/services/api_service.dart';
+import 'package:houser/services/messenger_service.dart';
+import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+
 
 class CurrentLogin{
 
@@ -56,6 +59,18 @@ class CurrentLogin{
       return false;
     }
     return true;
+  }
+
+  Future loadMessages(BuildContext context) async{
+    var provider = Provider.of<MessengerService>(context, listen: true);
+    var list = await _apiService.GetMatchesByUser(user!.id);
+    provider.matchList = list;
+
+    for(var match in provider.matchList)
+      {
+        var messageList = await _apiService.GetMessagesByMatch(match.id);
+        match.messages = messageList;
+      }
   }
 
   void clearSharedPreferences()

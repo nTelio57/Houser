@@ -3,6 +3,7 @@ import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:houser/enums/FilterType.dart';
 import 'package:houser/models/Filter.dart';
 import 'package:houser/services/api_service.dart';
+import 'package:houser/services/messenger_service.dart';
 import 'package:houser/utils/current_login.dart';
 import 'package:houser/views/filter%20view/filter_base.dart';
 import 'package:houser/views/match%20view/match_list_view.dart';
@@ -161,7 +162,8 @@ class _OfferViewState extends State<OfferView> {
           color: Colors.white,
           size: 24,
         ),
-        onPressed: () {
+        onPressed: () async{
+          await MessengerService().init(context);
           Navigator.push(context, MaterialPageRoute(builder: (context) => MatchListView()));
         },
       ),

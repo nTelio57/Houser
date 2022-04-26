@@ -22,8 +22,8 @@ namespace HouserAPI.Data.Repositories
         public async Task<IEnumerable<Match>> GetAllByUser(string userId)
         {
             return await IncludeDependencies(Entities)
-                .Include(x => x.FirstUser).ThenInclude(x => x.Images)
-                .Include(x => x.SecondUser).ThenInclude(x => x.Images)
+                .Include(x => x.FirstUser).ThenInclude(x => x.Images.Where(y => y.RoomId == null))
+                .Include(x => x.SecondUser).ThenInclude(x => x.Images.Where(y => y.RoomId == null))
                 .Include(x => x.Room).ThenInclude(x => x.Images)
                 .Where(x => x.FirstUserId == userId || x.SecondUserId == userId).ToListAsync();
         }

@@ -4,6 +4,7 @@ import 'dart:io';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
+import 'package:houser/services/messenger_service.dart';
 import 'package:houser/utils/current_login.dart';
 import 'package:houser/resources/app_colors.dart';
 import 'package:houser/views/offer%20view/offer_view.dart';
@@ -64,8 +65,11 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return ChangeNotifierProvider(
-      create: (context) => OfferCardManager(),
+    return MultiProvider(
+      providers: [
+        ChangeNotifierProvider(create: (context) => OfferCardManager()),
+        ChangeNotifierProvider(create: (context) => MessengerService()),
+      ],
       child: MaterialApp(
         title: 'Houser',
         theme: ThemeData(

@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:houser/models/Match.dart';
 import 'package:houser/services/api_service.dart';
+import 'package:houser/services/messenger_service.dart';
 import 'package:houser/utils/current_login.dart';
 import 'package:houser/widgets/WG_MatchCard.dart';
+import 'package:provider/provider.dart';
 
 class MatchListView extends StatefulWidget {
 
@@ -16,8 +18,6 @@ class MatchListView extends StatefulWidget {
 }
 
 class _MatchListViewState extends State<MatchListView> {
-
-  List<Match> matches = [];
 
   @override
   Widget build(BuildContext context) {
@@ -38,13 +38,15 @@ class _MatchListViewState extends State<MatchListView> {
 
   Widget matchLoader()
   {
+    var provider = Provider.of<MessengerService>(context, listen: false);
+    var matchList = provider.matchList;
     return FutureBuilder(
       future: loadMatches().timeout(const Duration(seconds: 5)),
       builder: (BuildContext context, AsyncSnapshot<dynamic> snapshot)
       {
         if(snapshot.hasData)
         {
-          return matchList();
+          return matchListView();
         }
         else if(snapshot.hasError)
         {
@@ -63,8 +65,8 @@ class _MatchListViewState extends State<MatchListView> {
         }
         else
         {
-          if(matches.isNotEmpty) {
-            return matchList();
+          if(matchList.isNotEmpty) {
+            return matchListView();
           }
           else
           {
@@ -79,12 +81,14 @@ class _MatchListViewState extends State<MatchListView> {
 
   Future loadMatches() async
   {
-    matches = await widget._apiService.GetMatchesByUser(widget._currentLogin.user!.id);
+    await widget._currentLogin.loadMessages(context);
     return true;
   }
 
-  Widget matchList()
+  Widget matchListView()
   {
+    var provider = Provider.of<MessengerService>(context, listen: true);
+    var matchList = provider.matchList;
     return RefreshIndicator(
       onRefresh: () async {
         await loadMatches();
@@ -93,10 +97,10 @@ class _MatchListViewState extends State<MatchListView> {
         });
       },
       child: ListView.builder(
-          itemCount: matches.length,
+          itemCount: matchList.length,
           itemBuilder: (context, index)
           {
-            return WGMatchCard(matches[index]);
+            return WGMatchCard(matchList[index]);
           }
       ),
     );
