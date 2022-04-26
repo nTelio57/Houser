@@ -1,3 +1,4 @@
+import 'package:flutter/cupertino.dart';
 import 'package:houser/enums/FilterType.dart';
 import 'package:houser/models/Message.dart';
 import 'package:houser/models/Room.dart';
@@ -9,13 +10,15 @@ part 'Match.g.dart';
 @JsonSerializable()
 class Match{
   Match(this.id, this.filterType, this.firstUser, this.secondUser, this.room);
+  Match.empty();
 
-  int id;
-  FilterType filterType;
-  User firstUser;
-  User secondUser;
+  int id = 0;
+  FilterType filterType = FilterType.none;
+  User firstUser = User("", "");
+  User secondUser = User("", "");
   Room? room;
 
+  @JsonKey(ignore: true)
   List<Message> messages = [];
 
   factory Match.fromJson(Map<String, dynamic> json) => _$MatchFromJson(json);

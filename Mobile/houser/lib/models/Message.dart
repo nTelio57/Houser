@@ -9,7 +9,7 @@ class Message{
   int id;
   String senderId;
   int matchId;
-  DateTime sendTime;
+  DateTime? sendTime;
   String content;
 
   factory Message.fromJson(Map<String, dynamic> json) => _$MessageFromJson(json);
