@@ -1,10 +1,11 @@
 import 'package:flutter/foundation.dart';
-import 'package:houser/models/Match.dart';
-import 'package:houser/models/Message.dart';
-import 'package:houser/models/Room.dart';
+import 'package:flutter/material.dart';
 import 'package:houser/models/User.dart';
 import 'package:houser/services/api_service.dart';
+import 'package:houser/services/messenger_service.dart';
+import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+
 
 class CurrentLogin{
 
@@ -13,8 +14,6 @@ class CurrentLogin{
 
   String jwtToken = '';
   User? user;
-
-  List<Match> matchList = [];
 
   static CurrentLogin _singleton = CurrentLogin._internal();
   CurrentLogin._internal();
@@ -62,11 +61,12 @@ class CurrentLogin{
     return true;
   }
 
-  Future loadMessages() async{
+  Future loadMessages(BuildContext context) async{
+    var provider = Provider.of<MessengerService>(context, listen: true);
     var list = await _apiService.GetMatchesByUser(user!.id);
-    matchList = list;
+    provider.matchList = list;
 
-    for(var match in matchList)
+    for(var match in provider.matchList)
       {
         var messageList = await _apiService.GetMessagesByMatch(match.id);
         match.messages = messageList;

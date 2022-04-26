@@ -1,13 +1,14 @@
 import 'package:flutter/material.dart';
+import 'package:houser/models/Message.dart';
 import 'package:houser/services/api_service.dart';
 import 'package:houser/services/messenger_service.dart';
 import 'package:houser/utils/current_login.dart';
 import 'package:houser/models/Match.dart';
+import 'package:provider/provider.dart';
 
 class MatchChatView extends StatefulWidget {
   MatchChatView(this.match, {Key? key}) : super(key: key);
 
-  final MessengerService _messengerService = MessengerService();
   final CurrentLogin _currentLogin = CurrentLogin();
   final ApiService _apiService = ApiService();
   Match match;
@@ -17,6 +18,7 @@ class MatchChatView extends StatefulWidget {
 }
 
 class _MatchChatViewState extends State<MatchChatView> {
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -30,7 +32,7 @@ class _MatchChatViewState extends State<MatchChatView> {
   {
     return Stack(
       children: [
-        messageLoader(),
+        messageListView(),
         bottomPanel()
       ],
     );
@@ -79,15 +81,18 @@ class _MatchChatViewState extends State<MatchChatView> {
 
   Future loadMessages() async
   {
+    var provider = Provider.of<MessengerService>(context, listen: false);
     var messages = await widget._apiService.GetMessagesByMatch(widget.match.id);
     widget.match.messages = messages;
-    widget._currentLogin.matchList.firstWhere((x) => x.id == widget.match.id).messages = messages;
+    provider.matchList.firstWhere((x) => x.id == widget.match.id).messages = messages;
   }
 
   Widget messageListView()
   {
-    var messages = widget.match.messages;
+    var provider = Provider.of<MessengerService>(context, listen: true);
+    var messages = provider.matchList.firstWhere((x) => x.id == widget.match.id).messages.reversed.toList();
     var userId = widget._currentLogin.user!.id;
+
     return RefreshIndicator(
       onRefresh: () async {
         await loadMessages();
@@ -95,30 +100,14 @@ class _MatchChatViewState extends State<MatchChatView> {
 
         });
       },
-      child: Container(
-        padding: const EdgeInsets.symmetric(horizontal: 8),
-        child: ListView.builder(
-            itemCount: messages.length,
-            itemBuilder: (context, index)
-            {
-              return messages[index].senderId == userId ? myBubble(messages[index].content) : otherBubble(messages[index].content);
-            }
-        ),
-      ),
-    );
-
-
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 8),
-      width: double.infinity,
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          myBubble('Labas ka tu?'),
-          otherBubble('Nezinau siaip va'),
-          myBubble('O tu ka gero?'),
-          otherBubble('Joo  geras sitas'),
-        ],
+      child: ListView.builder(
+        itemCount: messages.length,
+        padding: const EdgeInsets.only(left: 8, right: 8, bottom: 70),
+        reverse: true,
+        itemBuilder: (context, index)
+        {
+          return messages[index].senderId == userId ? myBubble(messages[index].content) : otherBubble(messages[index].content);
+        }
       ),
     );
   }
@@ -177,7 +166,7 @@ class _MatchChatViewState extends State<MatchChatView> {
     return Align(
       alignment: Alignment.bottomCenter,
       child: Container(
-        color: Theme.of(context).primaryColorLight,
+        color: Theme.of(context).primaryColor,
         child: Row(
           children: [
             inputFieldContainer(),
@@ -193,6 +182,7 @@ class _MatchChatViewState extends State<MatchChatView> {
     return Expanded(
       child: Container(
         margin: const EdgeInsets.only(left: 8, bottom: 8, top: 8),
+        constraints: BoxConstraints(minHeight: 40),
         decoration: BoxDecoration(
           color: Colors.grey[300],
           borderRadius: BorderRadius.circular(16),
@@ -214,7 +204,7 @@ class _MatchChatViewState extends State<MatchChatView> {
       decoration: const InputDecoration(
         border: InputBorder.none,
         isDense: true,
-        contentPadding: EdgeInsets.only(left: 8, right: 8, top: 4, bottom: 4),
+        contentPadding: EdgeInsets.only(left: 12, right: 8, top: 8, bottom: 4),
       ),
     );
   }
@@ -222,22 +212,35 @@ class _MatchChatViewState extends State<MatchChatView> {
   Widget enterButton()
   {
     return Container(
-      margin: const EdgeInsets.only(bottom: 8, top: 8),
-      child: IconButton(
-        iconSize: 26,
-        splashRadius: 24,
-        color: Theme.of(context).primaryColor,
-        icon: const Icon(Icons.send),
-        onPressed: (){
-          onSendPressed();
-        },
+      margin: const EdgeInsets.only(bottom: 8, top: 8, left: 10, right: 10),
+      child: Material(
+        type: MaterialType.transparency,
+        color: Colors.transparent,
+        shape: const CircleBorder(),
+        clipBehavior: Clip.hardEdge,
+        child: IconButton(
+          iconSize: 26,
+          icon: const Icon(
+            Icons.send,
+            color: Colors.white,
+          ),
+          onPressed: (){
+            onSendPressed();
+          },
+        ),
       ),
     );
   }
 
   Future onSendPressed() async
   {
-    await widget._messengerService.sendMessage(widget.match.id, widget._currentLogin.user!.id, _messageInputController.text);
+    if(_messageInputController.text.isEmpty) {
+      return;
+    }
+
+    Message newMessage = Message(0, widget._currentLogin.user!.id, widget.match.id, null, _messageInputController.text);
+    var provider = Provider.of<MessengerService>(context, listen: false);
+    await provider.sendMessage(newMessage);
     _messageInputController.text = '';
   }
 }

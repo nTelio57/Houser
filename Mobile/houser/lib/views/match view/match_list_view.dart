@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:houser/models/Match.dart';
 import 'package:houser/services/api_service.dart';
+import 'package:houser/services/messenger_service.dart';
 import 'package:houser/utils/current_login.dart';
 import 'package:houser/widgets/WG_MatchCard.dart';
+import 'package:provider/provider.dart';
 
 class MatchListView extends StatefulWidget {
 
@@ -36,7 +38,8 @@ class _MatchListViewState extends State<MatchListView> {
 
   Widget matchLoader()
   {
-    var matchList = widget._currentLogin.matchList;
+    var provider = Provider.of<MessengerService>(context, listen: false);
+    var matchList = provider.matchList;
     return FutureBuilder(
       future: loadMatches().timeout(const Duration(seconds: 5)),
       builder: (BuildContext context, AsyncSnapshot<dynamic> snapshot)
@@ -78,13 +81,14 @@ class _MatchListViewState extends State<MatchListView> {
 
   Future loadMatches() async
   {
-    await widget._currentLogin.loadMessages();
+    await widget._currentLogin.loadMessages(context);
     return true;
   }
 
   Widget matchListView()
   {
-    var matchList = widget._currentLogin.matchList;
+    var provider = Provider.of<MessengerService>(context, listen: false);
+    var matchList = provider.matchList;
     return RefreshIndicator(
       onRefresh: () async {
         await loadMatches();

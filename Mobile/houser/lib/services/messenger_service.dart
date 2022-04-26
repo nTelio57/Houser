@@ -1,9 +1,12 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
+import 'package:houser/models/Message.dart';
 import 'package:houser/utils/current_login.dart';
 import 'package:signalr_core/signalr_core.dart';
+import 'package:collection/collection.dart';
+import 'package:houser/models/Match.dart';
 
-class MessengerService{
+class MessengerService extends ChangeNotifier{
 
   static final MessengerService _singleton = MessengerService._internal();
   factory MessengerService(){
@@ -23,7 +26,9 @@ class MessengerService{
   }
 
   late HubConnection connection;
+  final CurrentLogin _currentLogin = CurrentLogin();
 
+  List<Match> matchList = [];
 
   init(BuildContext context) async{
 
@@ -48,8 +53,14 @@ class MessengerService{
     await connection.invoke("Login", args: [CurrentLogin().user!.id]);
   }
 
-  sendMessage(int matchId, String userId, String message) async{
-    await connection.invoke("SendMessage", args: [matchId, userId, message]);
+  sendMessage(Message message) async{
+    var match = matchList.firstWhereOrNull((x) => x.id ==message.matchId);
+    if(match != null)
+    {
+      match.messages.add(message);
+      notifyListeners();
+    }
+    await connection.invoke("SendMessage", args: [message.matchId, message.senderId, message.content]);
   }
 
   receiveMessage(List<dynamic>? params) async{
@@ -61,5 +72,17 @@ class MessengerService{
     var userId = params[1];
     var message = params[2];
     print('Message received from: $userId in $matchId that says: $message');
+
+    addMessage(Message(0, userId, matchId, null, message), matchId);
+  }
+
+  void addMessage(Message message, int matchId)
+  {
+    var match = matchList.firstWhereOrNull((x) => x.id == matchId);
+    if(match != null)
+    {
+      match.messages.add(message);
+      notifyListeners();
+    }
   }
 }
