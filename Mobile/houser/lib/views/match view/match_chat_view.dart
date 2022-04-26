@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:houser/enums/FilterType.dart';
 import 'package:houser/models/Message.dart';
 import 'package:houser/services/api_service.dart';
 import 'package:houser/services/messenger_service.dart';
@@ -23,7 +24,9 @@ class _MatchChatViewState extends State<MatchChatView> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Theme.of(context).backgroundColor,
-      appBar: AppBar(),
+      appBar: AppBar(
+        title: Text(getTitle()),
+      ),
       body: body(),
     );
   }
@@ -36,6 +39,19 @@ class _MatchChatViewState extends State<MatchChatView> {
         bottomPanel()
       ],
     );
+  }
+
+  String getTitle()
+  {
+    switch(widget.match.filterType)
+    {
+      case FilterType.user:
+        var otherUser = widget.match.getOtherUser(widget._currentLogin.user!.id);
+        return otherUser.name!;
+      case FilterType.room:
+        return widget.match.room!.title;
+    }
+    return '';
   }
 
   Widget messageLoader()
@@ -121,7 +137,7 @@ class _MatchChatViewState extends State<MatchChatView> {
           borderRadius: BorderRadius.circular(16),
           color: Theme.of(context).primaryColor
         ),
-        constraints: const BoxConstraints(minWidth: 100, maxWidth: 250),
+        constraints: const BoxConstraints(maxWidth: 250),
         padding: const EdgeInsets.all(8),
         margin: const EdgeInsets.symmetric(vertical: 6),
 
@@ -147,7 +163,7 @@ class _MatchChatViewState extends State<MatchChatView> {
             borderRadius: BorderRadius.circular(16),
             color: Colors.grey[400]
         ),
-        constraints: const BoxConstraints(minWidth: 100, maxWidth: 250),
+        constraints: const BoxConstraints(maxWidth: 250),
         padding: const EdgeInsets.all(10),
         margin: const EdgeInsets.symmetric(vertical: 6),
         child: Text(

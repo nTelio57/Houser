@@ -1,3 +1,4 @@
+import 'package:auto_size_text/auto_size_text.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:houser/enums/FilterType.dart';
@@ -37,9 +38,10 @@ class _WGMatchCardState extends State<WGMatchCard> {
              padding: const EdgeInsets.all(8.0),
              child: Row(
                crossAxisAlignment: CrossAxisAlignment.start,
+               mainAxisSize: MainAxisSize.min,
                children: [
                  image(),
-                 title()
+                 titleAndMessage()
                ],
              ),
            ),
@@ -61,6 +63,36 @@ class _WGMatchCardState extends State<WGMatchCard> {
       backgroundColor: Theme.of(context).primaryColorDark,
       foregroundImage: networkImage(imageId),
       child: initialsText(),
+    );
+  }
+
+  Widget titleAndMessage()
+  {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        title(),
+        lastMessage(),
+      ],
+    );
+  }
+
+  Widget lastMessage()
+  {
+    var messages = widget.match.messages;
+    return Expanded(
+      child: Container(
+        padding: const EdgeInsets.only(left: 10, right: 10),
+        width: 220,
+        child: AutoSizeText(
+          messages.isNotEmpty ? messages[messages.length-1].content : 'Parašykite žinutę pirmas!',
+          maxLines: 2,
+          style: const TextStyle(
+              fontSize: 16
+          ),
+        ),
+      ),
     );
   }
 
