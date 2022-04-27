@@ -30,15 +30,18 @@ namespace HouserAPI.Services
 
         public async Task<ImageReadDto> CreateUserImage(string userId, IFormFile image)
         {
-            return await Create(userId, 0, $"Images/User/{userId}", image);
+            var userImages = await GetAllByUser(userId);
+            var mainImage = userImages.Where(x => x.RoomId == null).FirstOrDefault(x => x.IsMain);
+
+            return await Create(userId, 0, $"Images/User/{userId}", mainImage == null, image);
         }
 
         public async Task<ImageReadDto> CreateRoomImage(string userId, RoomReadDto room, IFormFile image)
         {
-            return await Create(userId, room.Id, $"Images/Room/{room.Id}", image);
+            return await Create(userId, room.Id, $"Images/Room/{room.Id}", false, image);
         }
 
-        private async Task<ImageReadDto> Create(string userId, int roomId, string imageDirectory, IFormFile image)
+        private async Task<ImageReadDto> Create(string userId, int roomId, string imageDirectory, bool isMain, IFormFile image)
         {
             string extension = Path.GetExtension(image.FileName);
             string fileName = DateTime.Now.ToString("yyyyMMddHHmmssff") + extension;
@@ -55,7 +58,8 @@ namespace HouserAPI.Services
             {
                 Path = fullPath,
                 UserId = userId,
-                RoomId = roomId != 0 ? roomId : null
+                RoomId = roomId != 0 ? roomId : null,
+                IsMain = isMain
             };
 
             await _repository.Create(newImage);
@@ -148,8 +152,7 @@ namespace HouserAPI.Services
                 else // in user
                 {
                     var userImages = await _repository.GetAllByUser(imageUpdateDto.UserId);
-                    userImages = userImages.Where(x => x.RoomId == null);
-                    var currentlyMainImage = userImages.FirstOrDefault(x => x.IsMain);
+                    var currentlyMainImage = userImages.Where(x => x.RoomId == null).FirstOrDefault(x => x.IsMain);
                     if (currentlyMainImage != null)
                     {
                         currentlyMainImage.IsMain = false;
