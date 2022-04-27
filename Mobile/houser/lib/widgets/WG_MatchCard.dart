@@ -103,7 +103,11 @@ class _WGMatchCardState extends State<WGMatchCard> {
     {
       return widget.match.room!.getMainImage()!.id;
     }
-    return otherUser.getMainImage()!.id;
+    var otherUsersMainImage = otherUser.getMainImage();
+    if(otherUsersMainImage != null) {
+      return otherUsersMainImage.id;
+    }
+    return 0;
   }
 
   Widget initialsText()

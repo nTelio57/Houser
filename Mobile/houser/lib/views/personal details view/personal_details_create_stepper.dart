@@ -203,10 +203,10 @@ class _PersonalDetailsCreateStepperState extends State<PersonalDetailsCreateStep
 
     switch(newFilter.filterType){
       case FilterType.room:
-        widget._apiService.PostFilter(newFilter as RoomFilter);
+        await widget._apiService.PostFilter(newFilter as RoomFilter);
         break;
       case FilterType.user:
-        widget._apiService.PostFilter(newFilter as UserFilter);
+        await widget._apiService.PostFilter(newFilter as UserFilter);
         break;
       case FilterType.none:
     }
