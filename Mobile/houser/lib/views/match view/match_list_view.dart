@@ -1,6 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:houser/models/Match.dart';
-import 'package:houser/services/api_service.dart';
 import 'package:houser/services/messenger_service.dart';
 import 'package:houser/utils/current_login.dart';
 import 'package:houser/widgets/WG_MatchCard.dart';
@@ -9,7 +7,6 @@ import 'package:provider/provider.dart';
 class MatchListView extends StatefulWidget {
 
   final CurrentLogin _currentLogin = CurrentLogin();
-  final ApiService _apiService = ApiService();
 
   MatchListView({Key? key}) : super(key: key);
 

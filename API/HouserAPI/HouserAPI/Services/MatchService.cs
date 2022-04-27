@@ -97,16 +97,25 @@ namespace HouserAPI.Services
 
         private async Task UpdateElo(SwipeCreateDto swipeCreateDto, int K = 32)
         {
-            int swipeType = (int)swipeCreateDto.SwipeType;
-
             var swiperUser = await _userManager.FindByIdAsync(swipeCreateDto.SwiperId);
             var targetUser = await _userManager.FindByIdAsync(swipeCreateDto.UserTargetId);
 
-            double expectedTarget = 1 / (1 + Math.Pow(10, ((double)targetUser.Elo - swiperUser.Elo) / 400));
-            double eloResult = K * (swipeType - expectedTarget);
+            double expectedTarget = expectedEloTarget(targetUser.Elo, swiperUser.Elo);
+            double swiperExpectedTarget = expectedEloTarget(swiperUser.Elo, targetUser.Elo);
 
-            targetUser.Elo = targetUser.Elo + Convert.ToInt32(eloResult);
+            double eloResult = K * (1 - expectedTarget);
+            double swiperEloResult = K * (0.75 - swiperExpectedTarget);
+
+            targetUser.Elo += Convert.ToInt32(eloResult);
+            swiperUser.Elo += Convert.ToInt32(swiperEloResult);
+
             await _userManager.UpdateAsync(targetUser);
+            await _userManager.UpdateAsync(swiperUser);
+        }
+
+        double expectedEloTarget(double eloA, double eloB)
+        {
+            return 1 / (1 + Math.Pow(10, (eloA - eloB) / 400));
         }
 
         public async Task<bool> DeleteRoomSwipesAndMatches(int id)

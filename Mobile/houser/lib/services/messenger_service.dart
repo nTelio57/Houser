@@ -15,7 +15,7 @@ class MessengerService extends ChangeNotifier{
   MessengerService._internal(){
     connection = HubConnectionBuilder()
       .withUrl(
-        kDebugMode ? 'https://10.0.2.2:5004/messenger' : 'houser-app-ktu.herokuapp.com',
+        kDebugMode ? 'https://10.0.2.2:5004/messenger' : 'houser-app-ktu-messenger.herokuapp.com/messenger',
         HttpConnectionOptions(
           logging: (level, message) => print(message),
           accessTokenFactory: () => Future.value(CurrentLogin().jwtToken)
@@ -26,7 +26,6 @@ class MessengerService extends ChangeNotifier{
   }
 
   late HubConnection connection;
-  final CurrentLogin _currentLogin = CurrentLogin();
 
   List<Match> matchList = [];
 

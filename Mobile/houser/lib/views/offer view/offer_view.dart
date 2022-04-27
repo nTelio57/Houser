@@ -28,6 +28,7 @@ class _OfferViewState extends State<OfferView> {
   @override
   void didChangeDependencies() {
     setupLoader();
+    MessengerService().init(context);
     super.didChangeDependencies();
   }
 
