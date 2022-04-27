@@ -18,6 +18,7 @@ namespace Messenger.Data
         {
             modelBuilder.Entity<Match>().ToTable(nameof(Matches), t => t.ExcludeFromMigrations());
             modelBuilder.Entity<User>().ToTable("AspNetUsers", t => t.ExcludeFromMigrations());
+            modelBuilder.Entity<Message>().ToTable("Messages", t => t.ExcludeFromMigrations());
 
             modelBuilder.Entity<IdentityRole>().ToTable("AspNetRoles", t => t.ExcludeFromMigrations());
             modelBuilder.Entity<IdentityUserClaim<string>>().ToTable("AspNetUserClaims", t => t.ExcludeFromMigrations());

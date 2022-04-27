@@ -43,15 +43,12 @@ class _MatchChatViewState extends State<MatchChatView> {
 
   String getTitle()
   {
-    switch(widget.match.filterType)
+    var otherUser = widget.match.getOtherUser(widget._currentLogin.user!.id);
+    if(widget.match.roomOfferer.id == otherUser.id)
     {
-      case FilterType.user:
-        var otherUser = widget.match.getOtherUser(widget._currentLogin.user!.id);
-        return otherUser.name!;
-      case FilterType.room:
-        return widget.match.room!.title;
+      return widget.match.room!.title;
     }
-    return '';
+    return otherUser.name!;
   }
 
   Widget messageLoader()

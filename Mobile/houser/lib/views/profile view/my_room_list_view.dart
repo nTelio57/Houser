@@ -26,7 +26,7 @@ class _MyRoomListViewState extends State<MyRoomListView> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      floatingActionButton: newRoomFab(),
+      floatingActionButton: rooms.isEmpty ? newRoomFab() : null,
       body: body(),
       appBar: AppBar(),
       backgroundColor: Theme.of(context).backgroundColor,
@@ -96,6 +96,9 @@ class _MyRoomListViewState extends State<MyRoomListView> {
   Future loadRooms() async
   {
     rooms = await widget._apiService.GetRoomsByUser(widget._currentLogin.user!.id);
+    setState(() {
+
+    });
     return true;
   }
 
@@ -212,8 +215,12 @@ class _MyRoomListViewState extends State<MyRoomListView> {
     );
   }
 
-  Widget newRoomFab()
+  Widget? newRoomFab()
   {
+    if(rooms.isNotEmpty)
+      {
+        return null;
+      }
     return FloatingActionButton(
       backgroundColor: Theme.of(context).primaryColorDark,
       child: const Icon(Icons.add),

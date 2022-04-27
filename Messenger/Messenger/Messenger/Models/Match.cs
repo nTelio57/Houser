@@ -2,18 +2,18 @@
 {
     public class Match : Entity
     {
-        public User FirstUser { get; set; }
-        public string FirstUserId { get; set; }
-        public User SecondUser { get; set; }
-        public string SecondUserId { get; set; }
+        public User UserOfferer { get; set; }
+        public string UserOffererId { get; set; }
+        public User RoomOfferer { get; set; }
+        public string RoomOffererId { get; set; }
         public int? RoomId { get; set; }
 
         public string GetReceiverId(string senderId)
         {
-            if (senderId == FirstUserId)
-                return SecondUserId;
-            if (senderId == SecondUserId)
-                return FirstUserId;
+            if (senderId == UserOffererId)
+                return RoomOffererId;
+            if (senderId == RoomOffererId)
+                return UserOffererId;
             return null;
         }
     }

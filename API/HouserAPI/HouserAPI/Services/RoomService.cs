@@ -12,11 +12,13 @@ namespace HouserAPI.Services
     {
         private readonly RoomRepository _repository;
         private readonly IMapper _mapper;
+        private readonly IMatchService _matchService;
 
-        public RoomService(IRepository<Room> repository, IMapper mapper)
+        public RoomService(IRepository<Room> repository, IMapper mapper, IMatchService matchService)
         {
             _repository = repository as RoomRepository;
             _mapper = mapper;
+            _matchService = matchService;
         }
 
         public async Task<RoomReadDto> Create(RoomCreateDto roomCreateDto)
@@ -63,6 +65,7 @@ namespace HouserAPI.Services
             if (room is null)
                 return false;
 
+            await _matchService.DeleteRoomSwipesAndMatches(id);
             await _repository.Delete(room);
             return await _repository.SaveChanges();
         }

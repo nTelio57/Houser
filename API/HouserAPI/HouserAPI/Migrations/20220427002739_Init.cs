@@ -63,6 +63,22 @@ namespace HouserAPI.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "Messages",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("MySQL:ValueGenerationStrategy", MySQLValueGenerationStrategy.IdentityColumn),
+                    SenderId = table.Column<string>(type: "text", nullable: true),
+                    MatchId = table.Column<int>(type: "int", nullable: false),
+                    SendTime = table.Column<DateTime>(type: "datetime", nullable: false),
+                    Content = table.Column<string>(type: "text", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Messages", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "AspNetRoleClaims",
                 columns: table => new
                 {
@@ -284,15 +300,50 @@ namespace HouserAPI.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "Matches",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("MySQL:ValueGenerationStrategy", MySQLValueGenerationStrategy.IdentityColumn),
+                    FilterType = table.Column<int>(type: "int", nullable: false),
+                    UserOffererId = table.Column<string>(type: "varchar(255)", nullable: true),
+                    RoomOffererId = table.Column<string>(type: "varchar(255)", nullable: true),
+                    RoomId = table.Column<int>(type: "int", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Matches", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Matches_AspNetUsers_RoomOffererId",
+                        column: x => x.RoomOffererId,
+                        principalTable: "AspNetUsers",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_Matches_AspNetUsers_UserOffererId",
+                        column: x => x.UserOffererId,
+                        principalTable: "AspNetUsers",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_Matches_Rooms_RoomId",
+                        column: x => x.RoomId,
+                        principalTable: "Rooms",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "Swipes",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("MySQL:ValueGenerationStrategy", MySQLValueGenerationStrategy.IdentityColumn),
                     SwipeType = table.Column<int>(type: "int", nullable: false),
+                    FilterType = table.Column<int>(type: "int", nullable: false),
                     SwiperId = table.Column<string>(type: "varchar(255)", nullable: true),
                     UserTargetId = table.Column<string>(type: "varchar(255)", nullable: true),
-                    RoomId = table.Column<int>(type: "int", nullable: false)
+                    RoomId = table.Column<int>(type: "int", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -314,7 +365,7 @@ namespace HouserAPI.Migrations
                         column: x => x.RoomId,
                         principalTable: "Rooms",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        onDelete: ReferentialAction.Restrict);
                 });
 
             migrationBuilder.CreateIndex(
@@ -371,6 +422,21 @@ namespace HouserAPI.Migrations
                 column: "UserId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_Matches_RoomId",
+                table: "Matches",
+                column: "RoomId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Matches_RoomOffererId",
+                table: "Matches",
+                column: "RoomOffererId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Matches_UserOffererId",
+                table: "Matches",
+                column: "UserOffererId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_Rooms_UserId",
                 table: "Rooms",
                 column: "UserId");
@@ -413,6 +479,12 @@ namespace HouserAPI.Migrations
 
             migrationBuilder.DropTable(
                 name: "Images");
+
+            migrationBuilder.DropTable(
+                name: "Matches");
+
+            migrationBuilder.DropTable(
+                name: "Messages");
 
             migrationBuilder.DropTable(
                 name: "Swipes");

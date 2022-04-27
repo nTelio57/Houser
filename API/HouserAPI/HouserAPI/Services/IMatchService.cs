@@ -9,5 +9,6 @@ namespace HouserAPI.Services
     {
         Task<IEnumerable<MatchReadDto>> GetAllByUser(string id);
         Task<SwipeReadDto> Swipe(SwipeCreateDto swipeCreateDto);
+        Task<bool> DeleteRoomSwipesAndMatches(int id);
     }
 }

@@ -62,7 +62,7 @@ class CurrentLogin{
   }
 
   Future loadMessages(BuildContext context) async{
-    var provider = Provider.of<MessengerService>(context, listen: true);
+    var provider = Provider.of<MessengerService>(context, listen: false);
     var list = await _apiService.GetMatchesByUser(user!.id);
     provider.matchList = list;
 

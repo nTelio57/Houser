@@ -24,6 +24,9 @@
     <Compile Include="DatabaseContext.py">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="Models\Match.py">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="Models\Room.py">
       <SubType>Code</SubType>
     </Compile>

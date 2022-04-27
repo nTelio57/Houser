@@ -3,8 +3,8 @@
     public class MatchReadDto
     {
         public int Id { get; set; }
-        public string FirstUserId { get; set; }
-        public string SecondUserId { get; set; }
+        public string UserOffererId { get; set; }
+        public string RoomOffererId { get; set; }
         public int? RoomId { get; set; }
     }
 }
