@@ -4,6 +4,7 @@ from Models.RoomPrediction import *
 from Models.User import *
 from Models.Room import *
 from Models.Swipe import *
+from Models.Match import *
 import datetime
 from sqlalchemy import exists, and_
 from datetime import timedelta
@@ -16,8 +17,13 @@ _eloWeight = 4;
 
 def GetRoomQuery(filter):
     userSwipes = db.session.query(Swipe.RoomId).filter(Swipe.SwiperId == filter.UserId).filter(Swipe.FilterType == 0)
+    matches = db.session.query(Match.RoomId).filter(Match.UserOffererId == filter.UserId)
 
-    query = db.session.query(Room, User.Elo).join(User).filter(Room.IsVisible).filter(Room.UserId != filter.UserId).filter(Room.Id.not_in(userSwipes))
+    query = db.session.query(Room, User.Elo).join(User).\
+        filter(Room.IsVisible).\
+        filter(Room.UserId != filter.UserId).\
+        filter(Room.Id.not_in(userSwipes)).\
+        filter(Room.Id.not_in(matches))
 
     if(filter.AvailableFrom != None):
         query = query.filter(Room.AvailableFrom <= filter.AvailableFrom)
@@ -66,7 +72,13 @@ def GetRoomRecommendation(filter):
 def GetUserQuery(filter):
     today = datetime.date.today()
     userSwipes = db.session.query(Swipe.UserTargetId).filter(Swipe.SwiperId == filter.UserId)
-    query = db.session.query(User).filter(User.IsVisible).filter(User.Id != filter.UserId).filter(User.Id.not_in(userSwipes))
+    matches = db.session.query(Match.UserOffererId).filter(Match.RoomOffererId == filter.UserId)
+
+    query = db.session.query(User).\
+        filter(User.IsVisible).\
+        filter(User.Id != filter.UserId).\
+        filter(User.Id.not_in(userSwipes)).\
+        filter(User.Id.not_in(matches))
 
     if(filter.Sex != None):
         query = query.filter(User.Sex == filter.Sex)
