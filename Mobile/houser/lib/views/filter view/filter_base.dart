@@ -162,11 +162,14 @@ class _FilterBaseViewState extends State<FilterBaseView> with SingleTickerProvid
           }
 
           var currentFilter = widget._currentLogin.user!.filter;
-          currentFilter!.id = 0;
-          if(getFilterByForm() == currentFilter)
+          if(currentFilter != null)
             {
-              Navigator.pop(context);
-              return;
+              currentFilter.id = 0;
+              if(getFilterByForm() == currentFilter)
+              {
+                Navigator.pop(context);
+                return;
+              }
             }
 
           EasyLoading.show();

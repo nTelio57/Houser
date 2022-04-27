@@ -98,19 +98,12 @@ class _WGMatchCardState extends State<WGMatchCard> {
 
   int getImageId()
   {
-    switch(widget.match.filterType)
+    var otherUser = widget.match.getOtherUser(widget._currentLogin.user!.id);
+    if(widget.match.roomOfferer.id == otherUser.id)
     {
-      case FilterType.user:
-        var otherUser = widget.match.getOtherUser(widget._currentLogin.user!.id);
-        var mainImage = otherUser.getMainImage();
-        if(mainImage == null) {
-          return 0;
-        }
-        return mainImage.id;
-      case FilterType.room:
-        return widget.match.room!.getMainImage()!.id;
+      return widget.match.room!.getMainImage()!.id;
     }
-    return 0;
+    return otherUser.getMainImage()!.id;
   }
 
   Widget initialsText()
@@ -165,14 +158,11 @@ class _WGMatchCardState extends State<WGMatchCard> {
 
   String getTitle()
   {
-    switch(widget.match.filterType)
-    {
-      case FilterType.user:
-        var otherUser = widget.match.getOtherUser(widget._currentLogin.user!.id);
-        return otherUser.name!;
-      case FilterType.room:
+    var otherUser = widget.match.getOtherUser(widget._currentLogin.user!.id);
+    if(widget.match.roomOfferer.id == otherUser.id)
+      {
         return widget.match.room!.title;
-    }
-    return '';
+      }
+    return otherUser.name!;
   }
 }
