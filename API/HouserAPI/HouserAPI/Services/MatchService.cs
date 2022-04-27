@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using AutoMapper;
 using HouserAPI.Data.Repositories;
@@ -15,13 +16,15 @@ namespace HouserAPI.Services
     public class MatchService : IMatchService
     {
         private readonly IMapper _mapper;
+        private readonly RoomRepository _roomRepository;
         private readonly MatchRepository _matchRepository;
         private readonly SwipeRepository _swipeRepository;
         private readonly UserManager<User> _userManager;
 
-        public MatchService(IMapper mapper, IRepository<Swipe> swipeRepository, IRepository<Match> matchRepository, UserManager<User> userManager)
+        public MatchService(IMapper mapper, IRepository<Swipe> swipeRepository, IRepository<Match> matchRepository, IRepository<Room> roomRepository, UserManager<User> userManager)
         {
             _mapper = mapper;
+            _roomRepository = roomRepository as RoomRepository;
             _matchRepository = matchRepository as MatchRepository;
             _swipeRepository = swipeRepository as SwipeRepository;
             _userManager = userManager;
@@ -42,9 +45,15 @@ namespace HouserAPI.Services
 
         private async Task<SwipeReadDto> Like(SwipeCreateDto swipeCreateDto)
         {
+            if (swipeCreateDto.FilterType == FilterType.User)
+            {
+                var swipersRooms = await _roomRepository.GetAllByUser(swipeCreateDto.SwiperId);
+                swipeCreateDto.RoomId = swipersRooms.FirstOrDefault()?.Id;
+            }
+
             var swipe = _mapper.Map<Swipe>(swipeCreateDto);
             var otherSide =
-                await _swipeRepository.GetByBothSidesId(swipeCreateDto.UserTargetId, swipeCreateDto.SwiperId, swipeCreateDto.RoomId);
+                await _swipeRepository.GetByBothSidesId(swipeCreateDto.UserTargetId, swipeCreateDto.SwiperId);
             var swipeReadDto = _mapper.Map<SwipeReadDto>(swipe);
             swipeReadDto.SwipeResult = SwipeResult.Swiped;
 
@@ -60,8 +69,8 @@ namespace HouserAPI.Services
                     var match = new Match
                     {
                         FilterType = swipeCreateDto.FilterType,
-                        FirstUserId = swipeCreateDto.UserTargetId,
-                        SecondUserId = swipeCreateDto.SwiperId,
+                        UserOffererId = swipeCreateDto.FilterType == FilterType.Room ? swipeCreateDto.SwiperId : swipeCreateDto.UserTargetId,
+                        RoomOffererId = swipeCreateDto.FilterType == FilterType.User ? swipeCreateDto.SwiperId : swipeCreateDto.UserTargetId,
                         RoomId = swipeCreateDto.RoomId
                     };
                     await _matchRepository.Create(match);
@@ -98,6 +107,24 @@ namespace HouserAPI.Services
 
             targetUser.Elo = targetUser.Elo + Convert.ToInt32(eloResult);
             await _userManager.UpdateAsync(targetUser);
+        }
+
+        public async Task<bool> DeleteRoomSwipesAndMatches(int id)
+        {
+            var swipes = await _swipeRepository.GetByMatchId(id);
+            var matches = await _matchRepository.GetByMatchId(id);
+            foreach (var swipe in swipes)
+            {
+                await _swipeRepository.Delete(swipe);
+            }
+            await _swipeRepository.SaveChanges();
+            foreach (var match in matches)
+            {
+                await _matchRepository.Delete(match);
+            }
+            await _matchRepository.SaveChanges();
+            
+            return true;
         }
     }
 }

@@ -28,7 +28,7 @@ namespace HouserAPI.Data.Seed
             var image3 = new Image
             {
                 Id = 3,
-                Path = "E:\\GitHub\\Houser\\API\\HouserAPI\\HouserAPI\\Images\\Seed\\2022040221311520.jpg",
+                Path = "E:\\GitHub\\Houser\\API\\HouserAPI\\HouserAPI\\Images\\Seed\\2022041401454293.jpg",
                 IsMain = true,
                 UserId = UserSeed.IdBasic,
                 RoomId = 3
