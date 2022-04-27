@@ -9,13 +9,13 @@ part 'Match.g.dart';
 
 @JsonSerializable()
 class Match{
-  Match(this.id, this.filterType, this.firstUser, this.secondUser, this.room);
+  Match(this.id, this.filterType, this.userOfferer, this.roomOfferer, this.room);
   Match.empty();
 
   int id = 0;
   FilterType filterType = FilterType.none;
-  User firstUser = User("", "");
-  User secondUser = User("", "");
+  User userOfferer = User("", "");
+  User roomOfferer = User("", "");
   Room? room;
 
   @JsonKey(ignore: true)
@@ -26,9 +26,9 @@ class Match{
   Map<String, dynamic> toJson() => _$MatchToJson(this);
 
   User getOtherUser(String currentUserId){
-    if(firstUser.id == currentUserId) {
-      return secondUser;
+    if(userOfferer.id == currentUserId) {
+      return roomOfferer;
     }
-    return firstUser;
+    return userOfferer;
   }
 }
