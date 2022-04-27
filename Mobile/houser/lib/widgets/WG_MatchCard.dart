@@ -149,8 +149,10 @@ class _WGMatchCardState extends State<WGMatchCard> {
   {
     return Container(
       padding: const EdgeInsets.only(left: 10),
+      width: 230,
       child: Text(
         getTitle(),
+        overflow: TextOverflow.ellipsis,
         style: const TextStyle(
           fontSize: 20,
           fontWeight: FontWeight.w500,

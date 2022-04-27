@@ -131,7 +131,7 @@ class _MatchChatViewState extends State<MatchChatView> {
       alignment: Alignment.centerRight,
       child: Container(
         decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(16),
+          borderRadius: BorderRadius.circular(12),
           color: Theme.of(context).primaryColor
         ),
         constraints: const BoxConstraints(maxWidth: 250),
@@ -157,7 +157,7 @@ class _MatchChatViewState extends State<MatchChatView> {
       alignment: Alignment.centerLeft,
       child: Container(
         decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(16),
+            borderRadius: BorderRadius.circular(12),
             color: Colors.grey[400]
         ),
         constraints: const BoxConstraints(maxWidth: 250),
@@ -196,7 +196,7 @@ class _MatchChatViewState extends State<MatchChatView> {
     return Expanded(
       child: Container(
         margin: const EdgeInsets.only(left: 8, bottom: 8, top: 8),
-        constraints: BoxConstraints(minHeight: 40),
+        constraints: const BoxConstraints(minHeight: 40),
         decoration: BoxDecoration(
           color: Colors.grey[300],
           borderRadius: BorderRadius.circular(16),
@@ -253,8 +253,8 @@ class _MatchChatViewState extends State<MatchChatView> {
     }
 
     Message newMessage = Message(0, widget._currentLogin.user!.id, widget.match.id, null, _messageInputController.text);
+    _messageInputController.text = '';
     var provider = Provider.of<MessengerService>(context, listen: false);
     await provider.sendMessage(newMessage);
-    _messageInputController.text = '';
   }
 }

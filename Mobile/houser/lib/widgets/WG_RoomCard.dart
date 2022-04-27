@@ -6,6 +6,7 @@ import 'package:houser/models/Room.dart';
 import 'package:houser/services/api_service.dart';
 import 'package:houser/utils/current_login.dart';
 import 'package:houser/utils/offer_card_manager.dart';
+import 'package:houser/widgets/WG_album_slider.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import 'package:sliding_up_panel/sliding_up_panel.dart';
@@ -134,8 +135,9 @@ class _WGRoomCardState extends State<WGRoomCard> {
     column.children.add(title());
     column.children.add(durationDate());
     column.children.add(price());
-
-    column.children.add(const SizedBox(height: 47));
+    column.children.add(const SizedBox(height: 16));
+    column.children.add(imageAlbum());
+    column.children.add(const SizedBox(height: 20));
     column.children.add(labelField('Pagrindinė info'));
     column.children.add(divider());
     column.children.add(basicTextField(Icons.location_city, room.city));
@@ -161,6 +163,11 @@ class _WGRoomCardState extends State<WGRoomCard> {
     room.accommodationParking ? column.children.add(basicTextField(Icons.local_parking, 'Parkingas')): null;
 
     return column;
+  }
+
+  Widget imageAlbum()
+  {
+    return WGAlbumSlider(widget.room.images.toList(), (value){}, (value){}, (value){}, isEditable: false);
   }
 
   Widget divider()

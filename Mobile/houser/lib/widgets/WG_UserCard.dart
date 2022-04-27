@@ -9,6 +9,7 @@ import 'package:houser/models/User.dart';
 import 'package:houser/services/api_service.dart';
 import 'package:houser/utils/current_login.dart';
 import 'package:houser/utils/offer_card_manager.dart';
+import 'package:houser/widgets/WG_album_slider.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import 'package:sliding_up_panel/sliding_up_panel.dart';
@@ -122,10 +123,12 @@ class _WGUserCardState extends State<WGUserCard> {
     Column column = Column(crossAxisAlignment: CrossAxisAlignment.start, children: []);
 
     column.children.add(title());
-    column.children.add(const SizedBox(height: 8));
+    column.children.add(const SizedBox(height: 32));
     column.children.add(basicTextField(Icons.cake, user.age.toString()));
     //column.children.add(basicTextField(Icons.location_city, user.city!));
     column.children.add(basicTextField(user.sex!.iconBySex, user.sex!.sexToString));
+    column.children.add(const SizedBox(height: 16));
+    column.children.add(imageAlbum());
     column.children.add(const SizedBox(height: 20));
     column.children.add(basicTextField(user.isStudying!.iconByStudying, user.isStudying! ? 'Studijuoju' : 'Nestudijuoju'));
     column.children.add(basicTextField(user.isWorking!.iconByWorking, user.isWorking! ? 'Dirbu' : 'Nedirbu'));
@@ -140,6 +143,11 @@ class _WGUserCardState extends State<WGUserCard> {
     user.sleepType != SleepType.none ? column.children.add(basicTextField(user.sleepType!.index.iconBySleepType, user.sleepType!.index.sleepTypeToString)) : null;
 
     return column;
+  }
+
+  Widget imageAlbum()
+  {
+    return WGAlbumSlider(widget.user.images.toList(), (value){}, (value){}, (value){}, isEditable: false);
   }
 
   void onPanelOpened()

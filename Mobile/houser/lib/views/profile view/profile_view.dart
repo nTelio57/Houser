@@ -211,7 +211,7 @@ class _ProfileViewState extends State<ProfileView> {
         userVisibilitySwitch(),
         menuButton('Mano pasiūlymai', Icons.format_list_bulleted, () => onRoomListClicked()),
         menuButton('Redaguoti profilį', Icons.edit,() => null),
-        menuButton('Nustatymai', Icons.settings,() => null),
+        //menuButton('Nustatymai', Icons.settings,() => null),
         menuButton('Atsijungti', Icons.logout, () => onLogoutClicked(), isLogout: true),
       ],
     );
