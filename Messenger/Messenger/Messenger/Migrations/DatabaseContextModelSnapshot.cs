@@ -23,20 +23,20 @@ namespace Messenger.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    b.Property<string>("FirstUserId")
+                    b.Property<string>("UserOffererId")
                         .HasColumnType("varchar(767)");
 
                     b.Property<int?>("RoomId")
                         .HasColumnType("int");
 
-                    b.Property<string>("SecondUserId")
+                    b.Property<string>("RoomOffererId")
                         .HasColumnType("varchar(767)");
 
                     b.HasKey("Id");
 
-                    b.HasIndex("FirstUserId");
+                    b.HasIndex("UserOffererId");
 
-                    b.HasIndex("SecondUserId");
+                    b.HasIndex("RoomOffererId");
 
                     b.ToTable("Matches", t => t.ExcludeFromMigrations());
                 });
@@ -258,17 +258,17 @@ namespace Messenger.Migrations
 
             modelBuilder.Entity("Messenger.Models.Match", b =>
                 {
-                    b.HasOne("Messenger.Models.User", "FirstUser")
+                    b.HasOne("Messenger.Models.User", "UserOfferer")
                         .WithMany()
-                        .HasForeignKey("FirstUserId");
+                        .HasForeignKey("UserOffererId");
 
-                    b.HasOne("Messenger.Models.User", "SecondUser")
+                    b.HasOne("Messenger.Models.User", "RoomOfferer")
                         .WithMany()
-                        .HasForeignKey("SecondUserId");
+                        .HasForeignKey("RoomOffererId");
 
-                    b.Navigation("FirstUser");
+                    b.Navigation("UserOfferer");
 
-                    b.Navigation("SecondUser");
+                    b.Navigation("RoomOfferer");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>

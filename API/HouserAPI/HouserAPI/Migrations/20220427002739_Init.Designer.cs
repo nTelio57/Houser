@@ -9,8 +9,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace HouserAPI.Migrations
 {
     [DbContext(typeof(DatabaseContext))]
-    [Migration("20220423005519_match")]
-    partial class match
+    [Migration("20220427002739_Init")]
+    partial class Init
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -80,24 +80,47 @@ namespace HouserAPI.Migrations
                     b.Property<int>("FilterType")
                         .HasColumnType("int");
 
-                    b.Property<string>("FirstUserId")
-                        .HasColumnType("varchar(767)");
-
                     b.Property<int?>("RoomId")
                         .HasColumnType("int");
 
-                    b.Property<string>("SecondUserId")
+                    b.Property<string>("RoomOffererId")
+                        .HasColumnType("varchar(767)");
+
+                    b.Property<string>("UserOffererId")
                         .HasColumnType("varchar(767)");
 
                     b.HasKey("Id");
 
-                    b.HasIndex("FirstUserId");
-
                     b.HasIndex("RoomId");
 
-                    b.HasIndex("SecondUserId");
+                    b.HasIndex("RoomOffererId");
+
+                    b.HasIndex("UserOffererId");
 
                     b.ToTable("Matches");
+                });
+
+            modelBuilder.Entity("HouserAPI.Models.Message", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    b.Property<string>("Content")
+                        .HasColumnType("text");
+
+                    b.Property<int>("MatchId")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime>("SendTime")
+                        .HasColumnType("datetime");
+
+                    b.Property<string>("SenderId")
+                        .HasColumnType("text");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Messages");
                 });
 
             modelBuilder.Entity("HouserAPI.Models.Room", b =>
@@ -564,23 +587,23 @@ namespace HouserAPI.Migrations
 
             modelBuilder.Entity("HouserAPI.Models.Match", b =>
                 {
-                    b.HasOne("HouserAPI.Models.User", "FirstUser")
-                        .WithMany()
-                        .HasForeignKey("FirstUserId");
-
                     b.HasOne("HouserAPI.Models.Room", "Room")
                         .WithMany()
                         .HasForeignKey("RoomId");
 
-                    b.HasOne("HouserAPI.Models.User", "SecondUser")
+                    b.HasOne("HouserAPI.Models.User", "RoomOfferer")
                         .WithMany()
-                        .HasForeignKey("SecondUserId");
+                        .HasForeignKey("RoomOffererId");
 
-                    b.Navigation("FirstUser");
+                    b.HasOne("HouserAPI.Models.User", "UserOfferer")
+                        .WithMany()
+                        .HasForeignKey("UserOffererId");
 
                     b.Navigation("Room");
 
-                    b.Navigation("SecondUser");
+                    b.Navigation("RoomOfferer");
+
+                    b.Navigation("UserOfferer");
                 });
 
             modelBuilder.Entity("HouserAPI.Models.Room", b =>
