@@ -13,8 +13,9 @@ class WGImagePopup extends StatefulWidget {
   apiImage.Image image;
   Function(apiImage.Image) onDelete;
   Function(apiImage.Image) onSetAsMain;
+  bool isEditable;
 
-  WGImagePopup(this.image, this.onDelete, this.onSetAsMain, {Key? key}) : super(key: key);
+  WGImagePopup(this.image, this.onDelete, this.onSetAsMain, {Key? key, this.isEditable = true}) : super(key: key);
 
   @override
   _WGImagePopupState createState() => _WGImagePopupState();
@@ -26,7 +27,7 @@ class _WGImagePopupState extends State<WGImagePopup> {
     return Scaffold(
       body: body(),
       backgroundColor: Colors.transparent,
-      floatingActionButton: fab(),
+      floatingActionButton: widget.isEditable ? fab() : null,
       floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
     );
   }

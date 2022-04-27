@@ -18,8 +18,9 @@ class WGAlbumSlider extends StatefulWidget {
   Function(File) onUpload;
   Function(apiImage.Image) onDelete;
   Function(apiImage.Image) onSetAsMain;
+  bool isEditable;
 
-  WGAlbumSlider(this.images, this.onUpload, this.onDelete, this.onSetAsMain, {Key? key}) : super(key: key);
+  WGAlbumSlider(this.images, this.onUpload, this.onDelete, this.onSetAsMain, {Key? key, this.isEditable = true}) : super(key: key);
 
   @override
   _WGAlbumSliderState createState() => _WGAlbumSliderState();
@@ -33,7 +34,6 @@ class _WGAlbumSliderState extends State<WGAlbumSlider> {
   Widget build(BuildContext context) {
     errorCard = templateCard('Nepavyko užkrauti', Icons.error_outline, (){});
     newPhotoCard = templateCard('Pridėti nuotrauką', Icons.add, ()async{await uploadImage();});
-
     return body();
   }
 
@@ -51,14 +51,15 @@ class _WGAlbumSliderState extends State<WGAlbumSlider> {
   Widget photoList()
   {
     var images = widget.images;
+    int canAddImages = widget.isEditable ? 1 : 0;
 
     return ListView.builder(
       scrollDirection: Axis.horizontal,
-      itemCount: images.length+1,
+      itemCount: images.length+canAddImages,
       itemBuilder: (context, index)
       {
-        if(index == 0) return newPhotoCard!;
-        return photoCard(images[index-1]);
+        if(index == 0 && widget.isEditable) return newPhotoCard!;
+        return photoCard(images[index-canAddImages]);
       }
     );
   }
@@ -87,7 +88,7 @@ class _WGAlbumSliderState extends State<WGAlbumSlider> {
       ),
     ];
 
-    if(image.isMain) {
+    if(image.isMain && widget.isEditable) {
       widgets.add(mainImageFrame());
     }
 
@@ -305,7 +306,7 @@ class _WGAlbumSliderState extends State<WGAlbumSlider> {
     Navigator.of(context).push(
         PageRouteBuilder(
           opaque: false,
-          pageBuilder: (BuildContext context, Animation<double> animation, Animation<double> secondaryAnimation) => WGImagePopup(image, deleteImage, setAsMain)
+          pageBuilder: (BuildContext context, Animation<double> animation, Animation<double> secondaryAnimation) => WGImagePopup(image, deleteImage, setAsMain, isEditable: widget.isEditable)
         )
     );
   }
