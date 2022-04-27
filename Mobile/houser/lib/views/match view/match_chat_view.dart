@@ -253,8 +253,8 @@ class _MatchChatViewState extends State<MatchChatView> {
     }
 
     Message newMessage = Message(0, widget._currentLogin.user!.id, widget.match.id, null, _messageInputController.text);
+    _messageInputController.text = '';
     var provider = Provider.of<MessengerService>(context, listen: false);
     await provider.sendMessage(newMessage);
-    _messageInputController.text = '';
   }
 }
