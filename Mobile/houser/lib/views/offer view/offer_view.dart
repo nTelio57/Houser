@@ -7,7 +7,7 @@ import 'package:houser/services/messenger_service.dart';
 import 'package:houser/utils/current_login.dart';
 import 'package:houser/views/filter%20view/filter_base.dart';
 import 'package:houser/views/match%20view/match_list_view.dart';
-import 'package:houser/views/profile%20view/profile_view.dart';
+import 'package:houser/views/profile%20view/my_profile_menu_view.dart';
 import 'package:houser/widgets/WG_RoomCard.dart';
 import 'package:houser/utils/offer_card_manager.dart';
 import 'package:houser/widgets/WG_UserCard.dart';
@@ -42,8 +42,9 @@ class _OfferViewState extends State<OfferView> {
       ..indicatorColor = Colors.white
       ..indicatorType = EasyLoadingIndicatorType.ring
       ..fontSize = 16
-      ..contentPadding = const EdgeInsets.symmetric(vertical: 25.0, horizontal: 20.0)
-      ..maskColor = Colors.black.withOpacity(0.2);
+      ..contentPadding = const EdgeInsets.symmetric(vertical: 25.0, horizontal: 25.0)
+      ..maskColor = Colors.black.withOpacity(0.2)
+      ..displayDuration = const Duration(seconds: 7);
   }
 
   @override
@@ -139,7 +140,7 @@ class _OfferViewState extends State<OfferView> {
           size: 24,
         ),
         onPressed: () {
-          Navigator.push(context, MaterialPageRoute(builder: (context) => ProfileView()));
+          Navigator.push(context, MaterialPageRoute(builder: (context) => MyProfileMenuView()));
         },
       ),
     );

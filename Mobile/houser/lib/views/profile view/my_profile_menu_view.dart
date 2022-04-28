@@ -15,18 +15,18 @@ import 'package:houser/models/Image.dart' as apiImage;
 import 'package:houser/widgets/WG_snackbars.dart';
 import 'package:provider/provider.dart';
 
-class ProfileView extends StatefulWidget {
+class MyProfileMenuView extends StatefulWidget {
 
   final ApiService _apiService = ApiService();
 
-  ProfileView({Key? key}) : super(key: key);
+  MyProfileMenuView({Key? key}) : super(key: key);
   final CurrentLogin _currentLogin = CurrentLogin();
 
   @override
-  _ProfileViewState createState() => _ProfileViewState();
+  _MyProfileMenuViewState createState() => _MyProfileMenuViewState();
 }
 
-class _ProfileViewState extends State<ProfileView> {
+class _MyProfileMenuViewState extends State<MyProfileMenuView> {
 
   @override
   Widget build(BuildContext context) {
