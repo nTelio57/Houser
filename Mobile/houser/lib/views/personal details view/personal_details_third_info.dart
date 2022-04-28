@@ -5,10 +5,10 @@ import 'package:houser/widgets/WG_multi_button.dart';
 // ignore: must_be_immutable
 class PersonalDetailsThirdInfo extends StatefulWidget {
 
-  final List<MultiButtonSelection> _sleepTimeSelections = [MultiButtonSelection('Vyturys', const Icon(Icons.wb_sunny)), MultiButtonSelection('Nei vienas', const Icon(Icons.compare_arrows)), MultiButtonSelection('Pelėda', const Icon(Icons.nights_stay))];
-  final List<MultiButtonSelection> _studySelections = [ MultiButtonSelection('Nestudijuoju', const Icon(Icons.home)), MultiButtonSelection('Studijuoju', const Icon(Icons.school))];
-  final List<MultiButtonSelection> _workSelections = [MultiButtonSelection('Nedirbu', const Icon(Icons.work_off)), MultiButtonSelection('Dirbu', const Icon(Icons.work))];
-  final List<MultiButtonSelection> _smokeSelections = [MultiButtonSelection('Nerūkau', const Icon(Icons.smoke_free)), MultiButtonSelection('Rūkau', const Icon(Icons.smoking_rooms))];
+  final List<MultiButtonSelection> sleepTimeSelections = [MultiButtonSelection('Vyturys', const Icon(Icons.wb_sunny)), MultiButtonSelection('Nei vienas', const Icon(Icons.compare_arrows)), MultiButtonSelection('Pelėda', const Icon(Icons.nights_stay))];
+  final List<MultiButtonSelection> studySelections = [ MultiButtonSelection('Nestudijuoju', const Icon(Icons.home)), MultiButtonSelection('Studijuoju', const Icon(Icons.school))];
+  final List<MultiButtonSelection> workSelections = [MultiButtonSelection('Nedirbu', const Icon(Icons.work_off)), MultiButtonSelection('Dirbu', const Icon(Icons.work))];
+  final List<MultiButtonSelection> smokeSelections = [MultiButtonSelection('Nerūkau', const Icon(Icons.smoke_free)), MultiButtonSelection('Rūkau', const Icon(Icons.smoking_rooms))];
 
   WGMultiButton? sleepButtons;
   WGMultiButton? studyButtons;
@@ -16,10 +16,10 @@ class PersonalDetailsThirdInfo extends StatefulWidget {
   WGMultiButton? smokeButtons;
 
   PersonalDetailsThirdInfo({Key? key}) : super(key: key){
-    sleepButtons = WGMultiButton(selections: _sleepTimeSelections);
-    studyButtons = WGMultiButton(selections: _studySelections);
-    workButtons = WGMultiButton(selections: _workSelections);
-    smokeButtons = WGMultiButton(selections: _smokeSelections);
+    sleepButtons = WGMultiButton(selections: sleepTimeSelections);
+    studyButtons = WGMultiButton(selections: studySelections);
+    workButtons = WGMultiButton(selections: workSelections);
+    smokeButtons = WGMultiButton(selections: smokeSelections);
   }
 
   @override

@@ -1,6 +1,5 @@
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
-import 'package:houser/enums/FilterType.dart';
 import 'package:houser/enums/SleepType.dart';
 import 'package:houser/models/Filter.dart';
 import 'package:houser/models/UserFilter.dart';

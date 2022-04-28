@@ -7,6 +7,7 @@ import 'package:houser/services/api_client.dart';
 import 'package:houser/utils/current_login.dart';
 import 'package:houser/services/api_service.dart';
 import 'package:houser/utils/offer_card_manager.dart';
+import 'package:houser/views/personal%20details%20view/personal_details_create_stepper.dart';
 import 'package:houser/views/profile%20view/my_room_list_view.dart';
 import 'package:houser/views/welcome_view.dart';
 import 'package:houser/widgets/WG_album_slider.dart';
@@ -210,7 +211,7 @@ class _ProfileViewState extends State<ProfileView> {
       children: [
         userVisibilitySwitch(),
         menuButton('Mano pasiūlymai', Icons.format_list_bulleted, () => onRoomListClicked()),
-        menuButton('Redaguoti profilį', Icons.edit,() => null),
+        menuButton('Redaguoti profilį', Icons.edit,() => onProfileEditClicked()),
         //menuButton('Nustatymai', Icons.settings,() => null),
         menuButton('Atsijungti', Icons.logout, () => onLogoutClicked(), isLogout: true),
       ],
@@ -285,6 +286,12 @@ class _ProfileViewState extends State<ProfileView> {
 
   Future updateUserVisibility(bool visibility) async{
     await widget._apiService.UpdateUserVisibility(widget._currentLogin.user!.id, visibility);
+  }
+
+  onProfileEditClicked() async{
+    Navigator.push(context, MaterialPageRoute(builder: (context) =>
+        PersonalDetailsCreateStepper(userToEdit: widget._currentLogin.user!, isEditingMode: true)))
+        .then((value) => setState((){}));
   }
 
   void onRoomListClicked()

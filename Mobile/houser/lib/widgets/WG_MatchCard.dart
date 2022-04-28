@@ -124,15 +124,12 @@ class _WGMatchCardState extends State<WGMatchCard> {
 
   String getInitials()
   {
-    switch(widget.match.filterType)
+    var otherUser = widget.match.getOtherUser(widget._currentLogin.user!.id);
+    if(widget.match.roomOfferer.id == otherUser.id)
     {
-      case FilterType.user:
-        var otherUser = widget.match.getOtherUser(widget._currentLogin.user!.id);
-        return otherUser.name![0];
-      case FilterType.room:
-        return widget.match.room!.title[0];
+      return widget.match.room!.title[0];
     }
-    return '';
+    return otherUser.name![0];
   }
 
   CachedNetworkImageProvider networkImage(int id)

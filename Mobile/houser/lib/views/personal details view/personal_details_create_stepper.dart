@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:houser/enums/FilterType.dart';
 import 'package:houser/enums/SleepType.dart';
+import 'package:houser/extensions/dateTime_extensions.dart';
 import 'package:houser/models/Filter.dart';
 import 'package:houser/models/RoomFilter.dart';
 import 'package:houser/models/UserFilter.dart';
@@ -15,6 +16,7 @@ import 'package:houser/views/offer%20view/offer_view.dart';
 import 'package:provider/provider.dart';
 import 'personal_details_main_info.dart';
 import 'personal_details_secondary_info.dart';
+import 'package:collection/collection.dart';
 
 import 'personal_details_third_info.dart';
 
@@ -28,7 +30,10 @@ class PersonalDetailsCreateStepper extends StatefulWidget {
   PersonalDetailsSecondaryInfo? _detailsB;
   PersonalDetailsThirdInfo? _detailsC;
 
-  PersonalDetailsCreateStepper({Key? key}) : super(key: key){
+  bool isEditingMode = false;
+  User? userToEdit;
+
+  PersonalDetailsCreateStepper({Key? key, this.isEditingMode = false, this.userToEdit}) : super(key: key){
     _detailsA = PersonalDetailsMainInfo(_formKey);
     _detailsB = PersonalDetailsSecondaryInfo();
     _detailsC = PersonalDetailsThirdInfo();
@@ -41,9 +46,21 @@ class PersonalDetailsCreateStepper extends StatefulWidget {
 
 class _PersonalDetailsCreateStepperState extends State<PersonalDetailsCreateStepper> {
   int _currentStep = 0;
+  bool editInitialized = false;
 
   @override
   Widget build(BuildContext context) {
+    if(widget.isEditingMode)
+    {
+      if(widget.userToEdit == null) {
+        throw Exception('If editing mode = true, userToEdit can\'t be null');
+      }
+      if(!editInitialized){
+        setupForEditing(widget.userToEdit!);
+        editInitialized = true;
+      }
+    }
+
     return Scaffold(body: personalDetailsCreateForm());
   }
 
@@ -192,9 +209,42 @@ class _PersonalDetailsCreateStepperState extends State<PersonalDetailsCreateStep
     if(result)
       {
         EasyLoading.dismiss();
-        Navigator.push(context, MaterialPageRoute(builder: (context) => FilterBaseView(onFilterChanged)));
+        if(widget.isEditingMode)
+          {
+            await CurrentLogin().loadUserDataFromSharedPreferences();
+            Navigator.pop(context);
+            return;
+          }
+        else{
+          Navigator.push(context, MaterialPageRoute(builder: (context) => FilterBaseView(onFilterChanged)));
+          return;
+        }
       }
     return;
+  }
+
+  void setupForEditing(User user)
+  {
+    widget._detailsA!.nameFieldText.text = user.name!;
+    widget._detailsA!.birthDate = user.birthDate!;
+    widget._detailsA!.birthFieldText.text = user.birthDate!.dateToString();
+    widget._detailsA!.sexSelectionButtons!.isButtonSelected = widget._detailsA!.sexSelections.mapIndexed((index, element) => index == user.sex).toList();
+
+    widget._detailsB!.animalCountSlider.selectedValue = user.animalCount == null ? 0 : user.animalCount!.toDouble();
+    widget._detailsB!.guestCountSlider.selectedValue = user.guestCount == null ? 0 : user.guestCount!.toDouble();
+    widget._detailsB!.partyCountSlider.selectedValue = user.partyCount == null ? 0 : user.partyCount!.toDouble();
+    widget._detailsB!.animalCountSlider.label = widget._detailsB!.animalCountSlider.selectedValue.toInt().toString();
+    widget._detailsB!.guestCountSlider.label = widget._detailsB!.guestCountSlider.selectedValue.toInt().toString();
+    widget._detailsB!.partyCountSlider.label = widget._detailsB!.partyCountSlider.selectedValue.toInt().toString();
+
+    widget._detailsC!.sleepButtons!.isButtonSelected = user.sleepType == null ? widget._detailsC!.sleepTimeSelections.map((e) => false).toList()
+        : SleepType.values.map((element) => element == user.sleepType).toList();
+    widget._detailsC!.studyButtons!.isButtonSelected = user.isStudying == null ? widget._detailsC!.studySelections.map((e) => false).toList()
+        : widget._detailsC!.studySelections.mapIndexed((index, element) => index == (user.isStudying! ? 1 : 0)).toList();
+    widget._detailsC!.workButtons!.isButtonSelected = user.isWorking == null ? widget._detailsC!.workSelections.map((e) => false).toList()
+        : widget._detailsC!.workSelections.mapIndexed((index, element) => index == (user.isWorking! ? 1 : 0)).toList();
+    widget._detailsC!.smokeButtons!.isButtonSelected = user.isSmoking == null ? widget._detailsC!.smokeSelections.map((e) => false).toList()
+        : widget._detailsC!.smokeSelections.mapIndexed((index, element) => index == (user.isSmoking! ? 1 : 0)).toList();
   }
 
   Future onFilterChanged(Filter newFilter) async {
