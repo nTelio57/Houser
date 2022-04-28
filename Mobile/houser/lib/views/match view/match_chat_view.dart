@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:houser/enums/FilterType.dart';
 import 'package:houser/models/Message.dart';
@@ -5,8 +6,10 @@ import 'package:houser/services/api_service.dart';
 import 'package:houser/services/messenger_service.dart';
 import 'package:houser/utils/current_login.dart';
 import 'package:houser/models/Match.dart';
+import 'package:houser/views/profile%20view/guest_profile_view.dart';
 import 'package:provider/provider.dart';
 
+// ignore: must_be_immutable
 class MatchChatView extends StatefulWidget {
   MatchChatView(this.match, {Key? key}) : super(key: key);
 
@@ -25,7 +28,7 @@ class _MatchChatViewState extends State<MatchChatView> {
     return Scaffold(
       backgroundColor: Theme.of(context).backgroundColor,
       appBar: AppBar(
-        title: Text(getTitle()),
+        title: appBarButton(),
       ),
       body: body(),
     );
@@ -38,6 +41,107 @@ class _MatchChatViewState extends State<MatchChatView> {
         messageListView(),
         bottomPanel()
       ],
+    );
+  }
+
+  Widget appBarTitle()
+  {
+    return Container(
+      constraints: const BoxConstraints(maxWidth: 250),
+      child: Row(
+        children: [
+          image(),
+          const SizedBox(width: 10),
+          Expanded(
+            child: Text(
+              'aaaaaa aaaa aaaaaaaaaaa aaaaa aa'+getTitle(),
+              overflow: TextOverflow.ellipsis,
+              style: const TextStyle(
+                color: Colors.white
+              ),
+            ),
+          )
+        ],
+      ),
+    );
+  }
+
+  Widget appBarButton()
+  {
+    return TextButton(
+      onPressed: ()
+        {
+          onAppBarTitleClick();
+        },
+      child: appBarTitle(),
+    );
+  }
+
+  Future onAppBarTitleClick() async{
+    var otherUser = widget.match.getOtherUser(widget._currentLogin.user!.id);
+    if(widget.match.roomOfferer.id == otherUser.id)
+      {
+        Navigator.push(context, MaterialPageRoute(builder: (context) => GuestProfileView(FilterType.room, room: widget.match.room!)));
+      }
+    else
+      {
+        Navigator.push(context, MaterialPageRoute(builder: (context) => GuestProfileView(FilterType.user, user: otherUser)));
+      }
+  }
+
+  Widget image()
+  {
+    var imageId = getImageId();
+    return CircleAvatar(
+      backgroundColor: Theme.of(context).primaryColorDark,
+      foregroundImage: networkImage(imageId),
+      child: initialsText(),
+    );
+  }
+
+  int getImageId()
+  {
+    var otherUser = widget.match.getOtherUser(widget._currentLogin.user!.id);
+    if(widget.match.roomOfferer.id == otherUser.id)
+    {
+      return widget.match.room!.getMainImage()!.id;
+    }
+    var otherUsersMainImage = otherUser.getMainImage();
+    if(otherUsersMainImage != null) {
+      return otherUsersMainImage.id;
+    }
+    return 0;
+  }
+
+  Widget initialsText()
+  {
+    return Text(
+      getInitials(),
+      style: const TextStyle(
+          color: Colors.white,
+          fontSize: 24,
+          fontWeight: FontWeight.w600
+      ),
+    );
+  }
+
+  String getInitials()
+  {
+    var otherUser = widget.match.getOtherUser(widget._currentLogin.user!.id);
+    if(widget.match.roomOfferer.id == otherUser.id)
+    {
+      return widget.match.room!.title[0];
+    }
+    return otherUser.name![0];
+  }
+
+  CachedNetworkImageProvider networkImage(int id)
+  {
+    return CachedNetworkImageProvider(
+      'https://${widget._apiService.apiUrl}/api/Image/$id',
+      headers: {
+        'Authorization': 'bearer ' + widget._currentLogin.jwtToken,
+      },
     );
   }
 
