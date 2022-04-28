@@ -42,8 +42,9 @@ class _OfferViewState extends State<OfferView> {
       ..indicatorColor = Colors.white
       ..indicatorType = EasyLoadingIndicatorType.ring
       ..fontSize = 16
-      ..contentPadding = const EdgeInsets.symmetric(vertical: 25.0, horizontal: 20.0)
-      ..maskColor = Colors.black.withOpacity(0.2);
+      ..contentPadding = const EdgeInsets.symmetric(vertical: 25.0, horizontal: 25.0)
+      ..maskColor = Colors.black.withOpacity(0.2)
+      ..displayDuration = const Duration(seconds: 7);
   }
 
   @override
