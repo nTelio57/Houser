@@ -94,7 +94,7 @@ class _MatchChatViewState extends State<MatchChatView> {
     var imageId = getImageId();
     return CircleAvatar(
       backgroundColor: Theme.of(context).primaryColorDark,
-      foregroundImage: networkImage(imageId),
+      foregroundImage: imageId == 0 ? null : networkImage(imageId),
       child: initialsText(),
     );
   }

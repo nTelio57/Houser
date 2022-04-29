@@ -61,7 +61,7 @@ class _WGMatchCardState extends State<WGMatchCard> {
     return CircleAvatar(
       radius: 40,
       backgroundColor: Theme.of(context).primaryColorDark,
-      foregroundImage: networkImage(imageId),
+      foregroundImage: imageId == 0 ? null : networkImage(imageId),
       child: initialsText(),
     );
   }
