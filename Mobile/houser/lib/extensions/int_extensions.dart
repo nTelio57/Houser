@@ -21,8 +21,11 @@ extension IntExtension on int{
     if(this == 1) {
       return 'Turiu $this gyvūną';
     }
-    if(this > 1) {
+    if(this > 1 && this < 5) {
       return 'Turiu $this gyvūnus';
+    }
+    if(this > 4) {
+      return 'Turiu daugiau negu 4 gyvūnus';
     }
     return 'Neturiu gyvūnų';
   }

@@ -1,18 +1,30 @@
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
+import 'package:houser/enums/WGSliderStartingPoint.dart';
+import 'package:houser/extensions/int_extensions.dart';
 import 'package:houser/widgets/WG_slider.dart';
 
 // ignore: must_be_immutable
 class PersonalDetailsSecondaryInfo extends StatefulWidget {
 
-  WGSlider animalCountSlider = WGSlider(min: 0, max: 5, canBeMoreThanMax: true);
-  WGSlider guestCountSlider = WGSlider(min: 0, max: 10, canBeMoreThanMax: true);
-  WGSlider partyCountSlider = WGSlider(min: 0, max: 5, canBeMoreThanMax: true);
+  WGSlider animalCountSlider = WGSlider(min: 0, max: 5, canBeMoreThanMax: true, startingPoint: WGSliderStartingPoint.start);
+  WGSlider guestCountSlider = WGSlider(min: 0, max: 10, canBeMoreThanMax: true, startingPoint: WGSliderStartingPoint.start, labelFormat: (value){return _guestCountLabel(value);});
+  WGSlider partyCountSlider = WGSlider(min: 0, max: 5, canBeMoreThanMax: true, startingPoint: WGSliderStartingPoint.start, labelFormat: (value){return _partyCountLabel(value);});
 
   PersonalDetailsSecondaryInfo({Key? key}) : super(key: key);
 
   @override
   _PersonalDetailsSecondaryInfoState createState() => _PersonalDetailsSecondaryInfoState();
+
+  static String _guestCountLabel(int value)
+  {
+    return value.guestCountToString;
+  }
+
+  static String _partyCountLabel(int value)
+  {
+    return value.partyCountToString;
+  }
 }
 
 class _PersonalDetailsSecondaryInfoState extends State<PersonalDetailsSecondaryInfo> {
