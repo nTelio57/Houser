@@ -14,19 +14,15 @@ namespace Messenger.Hubs
     {
         private readonly IMessageService _messageService;
         private static readonly Dictionary<string, string> ConnectedUsers = new();
-        private static readonly List<Match> Matches = new();
 
         public ChatHub(IMessageService messageService)
         {
             _messageService = messageService;
         }
-
-        private static Match GetMatch(int matchId) =>
-            Matches.FirstOrDefault(match => match.Id == matchId);
         
         public async Task SendMessage(int matchId, string senderUserId, string message)
         {
-            MessageCreateDto newMessage = new MessageCreateDto
+            var newMessage = new MessageCreateDto
             {
                 MatchId = matchId, SenderId = senderUserId, Content = message
             };
@@ -37,12 +33,18 @@ namespace Messenger.Hubs
             if (match == null)
                 return;
 
-            var receiverId = match.GetReceiverId(senderUserId);
+            string receiverId = match.GetReceiverId(senderUserId);
             if (string.IsNullOrEmpty(receiverId))
                 return;
             
             var connectionIds = ConnectedUsers.Where(x => x.Value == receiverId).Select(x => x.Key).ToList();
             foreach (string connectionId in connectionIds)
+            {
+                await Clients.Client(connectionId).SendAsync("ReceiveMessage", matchId, senderUserId, message);
+            }
+
+            var senderConnectionIds = ConnectedUsers.Where(x => x.Value == senderUserId).Select(x => x.Key).ToList();
+            foreach (string connectionId in senderConnectionIds)
             {
                 await Clients.Client(connectionId).SendAsync("ReceiveMessage", matchId, senderUserId, message);
             }
@@ -53,19 +55,9 @@ namespace Messenger.Hubs
             ConnectedUsers.Add(Context.ConnectionId, userId);
         }
 
-        public async Task Disconnect(string userId)
-        {
-            ConnectedUsers.Add(Context.ConnectionId, userId);
-        }
-
         public override async Task OnDisconnectedAsync(Exception? exception)
         {
-            var userId = ConnectedUsers[Context.ConnectionId];
-            var connectionIds = ConnectedUsers.Where(x => x.Value == userId).Select(x => x.Key).ToList();
-            foreach (string connectionId in connectionIds)
-            {
-                ConnectedUsers.Remove(connectionId);
-            }
+            ConnectedUsers.Remove(Context.ConnectionId);
 
             await base.OnDisconnectedAsync(exception);
         }

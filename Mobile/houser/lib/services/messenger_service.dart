@@ -40,7 +40,7 @@ class MessengerService extends ChangeNotifier{
     connection.on("ReceiveMessage", (arguments) {receiveMessage(arguments);});
   }
 
-  closeConnection(BuildContext context) async{
+  closeConnection() async{
     if(connection.state == HubConnectionState.connected)
       {
         await connection.stop();
@@ -80,7 +80,9 @@ class MessengerService extends ChangeNotifier{
     var match = matchList.firstWhereOrNull((x) => x.id == matchId);
     if(match != null)
     {
-      match.messages.add(message);
+      if(!match.messages.contains(message)) {
+        match.messages.add(message);
+      }
       notifyListeners();
     }
   }
