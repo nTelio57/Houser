@@ -128,7 +128,7 @@ class _WGUserCardState extends State<WGUserCard> {
     //column.children.add(basicTextField(Icons.location_city, user.city!));
     column.children.add(basicTextField(user.sex!.iconBySex, user.sex!.sexToString));
     column.children.add(const SizedBox(height: 16));
-    column.children.add(imageAlbum());
+    widget.user.images.isNotEmpty ? column.children.add(imageAlbum()) : null;
     column.children.add(const SizedBox(height: 20));
     column.children.add(basicTextField(user.isStudying!.iconByStudying, user.isStudying! ? 'Studijuoju' : 'Nestudijuoju'));
     column.children.add(basicTextField(user.isWorking!.iconByWorking, user.isWorking! ? 'Dirbu' : 'Nedirbu'));
