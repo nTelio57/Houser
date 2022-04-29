@@ -26,9 +26,14 @@ class OfferView extends StatefulWidget {
 class _OfferViewState extends State<OfferView> {
 
   @override
+  void initState() {
+    MessengerService().init();
+    super.initState();
+  }
+
+  @override
   void didChangeDependencies() {
     setupLoader();
-    MessengerService().init(context);
     super.didChangeDependencies();
   }
 
@@ -165,7 +170,7 @@ class _OfferViewState extends State<OfferView> {
           size: 24,
         ),
         onPressed: () async{
-          await MessengerService().init(context);
+          await MessengerService().init();
           Navigator.push(context, MaterialPageRoute(builder: (context) => MatchListView()));
         },
       ),

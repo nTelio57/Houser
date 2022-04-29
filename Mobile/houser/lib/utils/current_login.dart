@@ -83,6 +83,7 @@ class CurrentLogin{
     clearSharedPreferences();
     _singleton = CurrentLogin._internal();
     await _singleton.loadSharedPreferences();
+    await MessengerService().closeConnection();
   }
 
 }
