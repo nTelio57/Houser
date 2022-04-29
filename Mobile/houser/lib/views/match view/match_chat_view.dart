@@ -1,3 +1,6 @@
+import 'dart:async';
+import 'dart:io';
+
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:houser/enums/FilterType.dart';
@@ -7,6 +10,7 @@ import 'package:houser/services/messenger_service.dart';
 import 'package:houser/utils/current_login.dart';
 import 'package:houser/models/Match.dart';
 import 'package:houser/views/profile%20view/guest_profile_view.dart';
+import 'package:houser/widgets/WG_snackbars.dart';
 import 'package:provider/provider.dart';
 
 // ignore: must_be_immutable
@@ -29,6 +33,9 @@ class _MatchChatViewState extends State<MatchChatView> {
       backgroundColor: Theme.of(context).backgroundColor,
       appBar: AppBar(
         title: appBarButton(),
+        actions: [
+          appBarMenu()
+        ],
       ),
       body: body(),
     );
@@ -64,6 +71,89 @@ class _MatchChatViewState extends State<MatchChatView> {
         ],
       ),
     );
+  }
+
+  Widget appBarMenu()
+  {
+    var menuList = {'Užblokuoti', 'Atšaukti suporavimą'};
+
+    return PopupMenuButton(
+      onSelected: handleMenuClick,
+      itemBuilder: (context) {
+        return menuList.map((item) {
+          return PopupMenuItem(
+            value: item,
+            child: Text(item),
+        );
+        }).toList();
+      },
+    );
+  }
+
+  void handleMenuClick(String value) {
+    switch (value) {
+      case 'Atšaukti suporavimą':
+        unmatch();
+        break;
+      case 'Užblokuoti':
+        break;
+    }
+  }
+
+  Future unmatch() async {
+    showDialog(
+        context: context,
+        builder: (context) => unmatchDialog()
+    );
+  }
+
+  AlertDialog unmatchDialog()
+  {
+    return AlertDialog(
+      content: const Text('Ar tikrai norite atšaukti suporavimą?'),
+      actions: [
+        TextButton(
+            onPressed: () => Navigator.pop(context),
+            child: const Text(
+              'ATŠAUKTI',
+              style: TextStyle(
+                  fontWeight: FontWeight.w600
+              ),)
+        ),
+        TextButton(
+            onPressed: () {
+              widget._apiService.DeleteMatch(widget.match.id).timeout(const Duration(seconds: 5)).then((value) {
+                Navigator.pop(context);
+                setState(() {
+
+                });
+              })
+                  .catchError(handleSocketException, test: (e) => e is SocketException)
+                  .catchError(handleTimeoutException, test: (e) => e is TimeoutException)
+                  .catchError(handleDeleteException, test: (e) => e is Exception);
+
+              Navigator.pop(context);
+            },
+            child: const Text(
+              'TĘSTI',
+              style: TextStyle(
+                  fontWeight: FontWeight.w600
+              ),)
+        ),
+      ],
+    );
+  }
+
+  void handleSocketException(Object o){
+    ScaffoldMessenger.of(context).showSnackBar(noConnectionSnackbar);
+  }
+
+  void handleTimeoutException(Object o){
+    ScaffoldMessenger.of(context).showSnackBar(serverErrorSnackbar);
+  }
+
+  void handleDeleteException(Object o){
+    ScaffoldMessenger.of(context).showSnackBar(failedMatchDelete);
   }
 
   Widget appBarButton()

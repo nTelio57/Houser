@@ -232,7 +232,7 @@ class _MyRoomListViewState extends State<MyRoomListView> {
   }
 
   void handleSocketException(Object o){
-    ScaffoldMessenger.of(context).showSnackBar(noConnectionSnackbar);
+    ScaffoldMessenger.of(context).showSnackBar(serverErrorSnackbar);
   }
 
   void handleTimeoutException(Object o){
