@@ -195,4 +195,10 @@ class ApiService {
 
     return parsed.map<Message>((e) => Message.fromJson(e)).toList();
   }
+
+  Future<bool> DeleteMatch(int id) async
+  {
+    ApiResponse response = await _apiClient.Delete('/api/Match/$id');
+    return response.statusCode.isSuccessStatusCode;
+  }
 }

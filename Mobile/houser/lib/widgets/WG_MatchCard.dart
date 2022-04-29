@@ -1,11 +1,9 @@
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
-import 'package:houser/enums/FilterType.dart';
 import 'package:houser/models/Match.dart';
 import 'package:houser/services/api_service.dart';
 import 'package:houser/utils/current_login.dart';
-import 'package:houser/views/match%20view/match_chat_view.dart';
 
 // ignore: must_be_immutable
 class WGMatchCard extends StatefulWidget {
@@ -13,8 +11,9 @@ class WGMatchCard extends StatefulWidget {
   final CurrentLogin _currentLogin = CurrentLogin();
 
   Match match;
+  Function(Match) onCardTap;
 
-  WGMatchCard(this.match, {Key? key}) : super(key: key);
+  WGMatchCard(this.match, this.onCardTap, {Key? key}) : super(key: key);
 
   @override
   _WGMatchCardState createState() => _WGMatchCardState();
@@ -52,7 +51,7 @@ class _WGMatchCardState extends State<WGMatchCard> {
 
   void onCardTap()
   {
-    Navigator.push(context, MaterialPageRoute(builder: (context) => MatchChatView(widget.match)));
+    widget.onCardTap(widget.match);
   }
 
   Widget image()

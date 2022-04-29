@@ -20,6 +20,10 @@ const failedImageDelete = SnackBar(
     content: Text('Nepavyko pašalinti nuotraukos.')
 );
 
+const failedMatchDelete = SnackBar(
+    content: Text('Nepavyko atšaukti suporavimo.')
+);
+
 const failedImageUpdate = SnackBar(
     content: Text('Nepavyko atnaujinti nuotraukos.')
 );
