@@ -29,7 +29,7 @@ class MessengerService extends ChangeNotifier{
 
   List<Match> matchList = [];
 
-  init(BuildContext context) async{
+  init() async{
 
     if(connection.state == HubConnectionState.connected) {
       return;
