@@ -49,5 +49,22 @@ namespace HouserAPI.Controllers
             var rooms = await _matchService.GetAllByUser(id);
             return Ok(rooms);
         }
+
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> DeleteMatch(int id)
+        {
+            var userId = User.FindFirst(CustomClaims.UserId)?.Value;
+
+            var match = await _matchService.GetById(id);
+            if (match is null)
+                return NotFound();
+
+            if (userId != match.RoomOffererId && userId != match.UserOffererId)
+                return Forbid();
+
+            if (await _matchService.Delete(id))
+                return NoContent();
+            return BadRequest();
+        }
     }
 }

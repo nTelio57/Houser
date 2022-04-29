@@ -5,7 +5,6 @@ using System.Threading.Tasks;
 using AutoMapper;
 using HouserAPI.Data.Repositories;
 using HouserAPI.DTOs.Match;
-using HouserAPI.DTOs.Room;
 using HouserAPI.DTOs.Swipe;
 using HouserAPI.Enums;
 using HouserAPI.Models;
@@ -34,6 +33,22 @@ namespace HouserAPI.Services
         {
             var rooms = await _matchRepository.GetAllByUser(id);
             return _mapper.Map<IEnumerable<MatchReadDto>>(rooms);
+        }
+
+        public async Task<MatchReadDto> GetById(int id)
+        {
+            var match = await _matchRepository.GetById(id);
+            return _mapper.Map<MatchReadDto>(match);
+        }
+
+        public async Task<bool> Delete(int id)
+        {
+            var match = await _matchRepository.GetById(id);
+            if (match is null)
+                return false;
+            
+            await _matchRepository.Delete(match);
+            return await _matchRepository.SaveChanges();
         }
 
         public async Task<SwipeReadDto> Swipe(SwipeCreateDto swipeCreateDto)
