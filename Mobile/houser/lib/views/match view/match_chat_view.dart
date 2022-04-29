@@ -54,7 +54,7 @@ class _MatchChatViewState extends State<MatchChatView> {
           const SizedBox(width: 10),
           Expanded(
             child: Text(
-              'aaaaaa aaaa aaaaaaaaaaa aaaaa aa'+getTitle(),
+              getTitle(),
               overflow: TextOverflow.ellipsis,
               style: const TextStyle(
                 color: Colors.white
