@@ -127,15 +127,22 @@ class _WGRoomCardState extends State<WGRoomCard> {
     );
   }
 
-  Widget roomDetailsList()
+  Widget roomMainDetailsList()
   {
-    Room room = widget.room;
     Column column = Column(crossAxisAlignment: CrossAxisAlignment.start, children: []);
 
     column.children.add(title());
     column.children.add(durationDate());
     column.children.add(price());
-    column.children.add(const SizedBox(height: 16));
+    column.children.add(const SizedBox(height: 20));
+    return column;
+  }
+
+  Widget roomDetailsList()
+  {
+    Room room = widget.room;
+    Column column = Column(crossAxisAlignment: CrossAxisAlignment.start, children: []);
+
     column.children.add(imageAlbum());
     column.children.add(const SizedBox(height: 20));
     column.children.add(labelField('Pagrindinė info'));
@@ -205,9 +212,16 @@ class _WGRoomCardState extends State<WGRoomCard> {
       ),
       margin: const EdgeInsets.fromLTRB(12.0, 0, 12.0, 12),
       padding: const EdgeInsets.fromLTRB(20, 20, 20, 20),
-      child: SingleChildScrollView(
-        child: roomDetailsList(),
-        physics: _isScrollable ? const AlwaysScrollableScrollPhysics() : const NeverScrollableScrollPhysics(),
+      child: Column(
+        children: [
+          roomMainDetailsList(),
+          Expanded(
+            child: SingleChildScrollView(
+              child: roomDetailsList(),
+              physics: _isScrollable ? const AlwaysScrollableScrollPhysics() : const NeverScrollableScrollPhysics(),
+            ),
+          ),
+        ],
       ),
     );
   }

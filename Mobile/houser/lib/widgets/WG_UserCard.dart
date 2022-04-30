@@ -117,7 +117,7 @@ class _WGUserCardState extends State<WGUserCard> {
     );
   }
 
-  Widget userDetailsList()
+  Widget userMainDetailsList()
   {
     User user = widget.user;
     Column column = Column(crossAxisAlignment: CrossAxisAlignment.start, children: []);
@@ -125,11 +125,18 @@ class _WGUserCardState extends State<WGUserCard> {
     column.children.add(title());
     column.children.add(const SizedBox(height: 32));
     column.children.add(basicTextField(Icons.cake, user.age.toString()));
-    //column.children.add(basicTextField(Icons.location_city, user.city!));
     column.children.add(basicTextField(user.sex!.iconBySex, user.sex!.sexToString));
-    column.children.add(const SizedBox(height: 16));
-    widget.user.images.isNotEmpty ? column.children.add(imageAlbum()) : null;
     column.children.add(const SizedBox(height: 20));
+    return column;
+  }
+
+  Widget userDetailsList()
+  {
+    User user = widget.user;
+    Column column = Column(crossAxisAlignment: CrossAxisAlignment.start, children: []);
+
+    widget.user.images.isNotEmpty ? column.children.add(imageAlbum()) : null;
+    widget.user.images.isNotEmpty ? column.children.add(const SizedBox(height: 20)) : null;
     column.children.add(basicTextField(user.isStudying!.iconByStudying, user.isStudying! ? 'Studijuoju' : 'Nestudijuoju'));
     column.children.add(basicTextField(user.isWorking!.iconByWorking, user.isWorking! ? 'Dirbu' : 'Nedirbu'));
     column.children.add(basicTextField(user.isSmoking!.iconBySmoking, user.isSmoking! ? 'Rūkau' : 'Nerūkau'));
@@ -179,9 +186,16 @@ class _WGUserCardState extends State<WGUserCard> {
       ),
       margin: const EdgeInsets.fromLTRB(12.0, 0, 12.0, 12),
       padding: const EdgeInsets.fromLTRB(20, 20, 20, 20),
-      child: SingleChildScrollView(
-        child: userDetailsList(),
-        physics: _isScrollable ? const AlwaysScrollableScrollPhysics() : const NeverScrollableScrollPhysics(),
+      child: Column(
+        children: [
+          userMainDetailsList(),
+          Expanded(
+            child: SingleChildScrollView(
+              physics: _isScrollable ? const AlwaysScrollableScrollPhysics() : const NeverScrollableScrollPhysics(),
+              child: userDetailsList()
+            ),
+          ),
+        ],
       ),
     );
   }
