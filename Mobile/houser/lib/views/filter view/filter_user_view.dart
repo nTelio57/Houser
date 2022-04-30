@@ -236,9 +236,8 @@ class _FilterUserViewState extends State<FilterUserView> {
   }
 
   void refreshAnimalCount(double value){
-    widget.animalCountSliderValue = value;
     setState(() {
-
+      widget.animalCountSliderValue = value;
     });
   }
 
