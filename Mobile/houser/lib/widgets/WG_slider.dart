@@ -9,17 +9,21 @@ class WGSlider extends StatefulWidget {
   WGSliderStartingPoint startingPoint = WGSliderStartingPoint.center;
   String Function(int value)? labelFormat;
   String label = '';
-  Function() onValueChange = (){};
+  Function(double)? onValueChange;
+  bool isEnabled;
 
   WGSlider({Key? key,
     this.min = 0,
     this.max = 5,
+    this.selectedValue = 0,
     this.canBeMoreThanMax = false,
     this.startingPoint =  WGSliderStartingPoint.center,
-    this.labelFormat
+    this.labelFormat,
+    this.onValueChange,
+    this.isEnabled = true
   }) : super(key: key){
 
-    selectedValue = startingValue();
+    //selectedValue = startingValue();
     label = selectedValue.toInt().toString();
   }
 
@@ -62,13 +66,7 @@ class _WGSliderState extends State<WGSlider> {
       divisions: widget.max.toInt(),
       activeColor: const Color.fromRGBO(0, 153, 204, 1),
       label: widget.labelFormat == null ? label() : widget.labelFormat!(widget.selectedValue.toInt()),
-      onChanged: (value) {
-        setState(() {
-          widget.selectedValue = value;
-        });
-        widget.label = label();
-        widget.onValueChange();
-      },
+      onChanged: !widget.isEnabled ? null : (value) { widget.onValueChange!(value);},
     );
   }
 

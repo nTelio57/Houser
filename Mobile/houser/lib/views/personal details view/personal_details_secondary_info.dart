@@ -29,7 +29,7 @@ class PersonalDetailsSecondaryInfo extends StatefulWidget {
 
 class _PersonalDetailsSecondaryInfoState extends State<PersonalDetailsSecondaryInfo> {
 
-  void refresh(){
+  void refresh(double value){
     setState(() {
 
     });
