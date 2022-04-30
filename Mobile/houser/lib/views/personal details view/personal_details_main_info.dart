@@ -123,7 +123,6 @@ class _PersonalDetailsMainInfoState extends State<PersonalDetailsMainInfo> {
           decoration: const InputDecoration(
             helperText: '',
             label: Text('Gimimo data'),
-            hintText: 'mm/dd/yyyy',
             prefixIcon: Icon(Icons.calendar_today),
             border: OutlineInputBorder()
           ),
