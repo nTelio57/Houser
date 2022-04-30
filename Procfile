@@ -1,1 +1,0 @@
-web: python Recommendation/Recommendation/Recommendation/Main.py
