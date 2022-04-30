@@ -75,7 +75,7 @@ class _MatchChatViewState extends State<MatchChatView> {
 
   Widget appBarMenu()
   {
-    var menuList = {'Užblokuoti', 'Atšaukti suporavimą'};
+    var menuList = {'Atšaukti suporavimą'};
 
     return PopupMenuButton(
       onSelected: handleMenuClick,
@@ -94,8 +94,6 @@ class _MatchChatViewState extends State<MatchChatView> {
     switch (value) {
       case 'Atšaukti suporavimą':
         unmatch();
-        break;
-      case 'Užblokuoti':
         break;
     }
   }
