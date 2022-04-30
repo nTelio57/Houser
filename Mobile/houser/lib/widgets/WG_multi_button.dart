@@ -7,8 +7,9 @@ class WGMultiButton extends StatefulWidget {
   final List<MultiButtonSelection> selections;
   List<bool> isButtonSelected = [];
   bool multiSelection;
+  bool canHaveNull;
 
-  WGMultiButton({Key? key, required this.selections, this.multiSelection = false}) : super(key: key)
+  WGMultiButton({Key? key, required this.selections, this.multiSelection = false, this.canHaveNull = false}) : super(key: key)
   {
     for(int i = 0; i < selections.length; i++)
       {
@@ -44,7 +45,14 @@ class _WGMultiButtonState extends State<WGMultiButton> {
               {
                 for (int buttonIndex = 0; buttonIndex < widget.isButtonSelected.length; buttonIndex++) {
                   if (buttonIndex == index) {
-                    widget.isButtonSelected[buttonIndex] = true;
+                    if(widget.canHaveNull)
+                      {
+                        widget.isButtonSelected[buttonIndex] = !widget.isButtonSelected[buttonIndex];
+                      }
+                    else
+                      {
+                        widget.isButtonSelected[buttonIndex] = true;
+                      }
                   } else {
                     widget.isButtonSelected[buttonIndex] = false;
                   }

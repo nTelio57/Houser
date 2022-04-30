@@ -329,7 +329,6 @@ class _RoomFormViewState extends State<RoomFormView> {
             decoration: InputDecoration(
                 helperText: '',
                 label: Text(label),
-                hintText: 'MM/dd/yyyy',
                 prefixIcon: Icon(icon),
                 border: const OutlineInputBorder()
             ),

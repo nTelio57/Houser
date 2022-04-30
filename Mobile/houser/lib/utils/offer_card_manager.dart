@@ -10,7 +10,6 @@ import 'package:houser/utils/current_login.dart';
 import 'package:houser/models/Room.dart';
 
 class OfferCardManager extends ChangeNotifier {
-  final CurrentLogin _currentLogin = CurrentLogin();
   final ApiService _apiService = ApiService();
 
   late RoomOfferManager _roomOfferManager;
@@ -88,8 +87,8 @@ class OfferCardManager extends ChangeNotifier {
 
   Swipe getSwipeData(SwipeType swipeType)
   {
-    var filterType = _currentLogin.user!.filter!.filterType;
-    var swiperId = _currentLogin.user!.id;
+    var filterType = CurrentLogin().user!.filter!.filterType;
+    var swiperId = CurrentLogin().user!.id;
     var userTargetId = filterType == FilterType.user ? users[0].id : rooms[0].userId;
     var roomId = filterType == FilterType.room ? rooms[0].id : null;
 
@@ -130,7 +129,7 @@ class OfferCardManager extends ChangeNotifier {
 
     await Future.delayed(const Duration(milliseconds: 200));
 
-    switch(_currentLogin.user!.filter!.filterType){
+    switch(CurrentLogin().user!.filter!.filterType){
       case FilterType.room:
         rooms.removeAt(0);
         break;
@@ -156,7 +155,7 @@ class OfferCardManager extends ChangeNotifier {
   }
 
   Future loadSingleOffer() async{
-    switch(_currentLogin.user!.filter!.filterType){
+    switch(CurrentLogin().user!.filter!.filterType){
       case FilterType.room:
         _roomOfferManager.loadOffersAsync(1, rooms.length);
         break;
@@ -169,7 +168,7 @@ class OfferCardManager extends ChangeNotifier {
   }
 
   Future loadOffersAsync(int count, int offset) async{
-    switch(_currentLogin.user!.filter!.filterType){
+    switch(CurrentLogin().user!.filter!.filterType){
       case FilterType.room:
         await _roomOfferManager.loadOffersAsync(count, offset);
         break;
@@ -183,7 +182,7 @@ class OfferCardManager extends ChangeNotifier {
   }
 
   void loadOffersSync(int count, int offset){
-    switch(_currentLogin.user!.filter!.filterType){
+    switch(CurrentLogin().user!.filter!.filterType){
       case FilterType.room:
         _roomOfferManager.loadOffersAsync(count, offset).then((value) {
           notifyListeners();

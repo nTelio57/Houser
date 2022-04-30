@@ -180,9 +180,9 @@ class _PersonalDetailsCreateStepperState extends State<PersonalDetailsCreateStep
     var birthDate = widget._detailsA!.birthDate;
     var sex = widget._detailsA!.sexSelectionButtons!.isButtonSelected.indexOf(true);
 
-    var animalCount = widget._detailsB!.animalCountSlider.selectedValue.toInt();
-    var guestCount = widget._detailsB!.guestCountSlider.selectedValue.toInt();
-    var partyCount = widget._detailsB!.partyCountSlider.selectedValue.toInt();
+    var animalCount = widget._detailsB!.animalCountSliderValue.toInt();
+    var guestCount = widget._detailsB!.guestCountSliderValue.toInt();
+    var partyCount = widget._detailsB!.partyCountSliderValue.toInt();
 
     var isStudying = widget._detailsC!.studyButtons!.isButtonSelected.indexOf(true)== 0 ? false : true;
     var isWorking = widget._detailsC!.workButtons!.isButtonSelected.indexOf(true)== 0 ? false : true;
@@ -208,10 +208,10 @@ class _PersonalDetailsCreateStepperState extends State<PersonalDetailsCreateStep
     bool result = await widget._apiService.UpdateUserDetails(CurrentLogin().user!.id, userUpdate);
     if(result)
       {
+        await CurrentLogin().loadUserDataFromSharedPreferences();
         EasyLoading.dismiss();
         if(widget.isEditingMode)
           {
-            await CurrentLogin().loadUserDataFromSharedPreferences();
             Navigator.pop(context);
             return;
           }
@@ -220,6 +220,7 @@ class _PersonalDetailsCreateStepperState extends State<PersonalDetailsCreateStep
           return;
         }
       }
+    EasyLoading.dismiss();
     return;
   }
 
@@ -230,12 +231,9 @@ class _PersonalDetailsCreateStepperState extends State<PersonalDetailsCreateStep
     widget._detailsA!.birthFieldText.text = user.birthDate!.dateToString();
     widget._detailsA!.sexSelectionButtons!.isButtonSelected = widget._detailsA!.sexSelections.mapIndexed((index, element) => index == user.sex).toList();
 
-    widget._detailsB!.animalCountSlider.selectedValue = user.animalCount == null ? 0 : user.animalCount!.toDouble();
-    widget._detailsB!.guestCountSlider.selectedValue = user.guestCount == null ? 0 : user.guestCount!.toDouble();
-    widget._detailsB!.partyCountSlider.selectedValue = user.partyCount == null ? 0 : user.partyCount!.toDouble();
-    widget._detailsB!.animalCountSlider.label = widget._detailsB!.animalCountSlider.selectedValue.toInt().toString();
-    widget._detailsB!.guestCountSlider.label = widget._detailsB!.guestCountSlider.selectedValue.toInt().toString();
-    widget._detailsB!.partyCountSlider.label = widget._detailsB!.partyCountSlider.selectedValue.toInt().toString();
+    widget._detailsB!.animalCountSliderValue = user.animalCount == null ? 0 : user.animalCount!.toDouble();
+    widget._detailsB!.guestCountSliderValue = user.guestCount == null ? 0 : user.guestCount!.toDouble();
+    widget._detailsB!.partyCountSliderValue = user.partyCount == null ? 0 : user.partyCount!.toDouble();
 
     widget._detailsC!.sleepButtons!.isButtonSelected = user.sleepType == null ? widget._detailsC!.sleepTimeSelections.map((e) => false).toList()
         : SleepType.values.map((element) => element == user.sleepType).toList();

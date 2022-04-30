@@ -15,9 +15,13 @@ class FilterUserView extends StatefulWidget {
   final TextEditingController _ageFromText = TextEditingController();
   final TextEditingController _ageToText = TextEditingController();
 
-  WGSlider animalCountSlider = WGSlider(min: 0, max: 5, canBeMoreThanMax: true);
-  WGSlider guestCountSlider = WGSlider(min: 0, max: 10, canBeMoreThanMax: true);
-  WGSlider partyCountSlider = WGSlider(min: 0, max: 5, canBeMoreThanMax: true);
+  double? animalCountSliderValue = 0;
+  double? guestCountSliderValue = 0;
+  double? partyCountSliderValue = 0;
+
+  bool animalSliderStatus = false;
+  bool guestSliderStatus = false;
+  bool partySliderStatus = false;
 
   final List<MultiButtonSelection> _sexSelections = [MultiButtonSelection('Vyras', const Icon(Icons.male)), MultiButtonSelection('Moteris', const Icon(Icons.female)), MultiButtonSelection('Kita', const Icon(Icons.transgender))];
   final List<MultiButtonSelection> _sleepTimeSelections = [MultiButtonSelection('Vyturys', const Icon(Icons.wb_sunny)), MultiButtonSelection('Pelėda', const Icon(Icons.nights_stay))];
@@ -32,11 +36,11 @@ class FilterUserView extends StatefulWidget {
   WGMultiButton? smokeButtons;
 
   FilterUserView({Key? key}) : super(key: key){
-    sexSelectionButtons = WGMultiButton(selections: _sexSelections);
-    sleepButtons = WGMultiButton(selections: _sleepTimeSelections);
-    studyButtons = WGMultiButton(selections: _studySelections);
-    workButtons = WGMultiButton(selections: _workSelections);
-    smokeButtons = WGMultiButton(selections: _smokeSelections);
+    sexSelectionButtons = WGMultiButton(selections: _sexSelections, canHaveNull: true);
+    sleepButtons = WGMultiButton(selections: _sleepTimeSelections, canHaveNull: true);
+    studyButtons = WGMultiButton(selections: _studySelections, canHaveNull: true);
+    workButtons = WGMultiButton(selections: _workSelections, canHaveNull: true);
+    smokeButtons = WGMultiButton(selections: _smokeSelections, canHaveNull: true,);
   }
 
   @override
@@ -44,15 +48,16 @@ class FilterUserView extends StatefulWidget {
 
   void setFormByFilter(UserFilter filter)
   {
+    animalSliderStatus = filter.animalCount != null;
+    guestSliderStatus = filter.guestCount != null;
+    partySliderStatus = filter.partyCount != null;
+
     _ageFromText.text = filter.ageFrom == null ? '' : filter.ageFrom.toString();
     _ageToText.text = filter.ageTo == null ? '' : filter.ageTo.toString();
     sexSelectionButtons!.isButtonSelected = _sexSelections.mapIndexed((index, element) => index == filter.sex).toList();
-    animalCountSlider.selectedValue = filter.animalCount == null ? 0 : filter.animalCount!.toDouble();
-    guestCountSlider.selectedValue = filter.guestCount == null ? 0 : filter.guestCount!.toDouble();
-    partyCountSlider.selectedValue = filter.partyCount == null ? 0 : filter.partyCount!.toDouble();
-    animalCountSlider.label = animalCountSlider.selectedValue.toInt().toString();
-    guestCountSlider.label = guestCountSlider.selectedValue.toInt().toString();
-    partyCountSlider.label = partyCountSlider.selectedValue.toInt().toString();
+    animalCountSliderValue = filter.animalCount == null ? 0 : filter.animalCount!.toDouble();
+    guestCountSliderValue = filter.guestCount == null ? 0 : filter.guestCount!.toDouble();
+    partyCountSliderValue = filter.partyCount == null ? 0 : filter.partyCount!.toDouble();
     studyButtons!.isButtonSelected = filter.isStudying == null ? _studySelections.map((e) => false).toList()
         : _studySelections.mapIndexed((index, element) => index == (filter.isStudying! ? 1 : 0)).toList();
     workButtons!.isButtonSelected = filter.isWorking == null ? _workSelections.map((e) => false).toList()
@@ -66,32 +71,30 @@ class FilterUserView extends StatefulWidget {
 
   Filter getFilterByForm()
   {
+    var sexIndex = sexSelectionButtons!.isButtonSelected.indexOf(true);
+    var studyIndex = studyButtons!.isButtonSelected.indexOf(true);
+    var workIndex = workButtons!.isButtonSelected.indexOf(true);
+    var smokeIndex = smokeButtons!.isButtonSelected.indexOf(true);
+    var sleepIndex = sleepButtons!.isButtonSelected.indexOf(true);
+
     return UserFilter(
       0,
       CurrentLogin().user!.id,
       int.tryParse(_ageFromText.text),
       int.tryParse(_ageToText.text),
-      sexSelectionButtons!.isButtonSelected.indexOf(true),
-      animalCountSlider.selectedValue.toInt(),
-      studyButtons!.isButtonSelected.indexOf(true)== 0 ? false : true,
-      workButtons!.isButtonSelected.indexOf(true)== 0 ? false : true,
-      smokeButtons!.isButtonSelected.indexOf(true)== 0 ? false : true,
-      guestCountSlider.selectedValue.toInt(),
-      partyCountSlider.selectedValue.toInt(),
-      sleepButtons!.isButtonSelected.indexOf(true) == 1 ? SleepType.evening : SleepType.morning
+      sexIndex == -1 ? null : sexIndex,
+      animalSliderStatus ? animalCountSliderValue!.toInt() : null,
+      studyIndex == -1 ? null : (studyIndex == 0 ? false : true),
+      workIndex == -1 ? null : (workIndex == 0 ? false : true),
+      smokeIndex == -1 ? null : (smokeIndex == 0 ? false : true),
+      guestSliderStatus ? guestCountSliderValue!.toInt() : null,
+      partySliderStatus ? partyCountSliderValue!.toInt() : null,
+      sleepIndex == -1 ? null : (sleepIndex == 1 ? SleepType.evening : SleepType.morning)
     );
   }
 }
 
 class _FilterUserViewState extends State<FilterUserView> {
-
-  @override
-  void initState() {
-    super.initState();
-    widget.animalCountSlider.onValueChange = refresh;
-    widget.guestCountSlider.onValueChange = refresh;
-    widget.partyCountSlider.onValueChange = refresh;
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -116,12 +119,12 @@ class _FilterUserViewState extends State<FilterUserView> {
             label('Amžius'),
             ageRangeFields(),
             widget.sexSelectionButtons!,
-            sliderValueRow('Gyvūnų skaičius:',Icons.pets, widget.animalCountSlider),
-            widget.animalCountSlider,
-            sliderValueRow('Svečių dažnumas:',Icons.groups, widget.guestCountSlider),
-            widget.guestCountSlider,
-            sliderValueRow('Vakarėlių dažnumas:',Icons.celebration, widget.partyCountSlider),
-            widget.partyCountSlider,
+            sliderValueRow('Gyvūnų skaičius:',Icons.pets, onAnimalStatusChanged, widget.animalSliderStatus),
+            slider(0, 5, widget.animalCountSliderValue, true, widget.animalSliderStatus, refreshAnimalCount),
+            sliderValueRow('Svečių dažnumas:',Icons.groups, onGuestStatusChanged, widget.guestSliderStatus),
+            slider(0, 10, widget.guestCountSliderValue, true, widget.guestSliderStatus, refreshGuestCount),
+            sliderValueRow('Vakarėlių dažnumas:',Icons.celebration, onPartyStatusChanged, widget.partySliderStatus),
+            slider(0, 5, widget.partyCountSliderValue, true, widget.partySliderStatus, refreshPartyCount),
             widget.studyButtons!,
             widget.workButtons!,
             widget.smokeButtons!,
@@ -129,6 +132,18 @@ class _FilterUserViewState extends State<FilterUserView> {
           ],
         ),
       ),
+    );
+  }
+
+  Widget slider(double min, double max, double? selectedValue, bool canBeMoreThanMax, bool isEnabled, Function(double)? onValueChange)
+  {
+    return WGSlider(
+      min: min,
+      max: max,
+      selectedValue: selectedValue ?? 0,
+      canBeMoreThanMax: canBeMoreThanMax,
+      isEnabled: isEnabled,
+      onValueChange: onValueChange,
     );
   }
 
@@ -169,38 +184,34 @@ class _FilterUserViewState extends State<FilterUserView> {
     );
   }
 
-  Widget sliderValueRow(String label, IconData icon, WGSlider slider)
+  Widget sliderValueRow(String label, IconData icon, Function(bool) onStatusChanged, bool sliderStateValue)
   {
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 8),
-      child: Row(
-        children: [
-          Icon(icon, color:  const Color.fromRGBO(0, 153, 204, 1)),
-          const SizedBox(width: 8,),
-          Expanded(
-            flex: 3,
-            child: AutoSizeText(
-              label,
-              maxLines: 2,
-              style: const TextStyle(
-                  fontSize: 16,
-                  color: Color.fromRGBO(0, 153, 204, 1)
+    return SwitchListTile(
+      onChanged: (bool value){
+        setState(() {
+          onStatusChanged(value);
+        });
+      },
+      value: sliderStateValue,
+      title: Container(
+        padding: const EdgeInsets.symmetric(horizontal: 8),
+        child: Row(
+          children: [
+            Icon(icon, color:  const Color.fromRGBO(0, 153, 204, 1)),
+            const SizedBox(width: 8,),
+            Expanded(
+              flex: 3,
+              child: AutoSizeText(
+                label,
+                maxLines: 2,
+                style: const TextStyle(
+                    fontSize: 16,
+                    color: Color.fromRGBO(0, 153, 204, 1)
+                ),
               ),
             ),
-          ),
-          Expanded(child: Container()),
-          Container(
-            padding: const EdgeInsets.only(right: 16),
-            child: Text(
-              slider.label,
-              style: const TextStyle(
-                  fontSize: 20,
-                  color: Color.fromRGBO(0, 153, 204, 1),
-                  fontWeight: FontWeight.w700
-              ),
-            ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }
@@ -224,9 +235,51 @@ class _FilterUserViewState extends State<FilterUserView> {
     return null;
   }
 
-  void refresh(){
+  void refreshAnimalCount(double value){
     setState(() {
+      widget.animalCountSliderValue = value;
+    });
+  }
 
+  void refreshGuestCount(double value){
+    setState(() {
+      widget.guestCountSliderValue = value;
+    });
+  }
+
+  void refreshPartyCount(double value){
+    setState(() {
+      widget.partyCountSliderValue = value;
+    });
+  }
+
+  void onAnimalStatusChanged(bool value){
+    if(!value)
+      {
+        widget.animalCountSliderValue = null;
+      }
+    setState(() {
+      widget.animalSliderStatus = !widget.animalSliderStatus;
+    });
+  }
+
+  void onGuestStatusChanged(bool value){
+    if(!value)
+    {
+      widget.guestCountSliderValue = null;
+    }
+    setState(() {
+      widget.guestSliderStatus = !widget.guestSliderStatus;
+    });
+  }
+
+  void onPartyStatusChanged(bool value){
+    if(!value)
+    {
+      widget.partyCountSliderValue = null;
+    }
+    setState(() {
+      widget.partySliderStatus = !widget.partySliderStatus;
     });
   }
 }

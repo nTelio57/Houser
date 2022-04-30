@@ -6,7 +6,6 @@ import 'package:houser/utils/offer_card_manager.dart';
 
 class UserOfferManager implements IOfferManager
 {
-  final CurrentLogin _currentLogin = CurrentLogin();
   final ApiService _apiService = ApiService();
   OfferCardManager offerCardManager;
 
@@ -14,7 +13,7 @@ class UserOfferManager implements IOfferManager
 
   @override
   Future loadOffersAsync(int count, int offset) async{
-    var roomList = await _apiService.GetUserRecommendationByFilter(count, offset, _currentLogin.user!.filter as UserFilter);
+    var roomList = await _apiService.GetUserRecommendationByFilter(count, offset, CurrentLogin().user!.filter as UserFilter);
     offerCardManager.users.addAll(roomList.where((newUser) => !offerCardManager.users.contains(newUser)));
   }
 }
