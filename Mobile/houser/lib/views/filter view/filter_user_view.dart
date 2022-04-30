@@ -32,11 +32,11 @@ class FilterUserView extends StatefulWidget {
   WGMultiButton? smokeButtons;
 
   FilterUserView({Key? key}) : super(key: key){
-    sexSelectionButtons = WGMultiButton(selections: _sexSelections);
-    sleepButtons = WGMultiButton(selections: _sleepTimeSelections);
-    studyButtons = WGMultiButton(selections: _studySelections);
-    workButtons = WGMultiButton(selections: _workSelections);
-    smokeButtons = WGMultiButton(selections: _smokeSelections);
+    sexSelectionButtons = WGMultiButton(selections: _sexSelections, canHaveNull: true);
+    sleepButtons = WGMultiButton(selections: _sleepTimeSelections, canHaveNull: true);
+    studyButtons = WGMultiButton(selections: _studySelections, canHaveNull: true);
+    workButtons = WGMultiButton(selections: _workSelections, canHaveNull: true);
+    smokeButtons = WGMultiButton(selections: _smokeSelections, canHaveNull: true,);
   }
 
   @override
@@ -66,19 +66,25 @@ class FilterUserView extends StatefulWidget {
 
   Filter getFilterByForm()
   {
+    var sexIndex = sexSelectionButtons!.isButtonSelected.indexOf(true);
+    var studyIndex = studyButtons!.isButtonSelected.indexOf(true);
+    var workIndex = workButtons!.isButtonSelected.indexOf(true);
+    var smokeIndex = smokeButtons!.isButtonSelected.indexOf(true);
+    var sleepIndex = sleepButtons!.isButtonSelected.indexOf(true);
+
     return UserFilter(
       0,
       CurrentLogin().user!.id,
       int.tryParse(_ageFromText.text),
       int.tryParse(_ageToText.text),
-      sexSelectionButtons!.isButtonSelected.indexOf(true),
+      sexIndex == -1 ? null : sexIndex,
       animalCountSlider.selectedValue.toInt(),
-      studyButtons!.isButtonSelected.indexOf(true)== 0 ? false : true,
-      workButtons!.isButtonSelected.indexOf(true)== 0 ? false : true,
-      smokeButtons!.isButtonSelected.indexOf(true)== 0 ? false : true,
+      studyIndex == -1 ? null : (studyIndex == 0 ? false : true),
+      workIndex == -1 ? null : (workIndex == 0 ? false : true),
+      smokeIndex == -1 ? null : (smokeIndex == 0 ? false : true),
       guestCountSlider.selectedValue.toInt(),
       partyCountSlider.selectedValue.toInt(),
-      sleepButtons!.isButtonSelected.indexOf(true) == 1 ? SleepType.evening : SleepType.morning
+      sleepIndex == -1 ? null : (sleepIndex == 1 ? SleepType.evening : SleepType.morning)
     );
   }
 }
