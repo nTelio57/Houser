@@ -1,6 +1,7 @@
 import 'dart:math';
 
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:houser/enums/SleepType.dart';
 import 'package:houser/extensions/bool_extensions.dart';
@@ -104,7 +105,7 @@ class _WGUserCardState extends State<WGUserCard> {
   {
     var deviceHeight = MediaQuery.of(context).size.height;
     var mainImage = widget.user.getMainImage();
-    var imageWidget = mainImage != null? networkImage(mainImage.id) : image();
+    var imageWidget = mainImage != null? networkImage(mainImage.id) : noImage();
 
     return SlidingUpPanel(
       panel: slidePanel(),//Tas kas slidina
@@ -195,6 +196,35 @@ class _WGUserCardState extends State<WGUserCard> {
               child: userDetailsList()
             ),
           ),
+        ],
+      ),
+    );
+  }
+
+  Widget noImage()
+  {
+    return Container(
+      width: double.infinity,
+      height: double.infinity,
+      color: Theme.of(context).backgroundColor,
+      padding: const EdgeInsets.symmetric(horizontal: 16),
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Icon(
+            Icons.account_circle,
+            color: Theme.of(context).primaryColor,
+            size: 80,
+          ),
+          Text(
+            'Šis vartotojas neturi įsikėlęs savo nuotraukos.',
+            textAlign: TextAlign.center,
+            style: TextStyle(
+              color: Theme.of(context).primaryColor,
+              fontWeight: FontWeight.w600,
+              fontSize: 20
+            ),
+          )
         ],
       ),
     );
