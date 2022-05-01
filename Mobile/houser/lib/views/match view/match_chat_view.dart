@@ -179,7 +179,12 @@ class _MatchChatViewState extends State<MatchChatView> {
 
   Widget image()
   {
-    var imageId = getImageId();
+    var imageId = 0;
+    try {
+      imageId = getImageId();
+    }catch(e){
+      imageId = 0;
+    }
     return CircleAvatar(
       backgroundColor: Theme.of(context).primaryColorDark,
       foregroundImage: imageId == 0 ? null : networkImage(imageId),
