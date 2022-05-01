@@ -5,9 +5,12 @@ import 'package:houser/enums/FilterType.dart';
 import 'package:houser/models/Filter.dart';
 import 'package:houser/models/RoomFilter.dart';
 import 'package:houser/models/UserFilter.dart';
+import 'package:houser/services/api_service.dart';
 import 'package:houser/utils/current_login.dart';
+import 'package:houser/views/filter%20view/filter_create_room_offer.dart';
 import 'package:houser/views/filter%20view/filter_room_view.dart';
 import 'package:houser/views/filter%20view/filter_user_view.dart';
+import 'package:houser/views/profile%20view/room_form_view.dart';
 
 // ignore: must_be_immutable
 class FilterBaseView extends StatefulWidget {
@@ -28,11 +31,13 @@ class _FilterBaseViewState extends State<FilterBaseView> with SingleTickerProvid
   bool _isButtonEnabled = true;
   var filterUserForm = FilterUserView();
   var filterRoomForm = FilterRoomView();
+  var filterCreateRoomOffer = FilterCreateRoomOffer((){});
 
   @override
   void initState() {
-    super.initState();
+    filterCreateRoomOffer.onButtonClick = onCreateRoomOfferClick;
     _tabController = TabController(length: 2, vsync: this, initialIndex: loadFormByFilter());
+    super.initState();
   }
 
   @override
@@ -60,7 +65,7 @@ class _FilterBaseViewState extends State<FilterBaseView> with SingleTickerProvid
                     controller: _tabController,
                     children: [
                       filterRoomForm,
-                      filterUserForm,
+                      userFormLoader(),
                     ],
                   ),
                 ),
@@ -70,6 +75,48 @@ class _FilterBaseViewState extends State<FilterBaseView> with SingleTickerProvid
           ),
         ),
       ),
+    );
+  }
+
+  Widget userFormLoader()
+  {
+    return FutureBuilder(
+      future: hasAnyRoomOffers(),
+      builder: (BuildContext context, AsyncSnapshot<bool> snapshot)
+        {
+          if(snapshot.hasData)
+          {
+            if(snapshot.data!)
+              {
+                return filterUserForm;
+              }
+            else
+              {
+                return filterCreateRoomOffer;
+              }
+          }
+          else if(snapshot.hasError)
+          {
+            return SizedBox(
+              width: double.infinity,
+              child: Text(
+                'Įvyko klaida.'.toUpperCase(),
+                textAlign: TextAlign.center,
+                style: const TextStyle(
+                    fontWeight: FontWeight.w700,
+                    fontSize: 14,
+                    color: Colors.red
+                ),
+              ),
+            );
+          }
+          else
+          {
+            return const Center(
+              child: CircularProgressIndicator(),
+            );
+          }
+        }
     );
   }
 
@@ -181,7 +228,10 @@ class _FilterBaseViewState extends State<FilterBaseView> with SingleTickerProvid
           });
         },
         style: TextButton.styleFrom(
-            backgroundColor: Colors.redAccent
+          backgroundColor: Colors.redAccent,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(8)
+          )
         ),
         child: Text(
           'Nustatyti filtrą'.toUpperCase(),
@@ -227,5 +277,20 @@ class _FilterBaseViewState extends State<FilterBaseView> with SingleTickerProvid
 
   Future onButtonClick() async {
     await widget.onFilterChanged(getFilterByForm());
+  }
+
+  void onCreateRoomOfferClick()
+  {
+    Navigator.push(context, MaterialPageRoute(builder: (context) => RoomFormView())).then((value) {
+      setState(() {
+
+      });
+    });
+  }
+
+  Future<bool> hasAnyRoomOffers() async
+  {
+    var roomList = await ApiService().GetRoomsByUser(widget._currentLogin.user!.id);
+    return roomList.isNotEmpty;
   }
 }
