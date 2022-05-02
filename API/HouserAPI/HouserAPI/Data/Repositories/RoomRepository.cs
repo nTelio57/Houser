@@ -16,7 +16,7 @@ namespace HouserAPI.Data.Repositories
 
         protected override IQueryable<Room> IncludeDependencies(IQueryable<Room> queryable)
         {
-            return queryable.Include(x => x.Images);
+            return queryable.Include(x => x.User).ThenInclude(x => x.Images).Include(x => x.Images);
         }
 
         public async Task<IEnumerable<Room>> GetAllByUser(string userId)

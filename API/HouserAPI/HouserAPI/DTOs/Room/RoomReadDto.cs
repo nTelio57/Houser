@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
+using HouserAPI.DTOs.Image;
+using HouserAPI.DTOs.User;
 using HouserAPI.Enums;
 
 namespace HouserAPI.DTOs.Room
@@ -21,7 +23,7 @@ namespace HouserAPI.DTOs.Room
         public int TotalRoomCount { get; set; }
         public int BedCount { get; set; }
         public BedType BedType { get; set; }
-        public ICollection<Models.Image> Images { get; set; }
+        public ICollection<ImageReadDto> Images { get; set; }
         //--------Rules-----
         public bool RuleSmoking { get; set; }
         public bool RuleAnimals { get; set; }
@@ -34,5 +36,6 @@ namespace HouserAPI.DTOs.Room
         public bool AccommodationDisability { get; set; }
 
         public string UserId { get; set; }
+        public UserReadDto User { get; set; }
     }
 }
