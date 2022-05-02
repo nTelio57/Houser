@@ -1,5 +1,6 @@
 import 'package:houser/enums/BedType.dart';
 import 'package:houser/models/Image.dart';
+import 'package:houser/models/User.dart';
 import 'package:json_annotation/json_annotation.dart';
 import 'package:collection/collection.dart';
 
@@ -13,6 +14,7 @@ class Room{
   DateTime uploadDate = DateTime.now();
   @JsonKey(name: 'userId')
   String userId = '';
+  User? user;
   int id = 0;
 
   String title = 'Ieškomas vienas kambariokas dviem mėnesiams';
