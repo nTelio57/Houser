@@ -39,3 +39,7 @@ const visibilityChangeFailed = SnackBar(
 const roomHasToHaveImages = SnackBar(
     content: Text('Privalote įkelti bent 1 nuotrauką.')
 );
+
+const messengerFailed = SnackBar(
+    content: Text('Įvyko klaida bandant pasiekti žinučių servisą.')
+);

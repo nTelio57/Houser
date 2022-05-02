@@ -146,7 +146,7 @@ namespace HouserAPI.Services
                     if (currentlyMainImage != null)
                     {
                         currentlyMainImage.IsMain = false;
-                        await _repository.Update(currentlyMainImage);
+                        await _repository.Update(_mapper.Map<Image>(currentlyMainImage));
                     }
                 }
                 else // in user

@@ -1,4 +1,5 @@
-﻿using AutoMapper;
+﻿using System.Linq;
+using AutoMapper;
 using HouserAPI.DTOs.Room;
 using HouserAPI.Models;
 

@@ -56,7 +56,12 @@ class _WGMatchCardState extends State<WGMatchCard> {
 
   Widget image()
   {
-    var imageId = getImageId();
+    var imageId = 0;
+    try {
+      imageId = getImageId();
+    }catch(e){
+      imageId = 0;
+    }
     return CircleAvatar(
       radius: 40,
       backgroundColor: Theme.of(context).primaryColorDark,
