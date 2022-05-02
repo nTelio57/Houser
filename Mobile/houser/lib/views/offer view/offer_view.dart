@@ -11,6 +11,7 @@ import 'package:houser/views/profile%20view/my_profile_menu_view.dart';
 import 'package:houser/widgets/WG_RoomCard.dart';
 import 'package:houser/utils/offer_card_manager.dart';
 import 'package:houser/widgets/WG_UserCard.dart';
+import 'package:houser/widgets/WG_snackbars.dart';
 import 'package:provider/provider.dart';
 
 class OfferView extends StatefulWidget {
@@ -170,7 +171,12 @@ class _OfferViewState extends State<OfferView> {
           size: 24,
         ),
         onPressed: () async{
-          await MessengerService().init();
+          try{
+            await MessengerService().init();
+          }catch(e){
+            ScaffoldMessenger.of(context).showSnackBar(messengerFailed);
+          }
+
           Navigator.push(context, MaterialPageRoute(builder: (context) => MatchListView()));
         },
       ),

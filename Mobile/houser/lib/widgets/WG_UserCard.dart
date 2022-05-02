@@ -177,7 +177,7 @@ class _WGUserCardState extends State<WGUserCard> {
     return Container(
       decoration: BoxDecoration(
           color: Theme.of(context).primaryColor.withOpacity(0.7),
-          borderRadius: const BorderRadius.all(Radius.circular(16.0)),
+          borderRadius: const BorderRadius.all(Radius.circular(8.0)),
           boxShadow: [
             BoxShadow(
               blurRadius: 10.0,
@@ -217,7 +217,7 @@ class _WGUserCardState extends State<WGUserCard> {
             size: 80,
           ),
           Text(
-            'Šis vartotojas neturi įsikėlęs savo nuotraukos.',
+            'Šis vartotojas neturi nuotraukų.',
             textAlign: TextAlign.center,
             style: TextStyle(
               color: Theme.of(context).primaryColor,
@@ -284,7 +284,7 @@ class _WGUserCardState extends State<WGUserCard> {
     return SizedBox(
       height: 70,
       child: Text(
-        user.name!.toUpperCase(),
+        user.name!,
         textAlign: TextAlign.left,
         maxLines: 3,
         overflow: TextOverflow.ellipsis,

@@ -2,14 +2,17 @@ import 'dart:math';
 
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:houser/enums/FilterType.dart';
 import 'package:houser/models/Room.dart';
 import 'package:houser/services/api_service.dart';
 import 'package:houser/utils/current_login.dart';
 import 'package:houser/utils/offer_card_manager.dart';
+import 'package:houser/views/profile%20view/guest_profile_view.dart';
 import 'package:houser/widgets/WG_album_slider.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import 'package:sliding_up_panel/sliding_up_panel.dart';
+import 'package:collection/collection.dart';
 
 class WGRoomCard extends StatefulWidget {
   final Room room;
@@ -114,11 +117,12 @@ class _WGRoomCardState extends State<WGRoomCard> {
   Widget slidingUpPanel(Room room)
   {
     var deviceHeight = MediaQuery.of(context).size.height;
-    var imageId = widget.room.images.firstWhere((i) => i.isMain).id;
+    var mainImage = widget.room.images.firstWhereOrNull((i) => i.isMain);
+    var imageWidget = mainImage != null? networkImage(mainImage.id) : noImage();
 
     return SlidingUpPanel(
       panel: slidePanel(),//Tas kas slidina
-      body: networkImage(imageId),//pagr vaizdas
+      body: imageWidget,//pagr vaizdas
       renderPanelSheet: false,
       minHeight: deviceHeight * 0.24,
       maxHeight: 600,
@@ -143,8 +147,8 @@ class _WGRoomCardState extends State<WGRoomCard> {
     Room room = widget.room;
     Column column = Column(crossAxisAlignment: CrossAxisAlignment.start, children: []);
 
-    column.children.add(imageAlbum());
-    column.children.add(const SizedBox(height: 20));
+    widget.room.images.isNotEmpty ? column.children.add(imageAlbum()) : null;
+    widget.room.images.isNotEmpty ? column.children.add(const SizedBox(height: 20)) : null;
     column.children.add(labelField('Pagrindinė info'));
     column.children.add(divider());
     column.children.add(basicTextField(Icons.location_city, room.city));
@@ -168,6 +172,10 @@ class _WGRoomCardState extends State<WGRoomCard> {
     room.accommodationAc ? column.children.add(basicTextField(Icons.air, 'Oro kondicionierius')) : null;
     room.accommodationDisability ? column.children.add(basicTextField(Icons.accessible, 'Pritaikyta neįgaliesiems')): null;
     room.accommodationParking ? column.children.add(basicTextField(Icons.local_parking, 'Parkingas')): null;
+    column.children.add(const SizedBox(height: 20));
+    column.children.add(labelField('Skelbėjas'));
+    column.children.add(divider());
+    column.children.add(ownerButton());
 
     return column;
   }
@@ -197,12 +205,42 @@ class _WGRoomCardState extends State<WGRoomCard> {
     );
   }
 
+  Widget ownerButton()
+  {
+    return Container(
+      width: double.infinity,
+      child: TextButton(
+        onPressed: () {
+          Navigator.push(context, MaterialPageRoute(builder: (context) => GuestProfileView(FilterType.user, user: widget.room.user)));
+        },
+        child: Container(
+          alignment: Alignment.centerLeft,
+          padding: const EdgeInsets.only(left: 12),
+          child: Text(
+            widget.room.user!.name!,
+            style: TextStyle(
+                color: Theme.of(context).primaryColor,
+                fontWeight: FontWeight.w600,
+                fontSize: 16
+            ),
+          ),
+        ),
+        style: TextButton.styleFrom(
+            backgroundColor: Colors.white,
+            shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(8)
+            )
+        ),
+      ),
+    );
+  }
+
   Widget slidePanel()
   {
     return Container(
       decoration: BoxDecoration(
           color: Theme.of(context).primaryColor.withOpacity(0.7),
-          borderRadius: const BorderRadius.all(Radius.circular(16.0)),
+          borderRadius: const BorderRadius.all(Radius.circular(8.0)),
           boxShadow: [
             BoxShadow(
               blurRadius: 10.0,
@@ -249,6 +287,35 @@ class _WGRoomCardState extends State<WGRoomCard> {
     );
   }
 
+  Widget noImage()
+  {
+    return Container(
+      width: double.infinity,
+      height: double.infinity,
+      color: Theme.of(context).backgroundColor,
+      padding: const EdgeInsets.symmetric(horizontal: 16),
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Icon(
+            Icons.account_circle,
+            color: Theme.of(context).primaryColor,
+            size: 80,
+          ),
+          Text(
+            'Šis pasiūlymas neturi nuotraukų.',
+            textAlign: TextAlign.center,
+            style: TextStyle(
+                color: Theme.of(context).primaryColor,
+                fontWeight: FontWeight.w600,
+                fontSize: 20
+            ),
+          )
+        ],
+      ),
+    );
+  }
+
   Widget networkImage(int id)
   {
     return CachedNetworkImage(
@@ -280,7 +347,7 @@ class _WGRoomCardState extends State<WGRoomCard> {
     return SizedBox(
       height: 95,
       child: Text(
-        room.title.toUpperCase(),
+        room.title,
         textAlign: TextAlign.left,
         maxLines: 3,
         overflow: TextOverflow.ellipsis,

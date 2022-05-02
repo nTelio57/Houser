@@ -445,7 +445,7 @@ class _MatchChatViewState extends State<MatchChatView> {
 
   Future onSendPressed() async
   {
-    if(_messageInputController.text.isEmpty) {
+    if(_messageInputController.text.trim().isEmpty) {
       return;
     }
 

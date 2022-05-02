@@ -121,11 +121,11 @@ class _RegisterViewState extends State<RegisterView> {
 
   // ignore: prefer_function_declarations_over_variables
   String? Function(String?) emailValidator = (String? value){
-    if(value == null || value.isEmpty)
+    if(value == null || value.trim().isEmpty)
     {
       return 'Įveskite el. paštą';
     }
-    if(!value.isValidEmail)
+    if(!value.trim().isValidEmail)
     {
       return 'Įveskite tinkamą el. paštą';
     }
@@ -276,7 +276,7 @@ class _RegisterViewState extends State<RegisterView> {
           });
           if(_formKey.currentState!.validate())
             {
-              AuthRequest authRequest = AuthRequest(_emailTextController.text, _passwordTextController.text);
+              AuthRequest authRequest = AuthRequest(_emailTextController.text.trim(), _passwordTextController.text);
               try{
                 EasyLoading.show();
                 AuthResult authResult = await widget._apiService.Register(authRequest).timeout(const Duration(seconds: 5));
