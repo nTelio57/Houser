@@ -1,8 +1,8 @@
 import 'package:houser/models/RoomFilter.dart';
 import 'package:houser/services/api_service.dart';
-import 'package:houser/utils/IOfferManager.dart';
-import 'package:houser/utils/current_login.dart';
-import 'package:houser/utils/offer_card_manager.dart';
+import 'package:houser/services/offer%20manager/IOfferManager.dart';
+import 'package:houser/services/current_login.dart';
+import 'package:houser/services/offer%20manager/offer_card_manager.dart';
 
 class RoomOfferManager implements IOfferManager
 {

@@ -5,11 +5,11 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:houser/services/messenger_service.dart';
-import 'package:houser/utils/current_login.dart';
+import 'package:houser/services/current_login.dart';
 import 'package:houser/resources/app_colors.dart';
 import 'package:houser/views/offer%20view/offer_view.dart';
 import 'package:houser/views/welcome_view.dart';
-import 'package:houser/utils/offer_card_manager.dart';
+import 'package:houser/services/offer%20manager/offer_card_manager.dart';
 import 'package:provider/provider.dart';
 
 Widget _defaultHome = const WelcomeView();

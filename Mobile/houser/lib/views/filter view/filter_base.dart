@@ -6,7 +6,7 @@ import 'package:houser/models/Filter.dart';
 import 'package:houser/models/RoomFilter.dart';
 import 'package:houser/models/UserFilter.dart';
 import 'package:houser/services/api_service.dart';
-import 'package:houser/utils/current_login.dart';
+import 'package:houser/services/current_login.dart';
 import 'package:houser/views/filter%20view/filter_create_room_offer.dart';
 import 'package:houser/views/filter%20view/filter_room_view.dart';
 import 'package:houser/views/filter%20view/filter_user_view.dart';

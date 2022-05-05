@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:houser/services/messenger_service.dart';
-import 'package:houser/utils/current_login.dart';
+import 'package:houser/services/current_login.dart';
 import 'package:houser/views/match%20view/match_chat_view.dart';
 import 'package:houser/widgets/WG_MatchCard.dart';
 import 'package:provider/provider.dart';

@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:houser/models/widget_data/multi_button_selection.dart';
+import 'package:houser/models/multi_button_selection.dart';
 import 'package:houser/widgets/WG_multi_button.dart';
 
 // ignore: must_be_immutable

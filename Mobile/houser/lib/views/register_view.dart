@@ -7,7 +7,7 @@ import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:houser/extensions/string_extensions.dart';
 import 'package:houser/models/AuthRequest.dart';
 import 'package:houser/models/AuthResult.dart';
-import 'package:houser/utils/current_login.dart';
+import 'package:houser/services/current_login.dart';
 import 'package:houser/services/api_service.dart';
 import 'package:houser/views/personal%20details%20view/personal_details_create_stepper.dart';
 import 'package:houser/widgets/WG_snackbars.dart';

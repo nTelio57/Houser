@@ -7,7 +7,7 @@ import 'package:houser/enums/FilterType.dart';
 import 'package:houser/models/Message.dart';
 import 'package:houser/services/api_service.dart';
 import 'package:houser/services/messenger_service.dart';
-import 'package:houser/utils/current_login.dart';
+import 'package:houser/services/current_login.dart';
 import 'package:houser/models/Match.dart';
 import 'package:houser/views/profile%20view/guest_profile_view.dart';
 import 'package:houser/widgets/WG_snackbars.dart';
