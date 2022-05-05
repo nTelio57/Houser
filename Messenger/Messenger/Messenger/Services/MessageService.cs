@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Threading.Tasks;
 using AutoMapper;
 using Messenger.Data;
@@ -19,12 +18,6 @@ namespace Messenger.Services
             _mapper = mapper;
             _matchRepository = matchRepository;
             _messageRepository = messageRepository as MessageRepository;
-        }
-
-        public async Task<IEnumerable<MessageReadDto>> GetAllByMatchId(int matchId)
-        {
-            var messages = await _messageRepository.GetAllByMatchId(matchId);
-            return _mapper.Map<IEnumerable<MessageReadDto>>(messages);
         }
 
         public async Task<MessageReadDto> Create(MessageCreateDto messageCreateDto)

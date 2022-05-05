@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Messenger.DTOs.Message;
-using Messenger.Models;
 using Messenger.Services;
 using Microsoft.AspNetCore.SignalR;
 
