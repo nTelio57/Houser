@@ -83,7 +83,6 @@ namespace HouserAPI.Services
                     await _swipeRepository.Delete(otherSide);
                     var match = new Match
                     {
-                        FilterType = swipeCreateDto.FilterType,
                         UserOffererId = swipeCreateDto.FilterType == FilterType.Room ? swipeCreateDto.SwiperId : swipeCreateDto.UserTargetId,
                         RoomOffererId = swipeCreateDto.FilterType == FilterType.User ? swipeCreateDto.SwiperId : swipeCreateDto.UserTargetId,
                         RoomId = swipeCreateDto.RoomId
