@@ -9,7 +9,6 @@ namespace HouserAPI.Profiles
         public MatchProfile()
         {
             CreateMap<Match, MatchReadDto>();
-            CreateMap<MatchCreateDto, Match>();
         }
     }
 }
