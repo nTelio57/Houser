@@ -1,9 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.Linq;
 using System.Security.Claims;
-using System.Text;
 using System.Threading.Tasks;
 using AutoMapper;
 using HouserAPI.Auth;
@@ -11,11 +8,9 @@ using HouserAPI.Controllers;
 using HouserAPI.Data;
 using HouserAPI.Data.Repositories;
 using HouserAPI.DTOs.Image;
-using HouserAPI.DTOs.Room;
 using HouserAPI.Models;
 using HouserAPI.Profiles;
 using HouserAPI.Services;
-using HouserAPI.Utilities;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -30,7 +25,6 @@ namespace HouserAPI_Test
         private readonly IMapper _mapper;
         private readonly IRoomService _roomService;
         private readonly IImageService _imageService;
-        private readonly Mock<RoomRepository> _mockRoomRepository;
         private readonly Mock<ImageRepository> _mockImageRepository;
         public ImageControllerTest()
         {
@@ -43,13 +37,13 @@ namespace HouserAPI_Test
                 .Options;
             var mockDatabaseContext = new Mock<DatabaseContext>(options);
 
-            _mockRoomRepository = new Mock<RoomRepository>(mockDatabaseContext.Object);
+            var mockRoomRepository = new Mock<RoomRepository>(mockDatabaseContext.Object);
             _mockImageRepository = new Mock<ImageRepository>(mockDatabaseContext.Object);
             var mockSwipeRepository = new Mock<SwipeRepository>(mockDatabaseContext.Object);
             var mockMatchRepository = new Mock<MatchRepository>(mockDatabaseContext.Object);
 
-            IMatchService matchService = new MatchService(_mapper, mockSwipeRepository.Object, mockMatchRepository.Object, _mockRoomRepository.Object, mockUserManager.Object);
-            _roomService = new RoomService(_mockRoomRepository.Object, _mapper, matchService);
+            IMatchService matchService = new MatchService(_mapper, mockSwipeRepository.Object, mockMatchRepository.Object, mockRoomRepository.Object, mockUserManager.Object);
+            _roomService = new RoomService(mockRoomRepository.Object, _mapper, matchService);
             _imageService = new ImageService(_mockImageRepository.Object, _roomService, _mapper, null);
         }
 
@@ -96,19 +90,6 @@ namespace HouserAPI_Test
             IsMain = true,
             RoomId = null,
             UserId = "UserId",
-        };
-
-        private readonly RoomReadDto _mockRoomReadDto = new()
-        {
-            Id = 0,
-            IsVisible = true,
-            UserId = "UserId",
-            Title = "Title",
-            City = "City",
-            Address = "Address",
-            AvailableFrom = new DateTime(2022, 01, 01),
-            AvailableTo = new DateTime(2022, 02, 01),
-            Images = new List<ImageReadDto>()
         };
 
         [Fact]

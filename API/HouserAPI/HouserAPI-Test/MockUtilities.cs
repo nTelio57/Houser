@@ -2,7 +2,7 @@
 using Microsoft.AspNetCore.Identity;
 using Moq;
 
-namespace HouserAPI.Utilities
+namespace HouserAPI_Test
 {
     public static class MockUtilities
     {

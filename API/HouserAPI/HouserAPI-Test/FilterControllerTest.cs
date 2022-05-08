@@ -67,19 +67,6 @@ namespace HouserAPI_Test
             };
         }
 
-        private readonly FilterReadDto _mockFilterReadDto = new()
-        {
-            Id = 0,
-            UserId = "UserId",
-        };
-
-        private readonly Filter _mockFilter = new()
-        {
-            Id = 0,
-            UserId = "UserId",
-            Elo = 0
-        };
-
         private readonly UserFilter _mockUserFilter = new()
         {
             Id = 0,

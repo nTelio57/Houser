@@ -1,9 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.Linq;
 using System.Security.Claims;
-using System.Text;
 using System.Threading.Tasks;
 using AutoMapper;
 using HouserAPI.Auth;
@@ -11,13 +9,11 @@ using HouserAPI.Controllers;
 using HouserAPI.Data;
 using HouserAPI.Data.Repositories;
 using HouserAPI.DTOs.Match;
-using HouserAPI.DTOs.Room;
 using HouserAPI.DTOs.Swipe;
 using HouserAPI.Enums;
 using HouserAPI.Models;
 using HouserAPI.Profiles;
 using HouserAPI.Services;
-using HouserAPI.Utilities;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -145,13 +141,6 @@ namespace HouserAPI_Test
             RoomOfferer = null,
             UserOfferer = null,
             Room = null
-        };
-
-        private readonly MatchReadDto _mockMatchReadDto = new()
-        {
-            Id = 0,
-            RoomOffererId = "UserId",
-            UserOffererId = ""
         };
 
         [Fact]

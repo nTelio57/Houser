@@ -119,7 +119,8 @@ namespace HouserAPI_Test
 
             var dateTime = DateTime.Now;
             expected.SendTime = dateTime;
-            actual.SendTime = dateTime;
+            if(actual != null)
+                actual.SendTime = dateTime;
 
             Assert.Equal(JsonConvert.SerializeObject(expected), JsonConvert.SerializeObject(actual));
         }
