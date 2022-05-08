@@ -71,14 +71,6 @@ namespace HouserAPI.Controllers
             }
         }
 
-        [HttpGet]
-        [Roles(UserRoles.Admin)]
-        public async Task<IActionResult> GetAllImages()
-        {
-            var images = await _imageService.GetAll();
-            return Ok(images);
-        }
-
         [HttpGet("user/{id}")]
         [Roles(UserRoles.Basic)]
         public async Task<IActionResult> GetAllImagesByUser(string id)
@@ -95,8 +87,6 @@ namespace HouserAPI.Controllers
         [Roles(UserRoles.Basic)]
         public async Task<IActionResult> GetImageById(int id)
         {
-            var userId = User.FindFirst(CustomClaims.UserId)?.Value;
-
             var image = await _imageService.GetById(id);
             if (image == null) 
                 return NotFound();

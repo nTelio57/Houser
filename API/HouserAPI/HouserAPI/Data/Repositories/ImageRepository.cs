@@ -14,7 +14,7 @@ namespace HouserAPI.Data.Repositories
             Entities = context.Images;
         }
 
-        public async Task<IEnumerable<Image>> GetAllByUser(string userId)
+        public virtual async Task<IEnumerable<Image>> GetAllByUser(string userId)
         {
             return await IncludeDependencies(Entities).Where(x => x.UserId == userId).ToListAsync();
         }
