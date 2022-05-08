@@ -1,4 +1,3 @@
-import 'package:flutter/cupertino.dart';
 import 'package:houser/enums/FilterType.dart';
 import 'package:houser/models/Message.dart';
 import 'package:houser/models/Room.dart';
@@ -9,11 +8,10 @@ part 'Match.g.dart';
 
 @JsonSerializable()
 class Match{
-  Match(this.id, this.filterType, this.userOfferer, this.roomOfferer, this.room);
+  Match(this.id, this.userOfferer, this.roomOfferer, this.room);
   Match.empty();
 
   int id = 0;
-  FilterType filterType = FilterType.none;
   User userOfferer = User("", "");
   User roomOfferer = User("", "");
   Room? room;

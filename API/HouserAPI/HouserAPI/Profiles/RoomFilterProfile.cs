@@ -10,8 +10,6 @@ namespace HouserAPI.Profiles
         {
             CreateMap<RoomFilter, RoomFilterReadDto>();
             CreateMap<RoomFilterCreateDto, RoomFilter>();
-            CreateMap<RoomFilterUpdateDto, RoomFilter>();
-            CreateMap<RoomFilter, RoomFilterUpdateDto>();
         }
     }
 }

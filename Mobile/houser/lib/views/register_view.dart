@@ -297,7 +297,7 @@ class _RegisterViewState extends State<RegisterView> {
               } on TimeoutException {
                 ScaffoldMessenger.of(context).showSnackBar(serverErrorSnackbar);
               } on Exception {
-                ScaffoldMessenger.of(context).showSnackBar(failedLogin);
+                ScaffoldMessenger.of(context).showSnackBar(failedRegister);
               }
             }
           EasyLoading.dismiss();

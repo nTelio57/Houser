@@ -12,6 +12,10 @@ const failedLogin = SnackBar(
     content: Text('Nepavyko prisijungti.')
 );
 
+const failedRegister = SnackBar(
+    content: Text('Nepavyko prisiregistruoti.')
+);
+
 const failedFileUpload = SnackBar(
     content: Text('Nepavyko įkelti failo.')
 );
@@ -42,4 +46,8 @@ const roomHasToHaveImages = SnackBar(
 
 const messengerFailed = SnackBar(
     content: Text('Įvyko klaida bandant pasiekti žinučių servisą.')
+);
+
+const noRoomOfferForUserFilter = SnackBar(
+    content: Text('Norint pasirinkti kambarioko filtrą reikalingas kambario pasiūlymas.')
 );

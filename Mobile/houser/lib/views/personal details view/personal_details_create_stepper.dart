@@ -141,8 +141,8 @@ class _PersonalDetailsCreateStepperState extends State<PersonalDetailsCreateStep
             margin: const EdgeInsets.only(top: 16.0),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.end,
-              children: <Widget>[
-                Container(
+              children: [
+                isFirstStep() ? Container(
                   margin: const EdgeInsetsDirectional.only(start: 8.0),
                   child: TextButton(
                     onPressed: details.onStepCancel,
@@ -151,7 +151,7 @@ class _PersonalDetailsCreateStepperState extends State<PersonalDetailsCreateStep
                       style: TextStyle(color: Colors.black54),
                     ),
                   ),
-                ),
+                ) : Container(),
                 TextButton(
                   onPressed: details.onStepContinue,
                   child: Text(
@@ -263,6 +263,11 @@ class _PersonalDetailsCreateStepperState extends State<PersonalDetailsCreateStep
     provider.loadOffersSync(7, 3);
 
     Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (context) => OfferView()), (Route<dynamic> route) => false);
+  }
+
+  bool isFirstStep()
+  {
+    return _currentStep == 0;
   }
 
   bool isLastStep()

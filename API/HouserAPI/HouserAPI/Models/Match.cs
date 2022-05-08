@@ -4,7 +4,6 @@ namespace HouserAPI.Models
 {
     public class Match : Entity
     {
-        public FilterType FilterType { get; set; }
         public User UserOfferer { get; set; }
         public string UserOffererId { get; set; }
         public User RoomOfferer { get; set; }
