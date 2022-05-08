@@ -14,7 +14,7 @@ namespace HouserAPI.Data.Repositories
             Entities = context.Messages;
         }
 
-        public async Task<IEnumerable<Message>> GetAllByMatchId(int matchId)
+        public virtual async Task<IEnumerable<Message>> GetAllByMatchId(int matchId)
         {
             return await IncludeDependencies(Entities).Where(x => x.MatchId == matchId).ToListAsync();
         }

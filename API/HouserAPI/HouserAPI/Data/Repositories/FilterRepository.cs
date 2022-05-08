@@ -13,7 +13,7 @@ namespace HouserAPI.Data.Repositories
             Entities = context.Filters;
         }
 
-        public async Task<Filter> GetByUserId(string userId)
+        public virtual async Task<Filter> GetByUserId(string userId)
         {
             return await IncludeDependencies(Entities).FirstOrDefaultAsync(x => x.UserId == userId);
         }

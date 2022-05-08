@@ -5,28 +5,55 @@ using System.Linq;
 using System.Security.Claims;
 using System.Text;
 using System.Threading.Tasks;
+using AutoMapper;
 using HouserAPI.Auth;
 using HouserAPI.Controllers;
+using HouserAPI.Data;
+using HouserAPI.Data.Repositories;
 using HouserAPI.DTOs.Match;
 using HouserAPI.DTOs.Room;
 using HouserAPI.DTOs.Swipe;
+using HouserAPI.Enums;
+using HouserAPI.Models;
+using HouserAPI.Profiles;
 using HouserAPI.Services;
+using HouserAPI.Utilities;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Moq;
+using Newtonsoft.Json;
 using Xunit;
+using Match = HouserAPI.Models.Match;
 
 namespace HouserAPI_Test
 {
     public class MatchControllerTest
     {
         private readonly Mock<IMatchService> _mockMatchService;
-        private readonly MatchController _controller;
+        private readonly IMapper _mapper;
+        private readonly IMatchService _matchService;
+        private readonly Mock<MatchRepository> _mockMatchRepository;
+        private readonly Mock<SwipeRepository> _mockSwipeRepository;
+        private readonly Mock<UserManager<User>> _mockUserManager;
         public MatchControllerTest()
         {
-            _mockMatchService = new Mock<IMatchService>();
+            var mapperConfig = new ConfigurationProfile().Configure();
+            _mapper = mapperConfig.CreateMapper();
+            _mockUserManager = MockUtilities.MockUserManager<User>();
 
-            _controller = GetMatchController(_mockMatchService.Object);
+            var options = new DbContextOptionsBuilder<DatabaseContext>()
+                .UseInMemoryDatabase("IN_MEMORY_DATABASE")
+                .Options;
+            var mockDatabaseContext = new Mock<DatabaseContext>(options);
+
+            _mockSwipeRepository = new Mock<SwipeRepository>(mockDatabaseContext.Object);
+            _mockMatchRepository = new Mock<MatchRepository>(mockDatabaseContext.Object);
+            var mockRoomRepository = new Mock<RoomRepository>(mockDatabaseContext.Object);
+
+            _mockMatchService = new Mock<IMatchService>();
+            _matchService = new MatchService(_mapper, _mockSwipeRepository.Object, _mockMatchRepository.Object, mockRoomRepository.Object, _mockUserManager.Object);
         }
 
         private static ClaimsPrincipal MockUser()
@@ -56,20 +83,73 @@ namespace HouserAPI_Test
             };
         }
 
+        private readonly User _mockUser = new()
+        {
+            Id = "UserId",
+            Filter = null,
+            AnimalCount = 0,
+            GuestCount = 0,
+            IsSmoking = false,
+            IsStudying = false,
+            IsWorking = false,
+            PartyCount = 0,
+            Sex = 0,
+            SleepType = SleepType.Evening,
+            BirthDate = new DateTime(2022, 01, 01),
+            City = "Kaunas",
+            Name = "Name",
+            Surname = "Surname",
+            Elo = 0,
+            Salt = "Salt",
+        };
+
+        private readonly Swipe _mockSwipe = new()
+        {
+            Id = 0,
+            SwiperId = "UserId",
+            FilterType = FilterType.Room,
+            SwipeType = SwipeType.Dislike,
+            RoomId = 0,
+            UserTargetId = "UserId1",
+            Swiper = null,
+            UserTarget = null,
+            Room = null
+        };
+
         private readonly SwipeCreateDto _mockSwipeCreateDto = new()
         {
             SwiperId = "UserId",
+            FilterType = FilterType.Room,
+            SwipeType = SwipeType.Dislike,
+            RoomId = 0,
+            UserTargetId = "UserId1"
         };
 
         private readonly SwipeReadDto _mockSwipeReadDto = new()
         {
-            Id = 1,
+            Id = 0,
             SwiperId = "UserId",
+            FilterType = FilterType.Room,
+            SwipeType = SwipeType.Dislike,
+            RoomId = 0,
+            SwipeResult = SwipeResult.Swiped,
+            UserTargetId = "UserId1"
+        };
+
+        private readonly Match _mockMatch = new()
+        {
+            Id = 0,
+            RoomOffererId = "UserId",
+            UserOffererId = "",
+            RoomId = 0,
+            RoomOfferer = null,
+            UserOfferer = null,
+            Room = null
         };
 
         private readonly MatchReadDto _mockMatchReadDto = new()
         {
-            Id = 1,
+            Id = 0,
             RoomOffererId = "UserId",
             UserOffererId = ""
         };
@@ -77,7 +157,9 @@ namespace HouserAPI_Test
         [Fact]
         public async Task Swipe_ReturnsBadRequest()
         {
-            var result = await _controller.Swipe(null);
+            var controller = GetMatchController(_matchService);
+
+            var result = await controller.Swipe(null);
 
             Assert.IsType<BadRequestObjectResult>(result);
         }
@@ -88,7 +170,9 @@ namespace HouserAPI_Test
             var swipeCreateDto = _mockSwipeCreateDto;
             swipeCreateDto.SwiperId = "FakeUserId";
 
-            var result = await _controller.Swipe(swipeCreateDto);
+            var controller = GetMatchController(_matchService);
+
+            var result = await controller.Swipe(swipeCreateDto);
 
             Assert.IsType<ForbidResult>(result);
         }
@@ -96,15 +180,20 @@ namespace HouserAPI_Test
         [Fact]
         public async Task Swipe_ReturnsOk()
         {
-            _mockMatchService
-                .Setup(x => x.Swipe(It.IsAny<SwipeCreateDto>()))
-                .ReturnsAsync(_mockSwipeReadDto);
+            _mockUserManager
+                .Setup(x => x.FindByIdAsync(It.IsAny<string>()))
+                .ReturnsAsync(_mockUser);
+            _mockSwipeRepository
+                .Setup(x => x.Create(It.IsAny<Swipe>()))
+                .Returns(Task.FromResult(_mockSwipe));
 
-            var result = await _controller.Swipe(_mockSwipeCreateDto);
+            var controller = GetMatchController(_matchService);
+
+            var result = await controller.Swipe(_mockSwipeCreateDto);
             var resultObject = result as CreatedAtActionResult;
             var actual = resultObject?.Value as SwipeReadDto;
-
-            Assert.Equal(_mockSwipeReadDto, actual);
+            
+            Assert.Equal(JsonConvert.SerializeObject(_mockSwipeReadDto), JsonConvert.SerializeObject(actual));
         }
 
         [Fact]
@@ -114,7 +203,9 @@ namespace HouserAPI_Test
                 .Setup(x => x.Swipe(It.IsAny<SwipeCreateDto>()))
                 .ThrowsAsync(new ArgumentNullException());
 
-            var result = await _controller.Swipe(_mockSwipeCreateDto);
+            var controller = GetMatchController(_matchService);
+
+            var result = await controller.Swipe(_mockSwipeCreateDto);
 
             Assert.IsType<BadRequestObjectResult>(result);
         }
@@ -122,7 +213,9 @@ namespace HouserAPI_Test
         [Fact]
         public async Task GetAllMatchesByUser_ReturnsForbid()
         {
-            var result = await _controller.GetAllMatchesByUser("FakeUserId");
+            var controller = GetMatchController(_matchService);
+
+            var result = await controller.GetAllMatchesByUser("FakeUserId");
 
             Assert.IsType<ForbidResult>(result);
         }
@@ -130,26 +223,27 @@ namespace HouserAPI_Test
         [Fact]
         public async Task GetAllMatchesByUser_ReturnsOk()
         {
-            var matchList = new Collection<MatchReadDto>() { _mockMatchReadDto };
-            _mockMatchService
+            var matchList = new Collection<Match>() { _mockMatch };
+            _mockMatchRepository
                 .Setup(x => x.GetAllByUser(It.IsAny<string>()))
                 .ReturnsAsync(matchList);
 
-            var result = await _controller.GetAllMatchesByUser("UserId");
-            var resultObject = result as OkObjectResult;
-            var actual = resultObject?.Value as Collection<MatchReadDto>;
+            var controller = GetMatchController(_matchService);
 
-            Assert.Equal(matchList, actual);
+            var expected = _mapper.Map<IEnumerable<MatchReadDto>>(matchList);
+            var result = await controller.GetAllMatchesByUser("UserId");
+            var resultObject = result as OkObjectResult;
+            var actual = resultObject?.Value as IEnumerable<MatchReadDto>;
+
+            Assert.Equal(JsonConvert.SerializeObject(expected), JsonConvert.SerializeObject(actual));
         }
 
         [Fact]
         public async Task DeleteMatch_ReturnsNotFound()
         {
-            _mockMatchService
-                .Setup(x => x.GetById(It.IsAny<int>()))
-                .ReturnsAsync((MatchReadDto)null);
+            var controller = GetMatchController(_matchService);
 
-            var result = await _controller.DeleteMatch(1);
+            var result = await controller.DeleteMatch(1);
 
             Assert.IsType<NotFoundResult>(result);
         }
@@ -157,15 +251,17 @@ namespace HouserAPI_Test
         [Fact]
         public async Task DeleteMatch_ReturnsForbid()
         {
-            var mockMatchReadDto = _mockMatchReadDto;
-            mockMatchReadDto.RoomOffererId = "FakeUserId";
-            mockMatchReadDto.UserOffererId = "FakeUserId";
-
-            _mockMatchService
+            var mockMatch = _mockMatch;
+            mockMatch.RoomOffererId = "FakeUserId";
+            mockMatch.UserOffererId = "FakeUserId";
+            
+            _mockMatchRepository
                 .Setup(x => x.GetById(It.IsAny<int>()))
-                .ReturnsAsync(mockMatchReadDto);
+                .ReturnsAsync(mockMatch);
 
-            var result = await _controller.DeleteMatch(1);
+            var controller = GetMatchController(_matchService);
+
+            var result = await controller.DeleteMatch(1);
 
             Assert.IsType<ForbidResult>(result);
         }
@@ -173,14 +269,19 @@ namespace HouserAPI_Test
         [Fact]
         public async Task DeleteMatch_ReturnsNoContent()
         {
-            _mockMatchService
+            _mockMatchRepository
                 .Setup(x => x.GetById(It.IsAny<int>()))
-                .ReturnsAsync(_mockMatchReadDto);
-            _mockMatchService
-                .Setup(x => x.Delete(It.IsAny<int>()))
-                .ReturnsAsync(true);
+                .ReturnsAsync(_mockMatch);
+            _mockMatchRepository
+                .Setup(x => x.Delete(It.IsAny<Match>()))
+                .Returns(Task.FromResult(true));
+            _mockMatchRepository
+                .Setup(x => x.SaveChanges())
+                .Returns(Task.FromResult(true));
 
-            var result = await _controller.DeleteMatch(1);
+            var controller = GetMatchController(_matchService);
+
+            var result = await controller.DeleteMatch(1);
 
             Assert.IsType<NoContentResult>(result);
         }
@@ -188,14 +289,20 @@ namespace HouserAPI_Test
         [Fact]
         public async Task DeleteMatch_ReturnsBadRequest()
         {
-            _mockMatchService
+            _mockMatchRepository
                 .Setup(x => x.GetById(It.IsAny<int>()))
-                .ReturnsAsync(_mockMatchReadDto);
-            _mockMatchService
-                .Setup(x => x.Delete(It.IsAny<int>()))
-                .ReturnsAsync(false);
+                .ReturnsAsync(_mockMatch);
+            _mockMatchRepository
+                .Setup(x => x.Delete(It.IsAny<Match>()))
+                .Returns(Task.FromResult(false));
+            _mockMatchRepository
+                .Setup(x => x.SaveChanges())
+                .Returns(Task.FromResult(false));
 
-            var result = await _controller.DeleteMatch(1);
+
+            var controller = GetMatchController(_matchService);
+
+            var result = await controller.DeleteMatch(1);
 
             Assert.IsType<BadRequestResult>(result);
         }

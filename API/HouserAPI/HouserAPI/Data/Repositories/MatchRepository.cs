@@ -19,7 +19,7 @@ namespace HouserAPI.Data.Repositories
             return queryable.Include(x => x.UserOfferer).Include(x => x.RoomOfferer);
         }
 
-        public async Task<IEnumerable<Match>> GetAllByUser(string userId)
+        public virtual async Task<IEnumerable<Match>> GetAllByUser(string userId)
         {
             return await IncludeDependencies(Entities)
                 .Include(x => x.UserOfferer).ThenInclude(x => x.Images.Where(y => y.RoomId == null))

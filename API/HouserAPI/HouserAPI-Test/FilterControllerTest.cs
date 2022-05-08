@@ -1,30 +1,43 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Security.Claims;
-using System.Text;
 using System.Threading.Tasks;
+using AutoMapper;
 using HouserAPI.Auth;
 using HouserAPI.Controllers;
+using HouserAPI.Data;
+using HouserAPI.Data.Repositories;
 using HouserAPI.DTOs.Filter;
-using HouserAPI.DTOs.Room;
+using HouserAPI.Enums;
+using HouserAPI.Models;
+using HouserAPI.Profiles;
 using HouserAPI.Services;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Moq;
+using Newtonsoft.Json;
 using Xunit;
 
 namespace HouserAPI_Test
 {
     public class FilterControllerTest
     {
-        private readonly Mock<IFilterService> _mockFilterService;
-        private readonly FilterController _controller;
+        private readonly Mock<FilterRepository> _mockFilterRepository;
+        private readonly IFilterService _filterService;
+        private readonly IMapper _mapper;
+
         public FilterControllerTest()
         {
-            _mockFilterService = new Mock<IFilterService>();
+            var mapperConfig = new ConfigurationProfile().Configure();
+            _mapper = mapperConfig.CreateMapper();
 
-            _controller = GetFilterController(_mockFilterService.Object);
+            var options = new DbContextOptionsBuilder<DatabaseContext>()
+                .UseInMemoryDatabase("IN_MEMORY_DATABASE")
+                .Options;
+            var mockDatabaseContext = new Mock<DatabaseContext>(options);
+
+            _mockFilterRepository = new Mock<FilterRepository>(mockDatabaseContext.Object);
+            _filterService = new FilterService(_mockFilterRepository.Object, _mapper);
         }
 
         private static ClaimsPrincipal MockUser()
@@ -56,34 +69,138 @@ namespace HouserAPI_Test
 
         private readonly FilterReadDto _mockFilterReadDto = new()
         {
-            Id = 1,
+            Id = 0,
             UserId = "UserId",
+        };
+
+        private readonly Filter _mockFilter = new()
+        {
+            Id = 0,
+            UserId = "UserId",
+            Elo = 0
+        };
+
+        private readonly UserFilter _mockUserFilter = new()
+        {
+            Id = 0,
+            Elo = 0,
+            UserId = "UserId",
+            FilterType = FilterType.User,
+            AgeFrom = 0,
+            AgeTo = 1,
+            AnimalCount = 0,
+            GuestCount = 0,
+            IsSmoking = false,
+            IsStudying = false,
+            IsWorking = false,
+            PartyCount = 0,
+            Sex = 0,
+            SleepType = SleepType.Evening
+        };
+
+        private readonly RoomFilter _mockRoomFilter = new()
+        {
+            Id = 0,
+            Elo = 0,
+            UserId = "UserId",
+            FilterType = FilterType.Room,
+            AccommodationAc = false,
+            AccommodationBalcony = false,
+            AccommodationDisability = false,
+            AccommodationParking = false,
+            AccommodationTv = false,
+            AccommodationWifi = false,
+            Area = 0,
+            AvailableFrom = new DateTime(2022, 01, 01),
+            AvailableTo = new DateTime(2022, 01, 01),
+            FreeRoomCount = 0,
+            BedCount = 0,
+            RuleAnimals = false,
+            RuleSmoking = false,
+            City = "Kaunas",
+            MonthlyPrice = 0
         };
 
         private readonly RoomFilterReadDto _mockRoomFilterReadDto = new()
         {
-            Id = 1,
+            Id = 0,
             UserId = "UserId",
+            FilterType = FilterType.Room,
+            AccommodationAc = false,
+            AccommodationBalcony = false,
+            AccommodationDisability = false,
+            AccommodationParking = false,
+            AccommodationTv = false,
+            AccommodationWifi = false,
+            Area = 0,
+            AvailableFrom = new DateTime(2022, 01, 01),
+            AvailableTo = new DateTime(2022, 01, 01),
+            FreeRoomCount = 0,
+            BedCount = 0,
+            RuleAnimals = false,
+            RuleSmoking = false,
+            City = "Kaunas",
+            MonthlyPrice = 0
         };
 
         private readonly RoomFilterCreateDto _mockRoomFilterCreateDto = new()
         {
+            FilterType = FilterType.Room,
+            AccommodationAc = false,
+            AccommodationBalcony = false,
+            AccommodationDisability = false,
+            AccommodationParking = false,
+            AccommodationTv = false,
+            AccommodationWifi = false,
+            Area = 0,
+            AvailableFrom = new DateTime(2022, 01, 01),
+            AvailableTo = new DateTime(2022, 01, 01),
+            FreeRoomCount = 0,
+            BedCount = 0,
+            RuleAnimals = false,
+            RuleSmoking = false,
+            City = "Kaunas",
+            MonthlyPrice = 0
         };
 
         private readonly UserFilterReadDto _mockUserFilterReadDto = new()
         {
-            Id = 1,
+            Id = 0,
             UserId = "UserId",
+            FilterType = FilterType.User,
+            AgeFrom = 0,
+            AgeTo = 1,
+            AnimalCount = 0,
+            GuestCount = 0,
+            IsSmoking = false,
+            IsStudying = false,
+            IsWorking = false,
+            PartyCount = 0,
+            Sex = 0,
+            SleepType = SleepType.Evening
         };
 
         private readonly UserFilterCreateDto _mockUserFilterCreateDto = new()
         {
+            FilterType = FilterType.User,
+            AgeFrom = 0,
+            AgeTo = 1,
+            AnimalCount = 0,
+            GuestCount = 0,
+            IsSmoking = false,
+            IsStudying = false,
+            IsWorking = false,
+            PartyCount = 0,
+            Sex = 0,
+            SleepType = SleepType.Evening
         };
 
         [Fact]
         public async Task GetFilterByUserId_ReturnsForbid()
         {
-            var result = await _controller.GetFilterByUserId("FakeUserId");
+            var controller = GetFilterController(_filterService);
+
+            var result = await controller.GetFilterByUserId("FakeUserId");
 
             Assert.IsType<ForbidResult>(result);
         }
@@ -91,11 +208,13 @@ namespace HouserAPI_Test
         [Fact]
         public async Task GetFilterByUserId_ReturnsNotFound()
         {
-            _mockFilterService
+            _mockFilterRepository
                 .Setup(x => x.GetByUserId(It.IsAny<string>()))
-                .ReturnsAsync((FilterReadDto) null);
+                .ReturnsAsync((Filter) null);
 
-            var result = await _controller.GetFilterByUserId("UserId");
+            var controller = GetFilterController(_filterService);
+
+            var result = await controller.GetFilterByUserId("UserId");
 
             Assert.IsType<NotFoundResult>(result);
         }
@@ -103,21 +222,26 @@ namespace HouserAPI_Test
         [Fact]
         public async Task GetFilterByUserId_ReturnsOk()
         {
-            _mockFilterService
+            _mockFilterRepository
                 .Setup(x => x.GetByUserId(It.IsAny<string>()))
-                .ReturnsAsync(_mockFilterReadDto);
+                .ReturnsAsync(_mockRoomFilter);
 
-            var result = await _controller.GetFilterByUserId("UserId");
+            var controller = GetFilterController(_filterService);
+
+            var expected = _mapper.Map<RoomFilterReadDto>(_mockRoomFilter);
+            var result = await controller.GetFilterByUserId("UserId");
             var resultObject = result as OkObjectResult;
-            var expected = resultObject?.Value as FilterReadDto;
-
-            Assert.Equal(_mockFilterReadDto, expected);
+            var actual = resultObject?.Value as RoomFilterReadDto;
+            
+            Assert.Equal(JsonConvert.SerializeObject(expected), JsonConvert.SerializeObject(actual));
         }
 
         [Fact]
         public async Task CreateRoomFilter_ReturnsBadRequest()
         {
-            var result = await _controller.CreateRoomFilter(null);
+            var controller = GetFilterController(_filterService);
+
+            var result = await controller.CreateRoomFilter(null);
 
             Assert.IsType<BadRequestObjectResult>(result);
         }
@@ -125,25 +249,34 @@ namespace HouserAPI_Test
         [Fact]
         public async Task CreateRoomFilter_ReturnsOk()
         {
-            _mockFilterService
-                .Setup(x => x.Create(It.IsAny<FilterCreateDto>(), It.IsAny<string>()))
-                .ReturnsAsync(_mockFilterReadDto);
+            _mockFilterRepository
+                .Setup(x => x.Create(It.IsAny<RoomFilter>()))
+                .Returns(Task.FromResult(_mockRoomFilter));
 
-            var result = await _controller.CreateRoomFilter(_mockRoomFilterCreateDto);
+            var controller = GetFilterController(_filterService);
+            
+            var result = await controller.CreateRoomFilter(_mockRoomFilterCreateDto);
             var resultObject = result as CreatedAtActionResult;
-            var expected = resultObject?.Value as FilterReadDto;
+            var actual = resultObject?.Value as RoomFilterReadDto;
 
-            Assert.Equal(_mockFilterReadDto, expected);
+            Assert.Equal(JsonConvert.SerializeObject(_mockRoomFilterReadDto), JsonConvert.SerializeObject(actual));
         }
 
         [Fact]
         public async Task CreateRoomFilter_ReturnsBadRequestCatch()
         {
-            _mockFilterService
-                .Setup(x => x.Create(It.IsAny<FilterCreateDto>(), It.IsAny<string>()))
-                .ThrowsAsync(new ArgumentNullException());
+            var filterTypeNull = new Filter()
+            {
+                FilterType = FilterType.None
+            };
 
-            var result = await _controller.CreateRoomFilter(_mockRoomFilterCreateDto);
+            _mockFilterRepository
+                .Setup(x => x.GetByUserId(It.IsAny<string>()))
+                .Returns(Task.FromResult(filterTypeNull));
+
+            var controller = GetFilterController(_filterService);
+
+            var result = await controller.CreateRoomFilter(_mockRoomFilterCreateDto);
 
             Assert.IsType<BadRequestObjectResult>(result);
         }
@@ -151,7 +284,9 @@ namespace HouserAPI_Test
         [Fact]
         public async Task CreateUserFilter_ReturnsBadRequest()
         {
-            var result = await _controller.CreateUserFilter(null);
+            var controller = GetFilterController(_filterService);
+
+            var result = await controller.CreateUserFilter(null);
 
             Assert.IsType<BadRequestObjectResult>(result);
         }
@@ -159,25 +294,34 @@ namespace HouserAPI_Test
         [Fact]
         public async Task CreateUserFilter_ReturnsOk()
         {
-            _mockFilterService
-                .Setup(x => x.Create(It.IsAny<FilterCreateDto>(), It.IsAny<string>()))
-                .ReturnsAsync(_mockFilterReadDto);
+            _mockFilterRepository
+                .Setup(x => x.Create(It.IsAny<UserFilter>()))
+                .Returns(Task.FromResult(_mockUserFilter));
 
-            var result = await _controller.CreateUserFilter(_mockUserFilterCreateDto);
+            var controller = GetFilterController(_filterService);
+
+            var result = await controller.CreateUserFilter(_mockUserFilterCreateDto);
             var resultObject = result as CreatedAtActionResult;
-            var expected = resultObject?.Value as FilterReadDto;
+            var actual = resultObject?.Value as UserFilterReadDto;
 
-            Assert.Equal(_mockFilterReadDto, expected);
+            Assert.Equal(JsonConvert.SerializeObject(_mockUserFilterReadDto), JsonConvert.SerializeObject(actual));
         }
 
         [Fact]
         public async Task CreateUserFilter_ReturnsBadRequestCatch()
         {
-            _mockFilterService
-                .Setup(x => x.Create(It.IsAny<FilterCreateDto>(), It.IsAny<string>()))
-                .ThrowsAsync(new ArgumentNullException());
+            var filterTypeNull = new Filter()
+            {
+                FilterType = FilterType.None
+            };
 
-            var result = await _controller.CreateUserFilter(_mockUserFilterCreateDto);
+            _mockFilterRepository
+                .Setup(x => x.GetByUserId(It.IsAny<string>()))
+                .Returns(Task.FromResult(filterTypeNull));
+
+            var controller = GetFilterController(_filterService);
+
+            var result = await controller.CreateUserFilter(_mockUserFilterCreateDto);
 
             Assert.IsType<BadRequestObjectResult>(result);
         }

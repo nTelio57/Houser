@@ -1,31 +1,44 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.Linq;
 using System.Security.Claims;
-using System.Text;
 using System.Threading.Tasks;
+using AutoMapper;
 using HouserAPI.Auth;
 using HouserAPI.Controllers;
+using HouserAPI.Data;
+using HouserAPI.Data.Repositories;
 using HouserAPI.DTOs.Message;
-using HouserAPI.DTOs.Room;
+using HouserAPI.Models;
+using HouserAPI.Profiles;
 using HouserAPI.Services;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Moq;
+using Newtonsoft.Json;
 using Xunit;
 
 namespace HouserAPI_Test
 {
     public class MessageControllerTest
     {
-        private readonly Mock<IMessageService> _mockMessageService;
-        private readonly MessageController _controller;
+        private readonly IMessageService _messageService;
+        private readonly Mock<MessageRepository> _mockMessageRepository;
+        private readonly IMapper _mapper;
         public MessageControllerTest()
         {
-            _mockMessageService = new Mock<IMessageService>();
+            var mapperConfig = new ConfigurationProfile().Configure();
+            _mapper = mapperConfig.CreateMapper();
 
-            _controller = GetMessageController(_mockMessageService.Object);
+            var options = new DbContextOptionsBuilder<DatabaseContext>()
+                .UseInMemoryDatabase("IN_MEMORY_DATABASE")
+                .Options;
+            var mockDatabaseContext = new Mock<DatabaseContext>(options);
+
+            _mockMessageRepository = new Mock<MessageRepository>(mockDatabaseContext.Object);
+            var mockMatchRepository = new Mock<MatchRepository>(mockDatabaseContext.Object);
+            _messageService = new MessageService(_mapper, _mockMessageRepository.Object, mockMatchRepository.Object);
         }
 
         private static ClaimsPrincipal MockUser()
@@ -57,45 +70,71 @@ namespace HouserAPI_Test
 
         private readonly MessageCreateDto _mockMessageCreateDto = new()
         {
-            Content = "Message"
+            Content = "Message",
+            SenderId = "UserId",
+            MatchId = 0
         };
 
         private readonly MessageReadDto _mockMessageReadDto = new()
         {
-            Id = 1,
-            Content = "Message"
+            Id = 0,
+            Content = "Message",
+            SenderId = "UserId",
+            MatchId = 0
+        };
+
+        private readonly Message _mockMessage = new()
+        {
+            Id = 0,
+            Content = "Message",
+            SenderId = "UserId",
+            MatchId = 0,
+            Sender = null,
+            Match = null
         };
 
         [Fact]
         public async Task CreateRoom_ReturnsBadRequest()
         {
-            var result = await _controller.CreateMessage(null);
+            var controller = GetMessageController(_messageService);
+
+            var result = await controller.CreateMessage(null);
 
             Assert.IsType<BadRequestObjectResult>(result);
         }
 
         [Fact]
-        public async Task CreateRoom_ReturnsRoomReadDto()
+        public async Task CreateRoom_ReturnsMessageReadDto()
         {
-            _mockMessageService
-                .Setup(x => x.Create(It.IsAny<MessageCreateDto>()))
-                .ReturnsAsync(_mockMessageReadDto);
+            _mockMessageRepository
+                .Setup(x => x.Create(It.IsAny<Message>()))
+                .Returns(Task.FromResult(_mockMessage));
 
-            var result = await _controller.CreateMessage(_mockMessageCreateDto);
+            var controller = GetMessageController(_messageService);
+
+            var expected = _mockMessageReadDto;
+            var result = await controller.CreateMessage(_mockMessageCreateDto);
             var resultObject = result as CreatedAtActionResult;
-            var expected = resultObject?.Value as MessageReadDto;
+            var actual = resultObject?.Value as MessageReadDto;
 
-            Assert.Equal(_mockMessageReadDto, expected);
+            var dateTime = DateTime.Now;
+            expected.SendTime = dateTime;
+            actual.SendTime = dateTime;
+
+            Assert.Equal(JsonConvert.SerializeObject(expected), JsonConvert.SerializeObject(actual));
         }
 
         [Fact]
         public async Task CreateRoom_ReturnsBadRequestCatch()
         {
-            _mockMessageService
+            var mockMessageService = new Mock<IMessageService>();
+            mockMessageService
                 .Setup(x => x.Create(It.IsAny<MessageCreateDto>()))
                 .ThrowsAsync(new ArgumentNullException());
 
-            var result = await _controller.CreateMessage(_mockMessageCreateDto);
+            var controller = GetMessageController(mockMessageService.Object);
+
+            var result = await controller.CreateMessage(_mockMessageCreateDto);
 
             Assert.IsType<BadRequestObjectResult>(result);
         }
@@ -103,16 +142,19 @@ namespace HouserAPI_Test
         [Fact]
         public async Task GetAllMessagesByMatch_ReturnsOk()
         {
-            var messageList = new Collection<MessageReadDto>() { _mockMessageReadDto };
-            _mockMessageService
+            var messageList = new Collection<Message>() { _mockMessage };
+            _mockMessageRepository
                 .Setup(x => x.GetAllByMatchId(It.IsAny<int>()))
                 .ReturnsAsync(messageList);
+            var expected = _mapper.Map<IEnumerable<MessageReadDto>>(messageList);
 
-            var result = await _controller.GetAllMessagesByMatch(1);
+            var controller = GetMessageController(_messageService);
+
+            var result = await controller.GetAllMessagesByMatch(1);
             var resultObject = result as OkObjectResult;
-            var actual = resultObject?.Value as Collection<MessageReadDto>;
+            var actual = resultObject?.Value as IEnumerable<MessageReadDto>;
 
-            Assert.Equal(messageList, actual);
+            Assert.Equal(JsonConvert.SerializeObject(expected), JsonConvert.SerializeObject(actual));
         }
     }
 }

@@ -58,19 +58,19 @@ namespace HouserAPI_Test
 
         private readonly RoomFilter _mockRoomFilter = new()
         {
-            Id = 1,
+            Id = 0,
             UserId = "UserId",
         };
 
         private readonly UserFilter _mockUserFilter = new()
         {
-            Id = 1,
+            Id = 0,
             UserId = "UserId",
         };
 
         private readonly RoomReadDto _mockRoomReadDto = new()
         {
-            Id = 1
+            Id = 0
         };
 
         private readonly UserReadDto _mockUserReadDto = new()
