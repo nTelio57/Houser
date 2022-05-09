@@ -71,7 +71,7 @@ def GetRoomRecommendation(filter):
 
 def GetUserQuery(filter):
     today = datetime.date.today()
-    userSwipes = db.session.query(Swipe.UserTargetId).filter(Swipe.SwiperId == filter.UserId)
+    userSwipes = db.session.query(Swipe.UserTargetId).filter(Swipe.SwiperId == filter.UserId).filter(Swipe.FilterType == 1)
     matches = db.session.query(Match.UserOffererId).filter(Match.RoomOffererId == filter.UserId)
 
     query = db.session.query(User).\
