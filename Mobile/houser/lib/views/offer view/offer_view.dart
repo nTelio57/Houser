@@ -171,11 +171,7 @@ class _OfferViewState extends State<OfferView> {
           size: 24,
         ),
         onPressed: () async{
-          try{
-            await MessengerService().init();
-          }catch(e){
-            ScaffoldMessenger.of(context).showSnackBar(messengerFailed);
-          }
+          await MessengerService().init();
 
           Navigator.push(context, MaterialPageRoute(builder: (context) => MatchListView()));
         },

@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 
 const noConnectionSnackbar = SnackBar(
-    content: Text('Pasitikrinkite interneto ryšį.')
+    content: Text('Kažkas įvyko ne taip.')
 );
 
 const serverErrorSnackbar = SnackBar(
-    content: Text('Klaida bandant pasiekti serverį.')
+    content: Text('Kažkas įvyko ne taip.')
 );
 
 const failedLogin = SnackBar(
@@ -45,7 +45,7 @@ const roomHasToHaveImages = SnackBar(
 );
 
 const messengerFailed = SnackBar(
-    content: Text('Įvyko klaida bandant pasiekti žinučių servisą.')
+    content: Text('Kažkas įvyko ne taip.')
 );
 
 const noRoomOfferForUserFilter = SnackBar(
