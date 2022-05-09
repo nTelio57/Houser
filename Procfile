@@ -1,1 +1,1 @@
-web: cd $HOME/heroku_output && ./Messenger
+web: python Recommendation/Recommendation/Recommendation/Main.py
