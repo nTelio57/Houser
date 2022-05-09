@@ -23,6 +23,7 @@ namespace HouserAPI.Controllers
         }
 
         [HttpGet("{id}", Name = "GetUserById")]
+        [Roles(UserRoles.Basic)]
         public async Task<IActionResult> GetUserById(string id)
         {
             var userId = User.FindFirst(CustomClaims.UserId)?.Value;
@@ -37,6 +38,7 @@ namespace HouserAPI.Controllers
         }
 
         [HttpPut("{id}")]
+        [Roles(UserRoles.Basic)]
         public async Task<IActionResult> UpdateUser(string id, UserUpdateDto userUpdateDto)
         {
             var userId = User.FindFirst(CustomClaims.UserId)?.Value;
@@ -53,6 +55,7 @@ namespace HouserAPI.Controllers
         }
 
         [HttpPut("visibility/{id}/{visibility}")]
+        [Roles(UserRoles.Basic)]
         public async Task<IActionResult> UpdateVisibility(string id, int visibility)
         {
             var userId = User.FindFirst(CustomClaims.UserId)?.Value;
