@@ -38,6 +38,7 @@ namespace HouserAPI.Controllers
         }
 
         [HttpGet("{id}", Name = "GetRoomById")]
+        [Roles(UserRoles.Basic)]
         public async Task<IActionResult> GetRoomById(int id)
         {
             var roomReadDto = await _roomService.GetById(id);
@@ -48,6 +49,7 @@ namespace HouserAPI.Controllers
         }
 
         [HttpGet("user/{id}")]
+        [Roles(UserRoles.Basic)]
         public async Task<IActionResult> GetAllRoomsByUser(string id)
         {
             var userId = User.FindFirst(CustomClaims.UserId)?.Value;
@@ -59,6 +61,7 @@ namespace HouserAPI.Controllers
         }
 
         [HttpPut("{id}")]
+        [Roles(UserRoles.Basic)]
         public async Task<IActionResult> UpdateRoom(int id, RoomUpdateDto roomUpdateDto)
         {
             var userId = User.FindFirst(CustomClaims.UserId)?.Value;
@@ -77,6 +80,7 @@ namespace HouserAPI.Controllers
         }
 
         [HttpDelete("{id}")]
+        [Roles(UserRoles.Basic)]
         public async Task<IActionResult> DeleteRoom(int id)
         {
             var userId = User.FindFirst(CustomClaims.UserId)?.Value;

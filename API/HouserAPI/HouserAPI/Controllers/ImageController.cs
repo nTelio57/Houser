@@ -113,6 +113,7 @@ namespace HouserAPI.Controllers
         }
 
         [HttpPut("{id}")]
+        [Roles(UserRoles.Basic)]
         public async Task<IActionResult> UpdateImage(int id, ImageUpdateDto imageUpdateDto)
         {
             var userId = User.FindFirst(CustomClaims.UserId)?.Value;

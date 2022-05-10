@@ -171,11 +171,7 @@ class _OfferViewState extends State<OfferView> {
           size: 24,
         ),
         onPressed: () async{
-          try{
-            await MessengerService().init();
-          }catch(e){
-            ScaffoldMessenger.of(context).showSnackBar(messengerFailed);
-          }
+          await MessengerService().init();
 
           Navigator.push(context, MaterialPageRoute(builder: (context) => MatchListView()));
         },
@@ -205,8 +201,12 @@ class _OfferViewState extends State<OfferView> {
     final provider = Provider.of<OfferCardManager>(context, listen: false);
 
     provider.resetOffers();
-    await provider.loadOffersAsync(3, 0);
-    provider.loadOffersSync(7, 3);
+    try{
+      await provider.loadOffersAsync(3, 0);
+      provider.loadOffersSync(7, 3);
+    }catch(e){
+
+    }
 
     Navigator.pop(context);
     return;

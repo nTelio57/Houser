@@ -262,6 +262,7 @@ class _WGUserCardState extends State<WGUserCard> {
       },
       fit: BoxFit.fitHeight,
       alignment: FractionalOffset.center,
+      errorWidget: (context, url, error) => noImage(),
     );
   }
 
