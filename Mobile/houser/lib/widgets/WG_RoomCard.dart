@@ -325,6 +325,7 @@ class _WGRoomCardState extends State<WGRoomCard> {
       },
       fit: BoxFit.fitHeight,
       alignment: FractionalOffset.center,
+      errorWidget: (context, url, error) => noImage(),
     );
   }
 
