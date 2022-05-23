@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:houser/extensions/dateTime_extensions.dart';
 import 'package:houser/models/Filter.dart';
 import 'package:houser/models/RoomFilter.dart';
-import 'package:houser/utils/current_login.dart';
+import 'package:houser/services/current_login.dart';
 import 'package:houser/widgets/WG_snackbars.dart';
 import 'package:houser/widgets/WG_toggle_icon_button.dart';
 import 'package:intl/intl.dart';

@@ -7,10 +7,10 @@ import 'package:houser/extensions/dateTime_extensions.dart';
 import 'package:houser/models/Filter.dart';
 import 'package:houser/models/RoomFilter.dart';
 import 'package:houser/models/UserFilter.dart';
-import 'package:houser/utils/current_login.dart';
+import 'package:houser/services/current_login.dart';
 import 'package:houser/models/User.dart';
 import 'package:houser/services/api_service.dart';
-import 'package:houser/utils/offer_card_manager.dart';
+import 'package:houser/services/offer%20manager/offer_card_manager.dart';
 import 'package:houser/views/filter%20view/filter_base.dart';
 import 'package:houser/views/offer%20view/offer_view.dart';
 import 'package:provider/provider.dart';
@@ -141,8 +141,8 @@ class _PersonalDetailsCreateStepperState extends State<PersonalDetailsCreateStep
             margin: const EdgeInsets.only(top: 16.0),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.end,
-              children: <Widget>[
-                Container(
+              children: [
+                isFirstStep() ? Container(
                   margin: const EdgeInsetsDirectional.only(start: 8.0),
                   child: TextButton(
                     onPressed: details.onStepCancel,
@@ -151,7 +151,7 @@ class _PersonalDetailsCreateStepperState extends State<PersonalDetailsCreateStep
                       style: TextStyle(color: Colors.black54),
                     ),
                   ),
-                ),
+                ) : Container(),
                 TextButton(
                   onPressed: details.onStepContinue,
                   child: Text(
@@ -263,6 +263,11 @@ class _PersonalDetailsCreateStepperState extends State<PersonalDetailsCreateStep
     provider.loadOffersSync(7, 3);
 
     Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (context) => OfferView()), (Route<dynamic> route) => false);
+  }
+
+  bool isFirstStep()
+  {
+    return _currentStep == 0;
   }
 
   bool isLastStep()

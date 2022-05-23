@@ -6,11 +6,12 @@ import 'package:houser/models/Filter.dart';
 import 'package:houser/models/RoomFilter.dart';
 import 'package:houser/models/UserFilter.dart';
 import 'package:houser/services/api_service.dart';
-import 'package:houser/utils/current_login.dart';
+import 'package:houser/services/current_login.dart';
 import 'package:houser/views/filter%20view/filter_create_room_offer.dart';
 import 'package:houser/views/filter%20view/filter_room_view.dart';
 import 'package:houser/views/filter%20view/filter_user_view.dart';
 import 'package:houser/views/profile%20view/room_form_view.dart';
+import 'package:houser/widgets/WG_snackbars.dart';
 
 // ignore: must_be_immutable
 class FilterBaseView extends StatefulWidget {
@@ -32,6 +33,7 @@ class _FilterBaseViewState extends State<FilterBaseView> with SingleTickerProvid
   var filterUserForm = FilterUserView();
   var filterRoomForm = FilterRoomView();
   var filterCreateRoomOffer = FilterCreateRoomOffer((){});
+  bool _hasAnyRooms = false;
 
   @override
   void initState() {
@@ -208,6 +210,16 @@ class _FilterBaseViewState extends State<FilterBaseView> with SingleTickerProvid
             return;
           }
 
+          var tabIndex = _tabController.index;
+          if(tabIndex == 1 && !_hasAnyRooms)
+            {
+              setState(() {
+                _isButtonEnabled = true;
+              });
+              ScaffoldMessenger.of(context).showSnackBar(noRoomOfferForUserFilter);
+              return;
+            }
+
           var currentFilter = widget._currentLogin.user!.filter;
           if(currentFilter != null)
             {
@@ -291,6 +303,7 @@ class _FilterBaseViewState extends State<FilterBaseView> with SingleTickerProvid
   Future<bool> hasAnyRoomOffers() async
   {
     var roomList = await ApiService().GetRoomsByUser(widget._currentLogin.user!.id);
-    return roomList.isNotEmpty;
+    _hasAnyRooms = roomList.isNotEmpty;
+    return _hasAnyRooms;
   }
 }

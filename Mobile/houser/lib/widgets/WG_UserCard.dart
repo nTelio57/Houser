@@ -8,8 +8,8 @@ import 'package:houser/extensions/bool_extensions.dart';
 import 'package:houser/extensions/int_extensions.dart';
 import 'package:houser/models/User.dart';
 import 'package:houser/services/api_service.dart';
-import 'package:houser/utils/current_login.dart';
-import 'package:houser/utils/offer_card_manager.dart';
+import 'package:houser/services/current_login.dart';
+import 'package:houser/services/offer%20manager/offer_card_manager.dart';
 import 'package:houser/widgets/WG_album_slider.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
@@ -262,6 +262,7 @@ class _WGUserCardState extends State<WGUserCard> {
       },
       fit: BoxFit.fitHeight,
       alignment: FractionalOffset.center,
+      errorWidget: (context, url, error) => noImage(),
     );
   }
 

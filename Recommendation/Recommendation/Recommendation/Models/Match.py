@@ -10,4 +10,3 @@ class Match(db.Model):
     UserOffererId: str = db.Column(db.String, db.ForeignKey(User.Id))
     RoomOffererId: str = db.Column(db.String, db.ForeignKey(User.Id))
     RoomId: int = db.Column(db.Integer, db.ForeignKey(Room.Id), nullable=True)
-    FilterType: int = db.Column(db.Integer)

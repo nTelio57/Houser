@@ -19,6 +19,7 @@ namespace HouserAPI.Controllers
         }
 
         [HttpPost("swipe")]
+        [Roles(UserRoles.Basic)]
         public async Task<IActionResult> Swipe(SwipeCreateDto swipeCreateDto)
         {
             if (swipeCreateDto is null)
@@ -40,6 +41,7 @@ namespace HouserAPI.Controllers
         }
 
         [HttpGet("user/{id}")]
+        [Roles(UserRoles.Basic)]
         public async Task<IActionResult> GetAllMatchesByUser(string id)
         {
             var userId = User.FindFirst(CustomClaims.UserId)?.Value;
@@ -51,6 +53,7 @@ namespace HouserAPI.Controllers
         }
 
         [HttpDelete("{id}")]
+        [Roles(UserRoles.Basic)]
         public async Task<IActionResult> DeleteMatch(int id)
         {
             var userId = User.FindFirst(CustomClaims.UserId)?.Value;

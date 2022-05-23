@@ -3,7 +3,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:houser/models/Match.dart';
 import 'package:houser/services/api_service.dart';
-import 'package:houser/utils/current_login.dart';
+import 'package:houser/services/current_login.dart';
 
 // ignore: must_be_immutable
 class WGMatchCard extends StatefulWidget {

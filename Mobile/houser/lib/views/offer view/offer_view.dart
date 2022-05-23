@@ -4,12 +4,12 @@ import 'package:houser/enums/FilterType.dart';
 import 'package:houser/models/Filter.dart';
 import 'package:houser/services/api_service.dart';
 import 'package:houser/services/messenger_service.dart';
-import 'package:houser/utils/current_login.dart';
+import 'package:houser/services/current_login.dart';
 import 'package:houser/views/filter%20view/filter_base.dart';
 import 'package:houser/views/match%20view/match_list_view.dart';
 import 'package:houser/views/profile%20view/my_profile_menu_view.dart';
 import 'package:houser/widgets/WG_RoomCard.dart';
-import 'package:houser/utils/offer_card_manager.dart';
+import 'package:houser/services/offer%20manager/offer_card_manager.dart';
 import 'package:houser/widgets/WG_UserCard.dart';
 import 'package:houser/widgets/WG_snackbars.dart';
 import 'package:provider/provider.dart';
@@ -171,11 +171,7 @@ class _OfferViewState extends State<OfferView> {
           size: 24,
         ),
         onPressed: () async{
-          try{
-            await MessengerService().init();
-          }catch(e){
-            ScaffoldMessenger.of(context).showSnackBar(messengerFailed);
-          }
+          await MessengerService().init();
 
           Navigator.push(context, MaterialPageRoute(builder: (context) => MatchListView()));
         },
@@ -205,8 +201,12 @@ class _OfferViewState extends State<OfferView> {
     final provider = Provider.of<OfferCardManager>(context, listen: false);
 
     provider.resetOffers();
-    await provider.loadOffersAsync(3, 0);
-    provider.loadOffersSync(7, 3);
+    try{
+      await provider.loadOffersAsync(3, 0);
+      provider.loadOffersSync(7, 3);
+    }catch(e){
+
+    }
 
     Navigator.pop(context);
     return;

@@ -13,7 +13,9 @@ Room _$RoomFromJson(Map<String, dynamic> json) => Room(
       ..isVisible = json['isVisible'] as bool
       ..uploadDate = DateTime.parse(json['uploadDate'] as String)
       ..userId = json['userId'] as String
-      ..user = User.fromJson(json['user'] as Map<String, dynamic>)
+      ..user = json['user'] == null
+          ? null
+          : User.fromJson(json['user'] as Map<String, dynamic>)
       ..id = json['id'] as int
       ..city = json['city'] as String
       ..address = json['address'] as String

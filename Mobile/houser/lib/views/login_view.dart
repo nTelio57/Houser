@@ -10,9 +10,9 @@ import 'package:houser/models/AuthRequest.dart';
 import 'package:houser/models/Filter.dart';
 import 'package:houser/models/RoomFilter.dart';
 import 'package:houser/models/UserFilter.dart';
-import 'package:houser/utils/current_login.dart';
+import 'package:houser/services/current_login.dart';
 import 'package:houser/services/api_service.dart';
-import 'package:houser/utils/offer_card_manager.dart';
+import 'package:houser/services/offer%20manager/offer_card_manager.dart';
 import 'package:houser/views/filter%20view/filter_base.dart';
 import 'package:houser/views/offer%20view/offer_view.dart';
 import 'package:houser/views/personal%20details%20view/personal_details_create_stepper.dart';
@@ -165,7 +165,6 @@ class _LoginViewState extends State<LoginView> {
                   emailTextField(emailValidator),
                   passwordTextField(passwordValidator),
                   loginButton(),
-                  forgotPasswordButton(),
                 ],
               ),
             ),
@@ -247,7 +246,7 @@ class _LoginViewState extends State<LoginView> {
     CurrentLogin currentLogin = CurrentLogin();
     return Container(
       width: double.infinity,
-      padding: const EdgeInsets.only(top: 7),
+      padding: const EdgeInsets.only(top: 7, bottom: 14),
       child: TextButton(
 
         onPressed: !_isLoginButtonEnabled ? null : () async
@@ -310,23 +309,6 @@ class _LoginViewState extends State<LoginView> {
         style: TextButton.styleFrom(
           backgroundColor: Theme.of(context).primaryColor,
           padding: const EdgeInsets.symmetric(vertical: 12)
-        ),
-      ),
-    );
-  }
-
-  Widget forgotPasswordButton()
-  {
-    return SizedBox(
-      width: double.infinity,
-      child: TextButton(
-        onPressed: () {
-          if (kDebugMode) {
-            print('Forgot password clicked');
-          }
-        },
-        child: const Text(
-            'Pamiršai slaptažodį?'
         ),
       ),
     );

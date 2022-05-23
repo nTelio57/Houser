@@ -7,7 +7,6 @@ namespace HouserAPI.DTOs.Match
     public class MatchReadDto
     {
         public int Id { get; set; }
-        public FilterType FilterType { get; set; }
         public string UserOffererId { get; set; }
         public UserReadDto UserOfferer { get; set; }
         public string RoomOffererId { get; set; }

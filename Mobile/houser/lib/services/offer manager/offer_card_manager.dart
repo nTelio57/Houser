@@ -4,9 +4,9 @@ import 'package:houser/enums/FilterType.dart';
 import 'package:houser/models/Swipe.dart';
 import 'package:houser/models/User.dart';
 import 'package:houser/services/api_service.dart';
-import 'package:houser/utils/RoomOfferManager.dart';
-import 'package:houser/utils/UserOfferManager.dart';
-import 'package:houser/utils/current_login.dart';
+import 'package:houser/services/offer%20manager/room_offer_manager.dart';
+import 'package:houser/services/offer%20manager/user_offer_manager.dart';
+import 'package:houser/services/current_login.dart';
 import 'package:houser/models/Room.dart';
 
 class OfferCardManager extends ChangeNotifier {

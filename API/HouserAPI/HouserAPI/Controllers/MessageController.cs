@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Threading.Tasks;
+using HouserAPI.Auth;
 using HouserAPI.DTOs.Message;
 using HouserAPI.Services;
 using Microsoft.AspNetCore.Mvc;
@@ -35,6 +36,7 @@ namespace HouserAPI.Controllers
         }
 
         [HttpGet("match/{id}")]
+        [Roles(UserRoles.Basic)]
         public async Task<IActionResult> GetAllMessagesByMatch(int id)
         {
             var messages = await _messageService.GetAllByMatchId(id);

@@ -1,7 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:houser/models/Message.dart';
-import 'package:houser/utils/current_login.dart';
+import 'package:houser/services/current_login.dart';
 import 'package:signalr_core/signalr_core.dart';
 import 'package:collection/collection.dart';
 import 'package:houser/models/Match.dart';

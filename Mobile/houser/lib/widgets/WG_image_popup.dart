@@ -5,7 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_speed_dial/flutter_speed_dial.dart';
 import 'package:houser/models/Image.dart' as apiImage;
 import 'package:houser/services/api_service.dart';
-import 'package:houser/utils/current_login.dart';
+import 'package:houser/services/current_login.dart';
 
 // ignore: must_be_immutable
 class WGImagePopup extends StatefulWidget {
