@@ -111,13 +111,15 @@ namespace HouserAPI.Services
 
         private async Task UpdateElo(SwipeCreateDto swipeCreateDto, int K = 32)
         {
+            int swipeType = (int)swipeCreateDto.SwipeType;
+
             var swiperUser = await _userManager.FindByIdAsync(swipeCreateDto.SwiperId);
             var targetUser = await _userManager.FindByIdAsync(swipeCreateDto.UserTargetId);
 
             double expectedTarget = expectedEloTarget(targetUser.Elo, swiperUser.Elo);
             double swiperExpectedTarget = expectedEloTarget(swiperUser.Elo, targetUser.Elo);
 
-            double eloResult = K * (1 - expectedTarget);
+            double eloResult = K * (swipeType - expectedTarget);
             double swiperEloResult = K * (0.75 - swiperExpectedTarget);
 
             targetUser.Elo += Convert.ToInt32(eloResult);
